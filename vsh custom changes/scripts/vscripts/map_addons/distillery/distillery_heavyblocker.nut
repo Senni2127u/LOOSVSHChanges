@@ -1,3 +1,6 @@
+//Credit: Bradasparky
+//Usage: Fixes an issue on Distillery that makes it tough for Saxton Hale to reach players.
+
 PrecacheSound("vo/heavy_No01.mp3")
 PrecacheSound("vo/heavy_No02.mp3")
 PrecacheSound("vo/heavy_No03.mp3")
