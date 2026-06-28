@@ -6,5 +6,6 @@ Credits:
 
 Bradasparky, Horiuchi, Dice, Senni - Coding and Technical Assistance.
 
+Pika - Top Damage Scoreboard script maker.
 
 Lizard of Oz - VSH main developer and some existing code.
