@@ -45,7 +45,7 @@ class SaxtonPunchTrait extends BossTrait
 
     function CritPunchVoiceline()
         {
-            EmitPlayerVO(boss, "saxton_punch_ready");
+            PlayAnnouncerVO(boss, "saxton_punch_ready");
             RunWithDelay2(this, 10.0, function() //Some voicelines can be long, overcompensating here for that reason.
             {
                 playedWarning = false;
