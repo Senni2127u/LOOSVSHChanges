@@ -1,0 +1,37 @@
+name: Request a Change
+description: Request a change to be added to LOOS VSH.
+labels: [change-request]
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for making a request.
+  - type: textarea
+    id: describe-bug
+    attributes:
+      label: Describe the change.
+      description: Include why you feel this should be in VSH.
+      placeholder: Tell us what you need
+      value: "I'd like to request the change because ..."
+    validations:
+      required: true
+  - type: dropdown
+    id: image
+    attributes:
+      label: Image
+      description: Which class is this change for?
+      options:
+        - Scout
+        - Soldier
+        - Pyro
+        - Demoman
+        - Heavy
+        - Engineer
+        - Medic
+        - Sniper
+        - Spy
+        - Saxton Hale
+    validations:
+      required: true
+      
