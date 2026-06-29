@@ -4,6 +4,8 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
+	PyroOverheal = false
+	
     function CanApply()
     {
         return player.GetPlayerClass() == TF_CLASS_PYRO;
@@ -20,8 +22,24 @@ characterTraitsClasses.push(class extends CharacterTrait
 			flamethrower.AddAttribute("patient overheal penalty", 0.60, -1);
             player.SetHealth(200);
         }
-        });
+        });	
     }
+
+	function OnTickAlive(timeDelta)
+    {
+    if (player.GetHealth() == 260 && !PyroOverheal) // fixes issue with Overheal penalty where Medic gets increased charge rate because the patient's overheal current amount, is not the full overheal.
+        {
+            PyroOverheal = true
+            player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
+            //printl("Pyro's HP is at 260, reducing charge rate for Medic.") //Debug.
+        }
+    else if (player.GetHealth() == 259)
+        {
+            PyroOverheal = false
+            player.AddCustomAttribute("ubercharge rate bonus for healer", 1, -1)
+            //printl("Pyro's HP at 259 or below, returning charge rate to normal.") //Another debug.
+        }
+	}
 });
 
 // Uncomment print line to make sure script is functioning if edits are made.
