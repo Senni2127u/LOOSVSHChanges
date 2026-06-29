@@ -1,5 +1,5 @@
 # LOOS VSH Changes
-These are changes that have been done on the LOOS Community server.
+These are changes that have been done on the Vs Saxton Hale (VScript) LOOS Community server.
 
 
 Credits:
