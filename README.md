@@ -14,6 +14,10 @@ Lizard of Oz - VSH main developer and some existing code.
 
 CURRENT CHANGES:
 
+Last Mann Standing (3 Players Alive Mechanic) -
+* When LMS occurs, the remaining players are outlined.
+* A chat message will display when LMS is active.
+
 Saxton Hale - 
 
 * Extender has been fixed.
