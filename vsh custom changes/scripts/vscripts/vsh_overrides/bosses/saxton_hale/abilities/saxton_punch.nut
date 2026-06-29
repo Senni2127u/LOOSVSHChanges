@@ -15,6 +15,7 @@
 PrecacheArbitrarySound("vsh_sfx.saxton_punch");
 PrecacheArbitrarySound("saxton_hale.saxton_punch_ready")
 PrecacheArbitrarySound("saxton_hale.saxton_punch")
+PrecacheArbitrarySound("Weapon_Capper.SingleCrit")
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "vsh_megapunch_shockwave" })
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "vsh_mighty_slam" })
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "stomp_text" })
@@ -23,6 +24,7 @@ class SaxtonPunchTrait extends BossTrait
 {
     meter = -30;
     perform = true;
+    playedWarning = false;
 
     function OnApply()
     {
@@ -31,6 +33,26 @@ class SaxtonPunchTrait extends BossTrait
         hudAbilityInstances[player].push(this);
     }
 
+
+    function CritPunchReady()
+        {
+            meter = 0;
+            vsh_vscript.Hale_SetRedArm(boss, true);
+            BossPlayViewModelAnim(boss, "vsh_megapunch_ready");
+            boss.AddCond(TF_COND_CRITBOOSTED);
+            EmitSoundOn("Weapon_Capper.SingleCrit", boss) //sfx warning when it's fully charged.
+        }
+
+    function CritPunchVoiceline()
+        {
+            EmitPlayerVO(boss, "saxton_punch_ready");
+            RunWithDelay2(this, 10.0, function() //Some voicelines can be long, overcompensating here for that reason.
+            {
+                playedWarning = false;
+            }
+        )
+        }
+
     function OnTickAlive(timeDelta)
     {
         if (meter < 0 && !IsRoundSetup())
@@ -38,15 +60,16 @@ class SaxtonPunchTrait extends BossTrait
             meter += timeDelta;
             if (meter >= 0)
             {
-                meter = 0;
-                vsh_vscript.Hale_SetRedArm(boss, true);
-                EmitPlayerVO(boss, "saxton_punch_ready");
-                BossPlayViewModelAnim(boss, "vsh_megapunch_ready");
-                boss.AddCond(TF_COND_CRITBOOSTED);
+                CritPunchReady()
+            }
+
+        if (meter >= -3 && !playedWarning)
+            {
+                playedWarning = true;
+                CritPunchVoiceline();
             }
         }
     }
-
     function OnDamageDealt(victim, params)
     {
         perform = false;
