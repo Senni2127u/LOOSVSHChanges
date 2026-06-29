@@ -10,7 +10,7 @@ Pika - Top Damage Scoreboard script maker.
 
 Lizard of Oz - VSH main developer and some existing code.
 
-
+-----------------------------------------------------------------------------
 
 CURRENT CHANGES:
 
