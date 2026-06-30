@@ -1,5 +1,5 @@
 // Credit: Bradasparky and Senni
-// Usage: Reveals all players during Last Mann Standing, and disables Spy's Cloak during LMS.
+// Usage: Reveals all players during Last Mann Standing.
 // No required modifications to base gamemode files.
 
 AddListener("setup_end", 999, function()
