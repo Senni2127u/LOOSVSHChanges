@@ -36,6 +36,8 @@ Scout -
 Soldier - 
 
 * Gunboats cancel falling damage.
+* Black Box now gains up to 50+ HP per hit.
+* Beggar's Bazooka's deviation penalty is removed.
 
 Pyro -
 
@@ -53,7 +55,9 @@ Demoman -
 
 Heavy -
 
-None.
+* Huo-Long Heater no longer consumes ammo to be spun up.
+* Natascha's damage penalty has been reduced to 10%.
+* Brass Beast's movement penalty while spun up is reduced to 20%.
 
 Engineer -
 
