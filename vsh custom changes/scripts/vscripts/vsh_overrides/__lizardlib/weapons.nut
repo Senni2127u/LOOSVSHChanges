@@ -44,11 +44,15 @@
     eviction_notice = GetModelIndex("models/workshop/weapons/c_models/c_eviction_notice/c_eviction_notice.mdl"),
     diamondback = GetModelIndex("models/workshop_partner/weapons/c_models/c_dex_revolver/c_dex_revolver.mdl"),
     powerjack = GetModelIndex("models/workshop/weapons/c_models/c_powerjack/c_powerjack.mdl"),
-    sunonastick = GetModelIndex("models/workshop/weapons/c_models/c_rift_fire_mace/c_rift_fire_mace.mdl")
+    sunonastick = GetModelIndex("models/workshop/weapons/c_models/c_rift_fire_mace/c_rift_fire_mace.mdl") //From here on out is added changes.
     cloakanddagger = GetModelIndex("models/weapons/v_models/v_watch_leather_spy.mdl")
     backscatter = GetModelIndex("models/workshop/weapons/c_models/c_scatterdrum/c_scatterdrum.mdl")
     gas_passer = GetModelIndex("models/weapons/c_models/c_gascan/c_gascan.mdl")
     ullapoolcaber = GetModelIndex("models/workshop/weapons/c_models/c_caber/c_caber.mdl")
+    beggarsbazooka = GetModelIndex("models/workshop/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl")
+    blackbox = GetModelIndex("models/workshop/weapons/c_models/c_blackbox/c_blackbox.mdl")
+    brass_beast = GetModelIndex("models/workshop/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl")
+    huolongheater = GetModelIndex("models/workshop_partner/weapons/c_models/c_canton/c_canton.mdl")
     
 }
 
