@@ -49,6 +49,7 @@ Pyro -
 Demoman -
 
 * Ullapool Caber now recharges after 15 seconds.
+* Sticky Jumper only allows 1 sticky at a time.
 
 Heavy -
 
