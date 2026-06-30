@@ -32,7 +32,7 @@ function OutlineRemainingPlayers(death)
         local alive = GetAliveMercs();
         local aliveCount = alive.len();
         local bossalive = GetAliveBossPlayers();
-         if (aliveCount == 3 && !IsRoundOver()) //Preventing duplicates if Hale dies, Merc's killbind, or Mercs disconnect at the end of a round, as both instances are counted as a death to the listener.
+         if (aliveCount == 3 && !IsRoundOver()) //Preventing duplicates if Hale dies, Merc's killbind, or Mercs disconnect at the end of a round, as those instances are counted as a death to the listener.
          {
             foreach (merc in alive)
                 {
