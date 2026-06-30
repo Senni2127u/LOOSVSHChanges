@@ -11,6 +11,8 @@ IncludeScript("vsh_addons/merc_traits/scout_critdrink.nut") //This is Crit a Col
 
 // Soldier Scripts
 IncludeScript("vsh_addons/merc_traits/soldier_gunboats.nut")
+IncludeScript("vsh_addons/merc_traits/soldier_beggars.nut")
+IncludeScript("vsh_addons/merc_traits/soldier_blackbox.nut")
 
 // Pyro Scripts
 IncludeScript("vsh_addons/merc_traits/pyro_health_pool.nut")
@@ -22,6 +24,8 @@ IncludeScript("vsh_addons/merc_traits/pyro_manmelter.nut")
 IncludeScript("vsh_addons/merc_traits/demoman_caber.nut")
 
 // Heavy Scripts
+IncludeScript("vsh_addons/merc_traits/heavy_brass_beast.nut")
+IncludeScript("vsh_addons/merc_traits/heavy_huo.nut")
 
 // Engineer Scripts
 IncludeScript("vsh_addons/merc_traits/teleporter-two-way.nut")
