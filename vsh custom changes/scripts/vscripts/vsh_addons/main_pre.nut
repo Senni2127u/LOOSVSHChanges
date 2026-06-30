@@ -18,6 +18,7 @@ this.Include <- function(path)
 		case "/mercs/merc_traits/single_class/demo_shield.nut":
 		case "/mercs/merc_traits/single_class/demo_jumper_ammo.nut":
 		case "/mercs/merc_traits/single_class/heavy_received_knockback.nut":
+		case "/mercs/merc_traits/single_class/heavy_natasha_nerf.nut":
 		case "/mercs/merc_traits/single_class/medic_resistance.nut":
 
         // Dummy case to catch all of the above, add more if you wish
