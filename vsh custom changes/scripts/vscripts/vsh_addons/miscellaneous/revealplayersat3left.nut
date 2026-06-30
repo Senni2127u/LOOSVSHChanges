@@ -1,5 +1,5 @@
 // Credit: Bradasparky and Senni
-// Usage: Reveals all players during Last Mann Standing, and can disable Spy's Cloak during LMS.
+// Usage: Reveals all players during Last Mann Standing, and disables Spy's Cloak during LMS.
 // No required modifications to base gamemode files.
 
 AddListener("setup_end", 999, function()
@@ -25,25 +25,6 @@ AddListener("setup_start", 999, function()
         SetPropBool(player, "m_bGlowEnabled", false);
 });
 
-function StripCloak()
-    {
-        foreach (merc in GetAliveMercs())
-        {
-            if (merc.IsValid() && merc.InCond(TF_COND_STEALTHED))
-                {
-                    merc.RemoveCond(TF_COND_STEALTHED);
-                    //printl("cloak condition removed")
-                    //Uncomment above line to debug cloak removal.
-                }
-
-            if (merc.GetPlayerClass() == TF_CLASS_SPY) //Spy is the only one who can cloak, if there is none left, this stops the check to save resources, uncomment printl to debug this.
-                {
-                     RunWithDelay2(this, 0.25, StripCloak);
-                     //printl("There is a spy in here")
-                }
-        }
-    }
-
 function OutlineRemainingPlayers(death)
 {
     RunWithDelay2(this, 0.5, function() //Need this delay to avoid respawn issues.
@@ -51,18 +32,19 @@ function OutlineRemainingPlayers(death)
         local alive = GetAliveMercs();
         local aliveCount = alive.len();
         local bossalive = GetAliveBossPlayers();
-         if (aliveCount == 3)
+         if (aliveCount == 3 && !IsRoundOver()) //Preventing duplicates if Hale dies, Merc's killbind, or Mercs disconnect at the end of a round, as both instances are counted as a death to the listener.
          {
             foreach (merc in alive)
                 {
                     SetPropBool(merc, "m_bGlowEnabled", true);
-                    //StripCloak() //Commented out because of server stability issues, revisit this at a later date.
                 }
 
             foreach (boss in bossalive)
             {
                 SetPropBool(boss, "m_bGlowEnabled", true);
             }
+
+        if (!IsRoundOver())
             ClientPrint( null 3 "\x07C9C5B1[VSH] \x07DE3163Last Mann Standing activated! All remaining players have been outlined!") //Maybe comment this out, can get jarring.
          }
 
