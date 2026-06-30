@@ -9,8 +9,16 @@ AddListener("setup_end", 999, function()
 
 AddListener("disconnect", -9999, function(player, params)
 {
-        if (!IsRoundSetup())
-        OutlineRemainingPlayers(true);
+    // Ignore spectators
+    if (player.GetTeam() == TEAM_SPECTATOR)
+        return;
+
+    // Ignore players that were already dead
+    if (!player.IsAlive())
+        return;
+
+    if (!IsRoundSetup())
+    OutlineRemainingPlayers(true);
 });
 
 AddListener("death", 999, function (attacker, victim, params)
@@ -44,8 +52,10 @@ function OutlineRemainingPlayers(death)
                 SetPropBool(boss, "m_bGlowEnabled", true);
             }
 
-        if (!IsRoundOver())
+            if (!IsRoundOver())
+            {
             ClientPrint( null 3 "\x07C9C5B1[VSH] \x07DE3163Last Mann Standing activated! All remaining players have been outlined!") //Maybe comment this out, can get jarring.
+            }
          }
 
             // Debug stuff, only uncomment if there is issue with alive player tracking.
