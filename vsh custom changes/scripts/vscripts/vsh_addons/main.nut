@@ -6,8 +6,7 @@ IncludeScript("vsh_addons/boss_traits/airblast_stun.nut")
 
 // Scout Scripts
 IncludeScript("vsh_addons/merc_traits/scout_backscatter_accuracy.nut")
-IncludeScript("vsh_addons/merc_traits/scout_bonkdrink.nut") //This is Bonk! Atomic Punch.
-IncludeScript("vsh_addons/merc_traits/scout_critdrink.nut") //This is Crit a Cola.
+IncludeScript("vsh_addons/merc_traits/scout_critdrink.nut")
 
 // Soldier Scripts
 IncludeScript("vsh_addons/merc_traits/soldier_gunboats.nut")
