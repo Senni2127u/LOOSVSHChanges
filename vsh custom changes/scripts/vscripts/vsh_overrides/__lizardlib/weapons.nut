@@ -98,20 +98,12 @@
         return weapon.GetClassname() == "tf_weapon_pipebomblauncher";
     else if (name == "any_flamethrower") // Catches both regular flamethrowers and Dragon's Fury, which is classified as a rocket launcher instead. - Senni
         return weapon.GetClassname() == "tf_weapon_flamethrower" || weapon.GetClassname() == "tf_weapon_rocketlauncher_fireball";
+    else if (name == "energydrink") // Just get both drinks.
+        return weapon.GetClassname() == "tf_weapon_lunchbox_drink";
     else if (name == "gunboats")
     {
         local id = GetItemID(weapon)
         return id == 133;
-    }
-    else if (name == "bonkatomicpunch") // Bonk! Atomic Punch and Crit-a-Cola share the same model/weapon class name, we have to go by based off ID in the item schema instead. - Senni
-    {
-        local id = GetItemID(weapon)
-        return id = 46;
-    }
-    else if (name == "critacola")
-    {
-        local id = GetItemID(weapon)
-        return id = 163;
     }
     else if (name == "any_sword")
         return weapon.GetClassname() == "tf_weapon_sword" || weapon.GetClassname() == "tf_weapon_katana";
