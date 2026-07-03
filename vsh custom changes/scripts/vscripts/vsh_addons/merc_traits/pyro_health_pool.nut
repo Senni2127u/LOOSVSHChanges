@@ -33,7 +33,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
             //printl("Pyro's HP is at 260, reducing charge rate for Medic.") //Debug.
         }
-    else if (player.GetHealth() == 259)
+    else if (player.GetHealth() == 258)
         {
             PyroOverheal = false
             player.AddCustomAttribute("ubercharge rate bonus for healer", 1, -1)
