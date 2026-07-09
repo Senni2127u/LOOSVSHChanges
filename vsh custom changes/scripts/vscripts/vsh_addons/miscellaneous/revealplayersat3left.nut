@@ -1,6 +1,7 @@
 // Credit: Bradasparky and Senni
 // Usage: Reveals all players during Last Mann Standing.
 // No required modifications to base gamemode files.
+local g_LastMannStandingTriggered = false;
 
 AddListener("setup_end", 999, function()
 {
@@ -34,8 +35,6 @@ AddListener("setup_start", 999, function()
     g_LastMannStandingTriggered = false;
 });
 
-local g_LastMannStandingTriggered = false;
-
 function OutlineRemainingPlayers(death)
 {
     RunWithDelay2(this, 0.5, function()
@@ -66,5 +65,3 @@ function OutlineRemainingPlayers(death)
             //printl("alive.len() = " + alive.len());
             //printl("death = " + death.tointeger());
             //printl("aliveCount = " + aliveCount)
-});
-}
