@@ -6,6 +6,8 @@ Credits:
 
 Bradasparky, Horiuchi, Dice, Senni - Coding and Technical Assistance.
 
+Delfite - Assistance with Batallion's Backup fix.
+
 Pika - Top Damage Scoreboard script maker.
 
 Lizard of Oz - VSH main developer and some existing code.
