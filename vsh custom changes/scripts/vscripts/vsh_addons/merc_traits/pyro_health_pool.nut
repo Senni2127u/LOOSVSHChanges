@@ -18,8 +18,8 @@ characterTraitsClasses.push(class extends CharacterTrait
           local primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
         if (WeaponIs(primary, "any_flamethrower"))
         {
-            flamethrower.AddAttribute("max health additive bonus", 25, -1);
-			flamethrower.AddAttribute("patient overheal penalty", 0.60, -1);
+            primary.AddAttribute("max health additive bonus", 25, -1);
+			primary.AddAttribute("patient overheal penalty", 0.60, -1);
             player.SetHealth(200);
         }
         });	
