@@ -38,6 +38,7 @@ Soldier -
 * Gunboats cancel falling damage.
 * Black Box now gains up to 50+ HP per hit.
 * Beggar's Bazooka's deviation penalty is removed.
+* Batallion's Backup resists Saxton Hale's Abilities
 
 Pyro -
 
