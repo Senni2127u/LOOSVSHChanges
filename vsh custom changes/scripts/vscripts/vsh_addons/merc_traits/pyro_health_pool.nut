@@ -15,7 +15,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         RunWithDelay2(this, 0.01, function()
         {
-          local flamethrower = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+          local primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
         if (WeaponIs(primary, "any_flamethrower"))
         {
             flamethrower.AddAttribute("max health additive bonus", 25, -1);
