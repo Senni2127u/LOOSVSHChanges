@@ -56,7 +56,6 @@ Demoman -
 Heavy -
 
 * Huo-Long Heater no longer consumes ammo to be spun up.
-* Natascha's damage penalty has been reduced to 10%.
 * Brass Beast's movement penalty while spun up is reduced to 20%.
 
 Engineer -
