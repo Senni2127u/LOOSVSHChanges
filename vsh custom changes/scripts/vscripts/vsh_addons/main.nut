@@ -12,6 +12,7 @@ IncludeScript("vsh_addons/merc_traits/scout_critdrink.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_gunboats.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_beggars.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_blackbox.nut")
+IncludeScript("vsh_addons/merc_traits/soldier_backup.nut")
 
 // Pyro Scripts
 IncludeScript("vsh_addons/merc_traits/pyro_health_pool.nut")
@@ -49,5 +50,8 @@ IncludeScript("vsh_addons/miscellaneous/vsh_boss_damage_top3_no_log.nut")
 IncludeScript("vsh_addons/miscellaneous/revealplayersat3left.nut")
 
 //Uncomment below line to make sure changes are being loaded.
+
+//printl("Main script loaded");
+
 
 //printl("Main script loaded");
