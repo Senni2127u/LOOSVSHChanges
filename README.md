@@ -41,6 +41,8 @@ Soldier -
 * Black Box now gains up to 50+ HP per hit.
 * Beggar's Bazooka's deviation penalty is removed.
 * Batallion's Backup resists Saxton Hale's Abilities
+* All Banners will passively gain Rage. (60 Seconds to fully charge if no damage)
+* Rocket Launchers (Except Direct Hit and Liberty Launcher) have 25% increased projectile speed.
 
 Pyro -
 
@@ -55,11 +57,13 @@ Demoman -
 
 * Ullapool Caber now recharges after 15 seconds.
 * Sticky Jumper only allows 1 sticky at a time.
+* All Grenade Launchers (Except for Loch N Load) have a 25% increased projectile speed.
 
 Heavy -
 
 * Huo-Long Heater no longer consumes ammo to be spun up.
 * Brass Beast's movement penalty while spun up is reduced to 20%.
+* Heavies can now switch weapons during his unrev of the Minigun.
 
 Engineer -
 
