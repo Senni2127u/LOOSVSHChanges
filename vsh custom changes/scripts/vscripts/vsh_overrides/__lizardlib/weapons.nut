@@ -53,6 +53,9 @@
     blackbox = GetModelIndex("models/workshop/weapons/c_models/c_blackbox/c_blackbox.mdl")
     brass_beast = GetModelIndex("models/workshop/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl")
     huolongheater = GetModelIndex("models/workshop_partner/weapons/c_models/c_canton/c_canton.mdl")
+    lochnload = GetModelIndex("models/workshop/weapons/c_models/c_lochnload/c_lochnload.mdl")
+    libertylauncher = GetModelIndex("models/workshop/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl")
+    loosecannon = GetModelIndex("models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl")
     
 }
 
@@ -90,6 +93,8 @@
         return GetPropInt(weapon, "m_AttributeManager.m_Item.m_iItemDefinitionIndex") == 43;
     else if (name == "mad_milk")
         return weapon.GetClassname() == "tf_weapon_jar_milk";
+    else if (name == "any_banner")
+        return weapon.GetClassname() == "tf_weapon_buff_item";
     else if (name == "airstrike")
         return weapon.GetClassname() == "tf_weapon_rocketlauncher_airstrike";
     else if (name == "half_zatoichi")
