@@ -41,7 +41,6 @@ Soldier -
 * Black Box now gains up to 50+ HP per hit.
 * Beggar's Bazooka's deviation penalty is removed.
 * Batallion's Backup resists Saxton Hale's Abilities
-* All Banners will passively gain Rage. (60 Seconds to fully charge if no damage)
 * Rocket Launchers (Except Direct Hit and Liberty Launcher) have 25% increased projectile speed.
 
 Pyro -
