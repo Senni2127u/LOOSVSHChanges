@@ -21,45 +21,4 @@ characterTraitsClasses.push(class extends CharacterTrait
             }
         }
     }
-
-function ChargeSoldierBanners() //Over the time charge with all Banners.
-{
-    foreach (player in GetAliveMercs())
-    {
-        if (player.GetPlayerClass() != TF_CLASS_SOLDIER)
-            continue;
-
-        local banner = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
-
-        if (!banner)
-            continue;
-
-        local classname = banner.GetClassname();
-
-        // Only affect banners
-        if (classname != "tf_weapon_buff_item") //Instead of adding an entry to weapons.nut, we will just check the classname.
-            continue;
-
-        if (player.GetRageMeter() < 100) //Stop charging it once at full, because that's a waste.
-        {
-        player.SetRageMeter(clampCeiling(100, player.GetRageMeter() + 0.10)); //60 Seconds.
-        //printl(player.GetRageMeter())
-        }
-    }
-}
-
-function StartBannerRecharge()
-{
-    RunWithDelay2(this, 1.0, function()
-    {
-        ChargeSoldierBanners();
-        StartBannerRecharge();
-    });
-}
-
-function OnApply()
-{
-StartBannerRecharge();
-}
-
 });
