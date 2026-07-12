@@ -1,3 +1,7 @@
+//Copyright Senni
+// Handles Soldier and Demoman Projectile Speed Increases
+// Required modification to weapons.nut to function.
+
 characterTraitsClasses.push(class extends CharacterTrait
 {
     function CanApply()
