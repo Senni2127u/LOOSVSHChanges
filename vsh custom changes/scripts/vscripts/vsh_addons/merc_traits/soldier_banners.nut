@@ -1,5 +1,5 @@
 //Copyright: Delfite/Senni
-// Responsible for fixing Batallion Backup's resistance on Saxton Hale's abilities, gives all Banners a charge over time.
+// Responsible for fixing Batallion Backup's resistance on Saxton Hale's abilities.
 // No modification to weapons.nut required.
 
 characterTraitsClasses.push(class extends CharacterTrait
