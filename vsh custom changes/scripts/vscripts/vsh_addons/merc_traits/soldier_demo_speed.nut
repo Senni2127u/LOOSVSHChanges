@@ -16,11 +16,11 @@ function OnApply()
     if (weapon)
     {
         local classname = weapon.GetClassname();
-        if (classname != "tf_wearable")
+        if (classname != "tf_wearable") //Catching the Ali-Baba's Wee Booties and Bootlegger, we don't need to apply the stat to these.
         {
-        if ((!WeaponIs(weapon, "libertylauncher")))
+        if ((!WeaponIs(weapon, "libertylauncher"))) //Already has a projectile speed increase.
         {
-           if ((!WeaponIs(weapon, "direct_hit"))) 
+           if ((!WeaponIs(weapon, "direct_hit"))) //Same here.
            {
                 if ((!WeaponIs(weapon, "rocket_jumper"))) //If we don't disinclude this, it may mess with timings on Rocket Jumps
                 {
