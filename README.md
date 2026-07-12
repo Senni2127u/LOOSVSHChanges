@@ -6,7 +6,7 @@ Credits:
 
 Bradasparky, Horiuchi, Dice, Senni - Coding and Technical Assistance.
 
-Delfite - Assistance with Batallion's Backup fix.
+Delfite - Assistance with Batallion's Backup, Minigun, and Projectile Speed changes.
 
 Pika - Top Damage Scoreboard script maker.
 
