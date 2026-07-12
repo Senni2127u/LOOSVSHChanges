@@ -42,7 +42,7 @@ function ChargeSoldierBanners() //Over the time charge with all Banners.
 
         if (player.GetRageMeter() < 100) //Stop charging it once at full, because that's a waste.
         {
-        player.SetRageMeter(clampCeiling(100, player.GetRageMeter() + 0.13)); //60 Seconds.
+        player.SetRageMeter(clampCeiling(100, player.GetRageMeter() + 0.10)); //60 Seconds.
         //printl(player.GetRageMeter())
         }
     }
