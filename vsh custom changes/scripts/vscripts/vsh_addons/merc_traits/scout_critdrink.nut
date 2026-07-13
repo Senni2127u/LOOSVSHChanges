@@ -12,7 +12,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     function OnApply()
     {
         local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
-        if (WeaponIs(weapon, "energydrink"))
+        if (WeaponIs(weapon, "energydrink")) //We're just getting both drink items in this instance to avoid issues where it's applied to other secondaries.
         {
             weapon.AddAttribute("mod_mark_attacker_for_death", 0, -1);
             weapon.AddAttribute("effect bar recharge rate increased", 0.65, -1);
