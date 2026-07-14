@@ -42,6 +42,7 @@ Soldier -
 * Beggar's Bazooka's deviation penalty is removed.
 * Batallion's Backup resists Saxton Hale's Abilities
 * Rocket Launchers (Except Direct Hit and Liberty Launcher) have 25% increased projectile speed.
+* All banners recharge passively, and will take 75 seconds to achieve full charge with no damage.
 
 Pyro -
 
