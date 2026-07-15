@@ -11,7 +11,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             return false;
         local wearable = null;
         while (wearable = FindByClassname(wearable, "tf_wearable"))
-            if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats"))
+            if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats")) //Gunboats aren't considered a weapon, so this is a workaround.
             {
                 wearable.AddAttribute("cancel falling damage", 1, -1);
                 return true;
