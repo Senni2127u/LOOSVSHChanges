@@ -36,15 +36,11 @@ characterTraitsClasses.push(class extends CharacterTrait
     //This function is responsible for adding Rage to every player's currently equipped banner (if any). -Delfite
     function OnFrameTickAlive()
     {
-        ::nextThinkTime <- 0;
-        if (nextThinkTime <= Time())
-        {
-        nextThinkTime = Time() + 0.25;
-         if (player.GetRageMeter() < 100) //Stop charging it once at full, because that's a waste. - Senni
-        {
-            player.SetRageMeter(clampCeiling(100, player.GetRageMeter() + 0.025)); //Adding 0.025 to the meter to get 60 seconds - Senni
-            //printl(player.GetRageMeter()) //Debug
+        local rage = player.GetRageMeter();
+                if (rage < 100) //Stop charging it once at full, because that's a waste. - Senni
+                {
+                    player.SetRageMeter(clampCeiling(100, rage + 0.02525252525252525252525252525253)); //Adding 0.025 to the meter to get 60 seconds - Senni
+                    //printl(player.GetRageMeter()) //Debug
+                }
         }
-        }
-    }
-})
+    })
