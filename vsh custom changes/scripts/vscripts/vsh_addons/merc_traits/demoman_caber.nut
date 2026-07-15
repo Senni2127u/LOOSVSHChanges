@@ -1,5 +1,5 @@
 //Assistance from Bradasparky and Dice, Modified partially by Senni
-
+//Requires modification to weapons.nut to function.
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
