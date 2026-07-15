@@ -9,7 +9,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         return player.GetPlayerClass() == TF_CLASS_HEAVYWEAPONS;
     }
 
-function OnTickAlive(timeDelta)
+function OnFrameTickAlive(timeDelta)
 {
     local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
     if (weapon)
