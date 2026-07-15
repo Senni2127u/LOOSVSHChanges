@@ -42,6 +42,7 @@ Soldier -
 * Beggar's Bazooka's deviation penalty is removed.
 * Batallion's Backup resists Saxton Hale's Abilities
 * Rocket Launchers (Except Direct Hit and Liberty Launcher) have 25% increased projectile speed.
+* All Banners gain rage passively, and take 60 seconds to fill with no damage.
 
 Pyro -
 
