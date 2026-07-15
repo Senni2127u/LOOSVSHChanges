@@ -22,7 +22,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         if (lastHitWasPrimary)
         {
             damageAccumulated += params.damageamount;
-            while (damageAccumulated >= 200)
+            while (damageAccumulated >= 200) //Every 200 damage is 2 criticals stored.
             {
                 AddPropInt(player, "m_Shared.m_iRevengeCrits", 2);
                 damageAccumulated -= 200;
