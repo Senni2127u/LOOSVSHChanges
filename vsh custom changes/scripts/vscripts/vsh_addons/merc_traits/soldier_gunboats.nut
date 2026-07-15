@@ -11,12 +11,11 @@ characterTraitsClasses.push(class extends CharacterTrait
             return false;
         local wearable = null;
         while (wearable = FindByClassname(wearable, "tf_wearable"))
-            if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats")) //Gunboats are considered a wearable, not a weapon, so we can't use standard detection.
+            if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats"))
+            {
+                wearable.AddAttribute("cancel falling damage", 1, -1);
                 return true;
+            }
         return false;
-    }
-    function OnFrameTickAlive()
-    {
-    player.AddCustomAttribute("cancel falling damage", 1, -1);
     }
 });
