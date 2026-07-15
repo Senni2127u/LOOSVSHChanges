@@ -2,7 +2,7 @@
 
 this.Include <- function(path)
 {
-	if (is_thorne)
+	if (is_thorne) //Thorne has a different boss, so applying Extender fix in this situation is both pointless and breaks the Countess.
 	{
 		IncludeScript("vssaxtonhale/" + path);
 		return;
