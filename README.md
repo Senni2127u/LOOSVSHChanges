@@ -58,6 +58,7 @@ Demoman -
 * Ullapool Caber now recharges after 15 seconds.
 * Sticky Jumper only allows 1 sticky at a time.
 * All Grenade Launchers (Except for Loch N Load) have a 25% increased projectile speed.
+* Claidheamh Mor and Tide Turner now grant charge on hit instead of on kill.
 
 Heavy -
 
