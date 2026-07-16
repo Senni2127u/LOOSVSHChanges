@@ -13,6 +13,7 @@ IncludeScript("vsh_addons/merc_traits/soldier_gunboats.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_beggars.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_blackbox.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_banners.nut")
+IncludeScript("vsh_addons/merc_traits/soldier_escape_plan.nut")
 
 // Pyro Scripts
 IncludeScript("vsh_addons/merc_traits/pyro_health_pool.nut")
@@ -29,11 +30,12 @@ IncludeScript("vsh_addons/merc_traits/demoman_claidheamhmor.nut")
 IncludeScript("vsh_addons/merc_traits/heavy_brass_beast.nut")
 IncludeScript("vsh_addons/merc_traits/heavy_huo.nut")
 IncludeScript("vsh_addons/merc_traits/heavy_minigun.nut")
-
+IncludeScript("vsh_addons/merc_traits/heavy_gru.nut")
 
 // Engineer Scripts
 IncludeScript("vsh_addons/merc_traits/teleporter-two-way.nut")
-
+IncludeScript("vsh_addons/merc_traits/engineer_rescue_ranger.nut")
+  
 // Medic Scripts
 IncludeScript("vsh_addons/merc_traits/medic_ubercharge_start.nut")
 
