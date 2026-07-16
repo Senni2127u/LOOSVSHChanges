@@ -56,6 +56,8 @@
     lochnload = GetModelIndex("models/workshop/weapons/c_models/c_lochnload/c_lochnload.mdl")
     libertylauncher = GetModelIndex("models/workshop/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl")
     loosecannon = GetModelIndex("models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl")
+    persian_persuader = GetModelIndex("models/workshop/weapons/c_models/c_demo_sultan_sword/c_demo_sultan_sword.mdl")
+    claidheamh_mor = GetModelIndex("models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl")
     
 }
 
@@ -116,6 +118,11 @@
     {
         local id = GetItemID(weapon)
         return id == 608 || id == 405;
+    }
+    else if (name == "tideturner")
+    {
+        local id = GetItemID(weapon)
+        return id == 1099;
     }
     else if (name == "axtinguisher") //Need to get Axtinguisher, Festive Axtinguisher, and Postal Pummeler, different IDs for same weapon.
     {
