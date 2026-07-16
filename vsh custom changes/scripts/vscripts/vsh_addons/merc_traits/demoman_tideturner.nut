@@ -24,7 +24,7 @@ characterTraitsClasses.push(class extends CharacterTrait
                     if (!WeaponIs(melee, "persian_persuader") && !WeaponIs(melee, "claidheamh_mor")) //Prevent these weapons from getting this, they need different changes.
                     {
                     //printl("tide turner found, applying attributes") //Debug
-                    melee.AddAttribute("charge meter on hit", 0.75, -1); //If we apply the attribute directly to Tide Turner, it will do nothing, needs to be applied to his melee.
+                    melee.AddAttribute("charge meter on hit", 0.75, -1); //If we apply the attribute directly to Tide Turner, it will do nothing, needs to be applied to his melee instead.
                     //printl(melee.GetAttribute("charge meter on hit", -1)); //Debug
                     }
 
