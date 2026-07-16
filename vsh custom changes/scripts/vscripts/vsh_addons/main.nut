@@ -22,6 +22,8 @@ IncludeScript("vsh_addons/merc_traits/pyro_manmelter.nut")
 
 // Demoman Scripts
 IncludeScript("vsh_addons/merc_traits/demoman_caber.nut")
+IncludeScript("vsh_addons/merc_traits/demoman_tideturner.nut")
+IncludeScript("vsh_addons/merc_traits/demoman_claidheamhmor.nut")
 
 // Heavy Scripts
 IncludeScript("vsh_addons/merc_traits/heavy_brass_beast.nut")
@@ -52,6 +54,7 @@ IncludeScript("map_addons/distillery/distillery_heavyblocker.nut")
 // Miscellaneous Scripts
 IncludeScript("vsh_addons/miscellaneous/vsh_boss_damage_top3_no_log.nut")
 IncludeScript("vsh_addons/miscellaneous/revealplayersat3left.nut")
+//IncludeScript("vsh_addons/miscellaneous/lizardjoke.nut")
 
 
 
