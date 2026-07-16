@@ -21,7 +21,7 @@ this.Include <- function(path)
 		case "/mercs/merc_traits/single_class/heavy_received_knockback.nut":
 		case "/mercs/merc_traits/single_class/medic_resistance.nut":
 		case "/mercs/merc_traits/all_class/melee_buffs.nut":
-		//case "/mercs/voice_lines/all_class/silent_tie.nut":
+		case "/mercs/voice_lines/all_class/silent_tie.nut":
 
         // Dummy case to catch all of the above, add more if you wish
         // Make sure the dir matches the original path. Ex: "/mercs/..." as opposed to "mercs/..."
