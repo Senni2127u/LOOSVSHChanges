@@ -9,7 +9,7 @@
 //  MegapiemanPHD - Saxton Hale and Gray Mann voice acting.
 //  James McGuinn - Mercenaries voice acting for custom lines.
 //  Yakibomb - give_tf_weapon script bundle (used for Hale's first-person hands model).
-//  Phe - game design assistance.
+//=========//  Phe - game design assistance.
 //=========================================================================
 
 //Why does this table exist? Because the same weapon can have multiple IDs, namely, pre-JI weapon skins.
@@ -44,18 +44,22 @@
     eviction_notice = GetModelIndex("models/workshop/weapons/c_models/c_eviction_notice/c_eviction_notice.mdl"),
     diamondback = GetModelIndex("models/workshop_partner/weapons/c_models/c_dex_revolver/c_dex_revolver.mdl"),
     powerjack = GetModelIndex("models/workshop/weapons/c_models/c_powerjack/c_powerjack.mdl"),
-    sunonastick = GetModelIndex("models/workshop/weapons/c_models/c_rift_fire_mace/c_rift_fire_mace.mdl") //From here on out is added changes.
-    cloakanddagger = GetModelIndex("models/weapons/v_models/v_watch_leather_spy.mdl")
-    backscatter = GetModelIndex("models/workshop/weapons/c_models/c_scatterdrum/c_scatterdrum.mdl")
-    gas_passer = GetModelIndex("models/weapons/c_models/c_gascan/c_gascan.mdl")
-    ullapoolcaber = GetModelIndex("models/workshop/weapons/c_models/c_caber/c_caber.mdl")
-    beggarsbazooka = GetModelIndex("models/workshop/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl")
-    blackbox = GetModelIndex("models/workshop/weapons/c_models/c_blackbox/c_blackbox.mdl")
-    brass_beast = GetModelIndex("models/workshop/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl")
-    huolongheater = GetModelIndex("models/workshop_partner/weapons/c_models/c_canton/c_canton.mdl")
-    lochnload = GetModelIndex("models/workshop/weapons/c_models/c_lochnload/c_lochnload.mdl")
-    libertylauncher = GetModelIndex("models/workshop/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl")
-    loosecannon = GetModelIndex("models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl")
+    sunonastick = GetModelIndex("models/workshop/weapons/c_models/c_rift_fire_mace/c_rift_fire_mace.mdl"), //From here on out is added changes.
+    cloakanddagger = GetModelIndex("models/weapons/v_models/v_watch_leather_spy.mdl"),
+    backscatter = GetModelIndex("models/workshop/weapons/c_models/c_scatterdrum/c_scatterdrum.mdl"),
+    gas_passer = GetModelIndex("models/weapons/c_models/c_gascan/c_gascan.mdl"),
+    ullapoolcaber = GetModelIndex("models/workshop/weapons/c_models/c_caber/c_caber.mdl"),
+    beggarsbazooka = GetModelIndex("models/workshop/weapons/c_models/c_dumpster_device/c_dumpster_device.mdl"),
+    blackbox = GetModelIndex("models/workshop/weapons/c_models/c_blackbox/c_blackbox.mdl"),
+    brass_beast = GetModelIndex("models/workshop/weapons/c_models/c_gatling_gun/c_gatling_gun.mdl"),
+    huolongheater = GetModelIndex("models/workshop_partner/weapons/c_models/c_canton/c_canton.mdl"),
+    lochnload = GetModelIndex("models/workshop/weapons/c_models/c_lochnload/c_lochnload.mdl"),
+    libertylauncher = GetModelIndex("models/workshop/weapons/c_models/c_liberty_launcher/c_liberty_launcher.mdl"),
+    loosecannon = GetModelIndex("models/workshop/weapons/c_models/c_demo_cannon/c_demo_cannon.mdl"),
+    escape_plan = GetModelIndex("models/weapons/c_models/c_pickaxe/c_pickaxe.mdl"), //The Escape Plan and Equalizer use different models, they're just under the same folder. -Delfite
+    equalizer = GetModelIndex("models/weapons/c_models/c_pickaxe/c_pickaxe_s2.mdl"),
+    gloves = GetModelIndex("models/weapons/c_models/c_boxing_gloves/c_boxing_gloves.mdl"), //The Gloves of Running Urgently use the same model as the Killing Gloves of Boxing, but with different material files. -Delfite
+    gloves_xmas = GetModelIndex("models/weapons/c_models/c_boxing_gloves/c_boxing_gloves_xmas.mdl")
     persian_persuader = GetModelIndex("models/workshop/weapons/c_models/c_demo_sultan_sword/c_demo_sultan_sword.mdl")
     claidheamh_mor = GetModelIndex("models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl")
     
@@ -107,6 +111,10 @@
         return weapon.GetClassname() == "tf_weapon_flamethrower" || weapon.GetClassname() == "tf_weapon_rocketlauncher_fireball";
     else if (name == "energydrink") // Just get both drinks.
         return weapon.GetClassname() == "tf_weapon_lunchbox_drink";
+    else if (name == "any_wrench")
+        return weapon.GetClassname() == "tf_weapon_wrench" || weapon.GetClassname() == "tf_weapon_robot_arm";
+    else if (name == "rescue_ranger") //How silly is it that the Rescue Ranger gets its own entire classname to itself? This gun really was spoiled... -Delfite
+        return weapon.GetClassname() == "tf_weapon_shotgun_building_rescue";
     else if (name == "gunboats")
     {
         local id = GetItemID(weapon)
@@ -128,6 +136,11 @@
     {
         local id = GetItemID(weapon)
         return id == 38 || id == 457 || id == 1000;
+    }
+    else if (name == "gru")
+    {
+        local id = GetItemID(weapon)
+        return id == 239 || id == 1084 || id == 1100;
     }
     return (name in weaponModels ? weaponModels[name] : null) == GetPropInt(weapon, "m_iWorldModelIndex");
 }
