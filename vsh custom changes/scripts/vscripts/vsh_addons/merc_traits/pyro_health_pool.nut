@@ -1,9 +1,10 @@
 // Script by Senni, Assistance from Bradasparky
-// Script handles Pyro HP change.
-// Modifications required to weapons.nut
+// Script handles Pyro HP change, sets Pyro's HP to 200 at the start of the round as his base is usually 175, decreases overheal to 10% of normal as compensation.
+// No required modification to base gamemode files.
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
+	PyroOverheal = false
 	
     function CanApply()
     {
@@ -12,35 +13,34 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-        RunWithDelay2(this, 0.01, function() //This delay is needed because of how the game handles spawning, it wouldn't apply the health bonus if done immediate.
+        RunWithDelay2(this, 0.01, function()
         {
-            local primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
-            if (WeaponIs(primary, "any_flamethrower")) //Reason for this is if the CanApply check fails.
-                {
-                    primary.AddAttribute("max health additive bonus", 25, -1);
-			        primary.AddAttribute("patient overheal penalty", 0.60, -1);
-                    player.SetHealth(200);
-                }
+          local primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+        if (WeaponIs(primary, "any_flamethrower"))
+        {
+            primary.AddAttribute("max health additive bonus", 25, -1);
+			primary.AddAttribute("patient overheal penalty", 0.60, -1);
+            player.SetHealth(200);
+        }
         });	
     }
 
-	function OnTickAlive(timeDelta) // Function fixes issue where Medic gets increased charge because the patient's overheal amount, is not the "full" amount.
+	function OnTickAlive(timeDelta)
     {
-        Overheal = false
-        local health = player.GetHealth()
-
-    if (health == 260 && !Overheal)
+    if (player.GetHealth() == 260 && !PyroOverheal) // fixes issue with Overheal penalty where Medic gets increased charge rate because the patient's overheal current amount, is not the full overheal.
         {
-            Overheal = true
+            PyroOverheal = true
             player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
             //printl("Pyro's HP is at 260, reducing charge rate for Medic.") //Debug.
         }
-    else if (health == 258) //Reason we check for 258 is because the game will periodically drop Medic's patient to -1 overheal point for a tick and go back to the full amount.
+    else if (player.GetHealth() == 258)
         {
-            Overheal = false
+            PyroOverheal = false
             player.AddCustomAttribute("ubercharge rate bonus for healer", 1, -1)
-            //printl("Pyro's HP is at 258 or below, returning charge rate to normal.") //Another debug.
+            //printl("Pyro's HP at 259 or below, returning charge rate to normal.") //Another debug.
         }
 	}
 });
 
+// Uncomment print line to make sure script is functioning if edits are made.
+//printl ("Pyro Health Pool trait loaded\n");
