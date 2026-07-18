@@ -4,7 +4,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-	PyroOverheal = false
+	Overheal = false
 	
     function CanApply()
     {
@@ -15,32 +15,30 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         RunWithDelay2(this, 0.01, function()
         {
-          local primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
-        if (WeaponIs(primary, "any_flamethrower"))
-        {
-            primary.AddAttribute("max health additive bonus", 25, -1);
-			primary.AddAttribute("patient overheal penalty", 0.60, -1);
-            player.SetHealth(200);
-        }
+            local primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+            if (WeaponIs(primary, "any_flamethrower"))
+            {
+                primary.AddAttribute("max health additive bonus", 25, -1);
+			    primary.AddAttribute("patient overheal penalty", 0.60, -1);
+                player.SetHealth(200);
+            }
         });	
     }
 
-	function OnTickAlive(timeDelta)
+	function OnTickAlive(timeDelta) // This function fixes an issue where a overheal penalty applied player will give Medic more Ubercharge rate than others.
     {
-    if (player.GetHealth() == 260 && !PyroOverheal) // fixes issue with Overheal penalty where Medic gets increased charge rate because the patient's overheal current amount, is not the full overheal.
-        {
-            PyroOverheal = true
-            player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
-            //printl("Pyro's HP is at 260, reducing charge rate for Medic.") //Debug.
-        }
-    else if (player.GetHealth() == 258)
-        {
-            PyroOverheal = false
-            player.AddCustomAttribute("ubercharge rate bonus for healer", 1, -1)
-            //printl("Pyro's HP at 259 or below, returning charge rate to normal.") //Another debug.
-        }
+        local health = player.GetHealth()
+        if (health == 260 && !Overheal)
+            {
+                Overheal = true
+                player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
+                //printl("Pyro's HP is at 260, reducing charge rate for Medic.") //Debug.
+            }
+        else if (health == 258)
+            {
+                Overheal = false
+                player.AddCustomAttribute("ubercharge rate bonus for healer", 1, -1)
+                //printl("Pyro's HP at 259 or below, returning charge rate to normal.") //Another debug.
+            }
 	}
 });
-
-// Uncomment print line to make sure script is functioning if edits are made.
-//printl ("Pyro Health Pool trait loaded\n");
