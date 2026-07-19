@@ -24,6 +24,8 @@ function OnApply()
            {
                 if ((!WeaponIs(weapon, "rocket_jumper"))) //If we don't disinclude this, it may mess with timings on Rocket Jumps
                 {
+                    if ((!WeaponIs(weapon, "base_jumper"))) //We exclude this because Demoman's Base Jumper is a primary.
+                {
                     weapon.AddAttribute("Projectile speed increased", 1.25, -1);
                 }
            }
