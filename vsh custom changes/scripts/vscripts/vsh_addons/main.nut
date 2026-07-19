@@ -56,7 +56,7 @@ IncludeScript("map_addons/distillery/distillery_heavyblocker.nut")
 // Miscellaneous Scripts
 IncludeScript("vsh_addons/miscellaneous/vsh_boss_damage_top3_no_log.nut")
 IncludeScript("vsh_addons/miscellaneous/revealplayersat3left.nut")
-//IncludeScript("vsh_addons/miscellaneous/lizardjoke.nut")
+IncludeScript("vsh_addons/miscellaneous/developers.nut")
 
 
 
