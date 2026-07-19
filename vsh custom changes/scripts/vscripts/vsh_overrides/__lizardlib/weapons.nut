@@ -62,6 +62,7 @@
     gloves_xmas = GetModelIndex("models/weapons/c_models/c_boxing_gloves/c_boxing_gloves_xmas.mdl")
     persian_persuader = GetModelIndex("models/workshop/weapons/c_models/c_demo_sultan_sword/c_demo_sultan_sword.mdl")
     claidheamh_mor = GetModelIndex("models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl")
+    base_jumper = GetModelIndex("models/workshop/weapons/c_models/c_paratooper_pack/c_paratrooper_pack.mdl)
     
 }
 
