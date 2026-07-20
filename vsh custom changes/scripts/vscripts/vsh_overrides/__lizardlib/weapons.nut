@@ -62,7 +62,6 @@
     gloves_xmas = GetModelIndex("models/weapons/c_models/c_boxing_gloves/c_boxing_gloves_xmas.mdl")
     persian_persuader = GetModelIndex("models/workshop/weapons/c_models/c_demo_sultan_sword/c_demo_sultan_sword.mdl")
     claidheamh_mor = GetModelIndex("models/workshop/weapons/c_models/c_claidheamohmor/c_claidheamohmor.mdl")
-    base_jumper = GetModelIndex("models/workshop/weapons/c_models/c_paratooper_pack/c_paratrooper_pack.mdl")
     
 }
 
@@ -106,6 +105,8 @@
         return weapon.GetClassname() == "tf_weapon_rocketlauncher_airstrike";
     else if (name == "half_zatoichi")
         return weapon.GetClassname() == "tf_weapon_katana";
+     else if (name == "base_jumper")
+        return weapon.GetClassname() == "tf_weapon_parachute";
     else if (name == "any_stickybomb_launcher")
         return weapon.GetClassname() == "tf_weapon_pipebomblauncher";
     else if (name == "any_flamethrower") // Catches both regular flamethrowers and Dragon's Fury, which is classified as a rocket launcher instead. - Senni
