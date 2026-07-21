@@ -32,9 +32,10 @@ function OnApply()
         }
         
         }
-        if (WeaponIs(weapon, "loosecannon"))
-        {
-            weapon.AddAttribute("Projectile Speed increased", 1.45, -1) //Due to how TF2 handles physics, Loose Cannon tends to be slower than stock, compensating.
+            if (WeaponIs(weapon, "loosecannon"))
+            {
+                weapon.AddAttribute("Projectile Speed increased", 1.45, -1) //Due to how TF2 handles physics, Loose Cannon tends to be slower than stock, compensating.
+            }
         }
     }
 }
