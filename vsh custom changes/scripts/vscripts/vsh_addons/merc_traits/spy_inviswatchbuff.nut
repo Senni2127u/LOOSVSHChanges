@@ -14,5 +14,6 @@ characterTraitsClasses.push(class extends CharacterTrait
     local inviswatch = player.GetWeaponBySlot(TF_WEAPONSLOTS.PDA2);
         if (inviswatch != null)
             inviswatch.AddAttribute("move speed bonus", 1.20, -1);
+            inviswatch.AddAttribute("NoCloakWhenCloaked", 1, -1);
     }
 });
