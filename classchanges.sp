@@ -139,6 +139,7 @@ void ShowClassChanges(int client)
 
             panel.DrawText("- Cloak and Dagger mirrors stock Invis Watch.");
             panel.DrawText("- Base movement speed increased by 20%.");
+            panel.DrawText("- Spy cannot pick up ammo boxes while invisible.");
         }
 
         default:
