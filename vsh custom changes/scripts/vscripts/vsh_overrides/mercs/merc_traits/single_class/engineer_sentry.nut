@@ -37,6 +37,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             //There's an attribute that gives sentry resistance, but it doesn't give knockback res
             //Mini-sentries deal 80%.
             params.damage *= usingMiniSentry ? 0.8 : 0.5;
+            params.damage_type |= DMG_PREVENT_PHYSICS_FORCE;
             lastHitSentry = params.inflictor;
             local vel = victim.GetAbsVelocity();
             victim.SetAbsVelocity(vel * (usingMiniSentry ? 0.2 : 0.5));
