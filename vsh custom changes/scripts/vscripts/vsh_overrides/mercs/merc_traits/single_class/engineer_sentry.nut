@@ -39,7 +39,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             params.damage *= usingMiniSentry ? 0.8 : 0.5;
             lastHitSentry = params.inflictor;
             local vel = victim.GetAbsVelocity();
-            victim.SetAbsVelocity(vel * (usingMiniSentry ? 0.2 : 0.5)); //We're actually reducing knockback by 50% - Senni
+            victim.SetAbsVelocity(vel * (usingMiniSentry ? 0.2 : 0.5));
             //printl("sentry knockback and damage reduced") //Debug
         }
         else
