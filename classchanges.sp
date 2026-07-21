@@ -8,7 +8,7 @@ public Plugin myinfo =
     name = "VSH Class Changes",
     author = "Senni",
     description = "Displays custom class balance changes in VSH.",
-    version = "1.2b"
+    version = "1.2c"
 };
 
 public void OnPluginStart()
