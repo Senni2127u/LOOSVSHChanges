@@ -73,7 +73,6 @@ function AddAttributes (player) //I think this is what happens when you play god
     if (weapon)
     {
         weapon.AddAttribute("building cost reduction", 0.50, -1);
-        weapon.AddAttribute("minicrits become crits", 1, -1);
         weapon.AddAttribute("SET BONUS: dmg from sentry reduced", 0.01, -1);
         weapon.AddAttribute("increase player capture value", 2, -1);
         weapon.AddAttribute("SPELL: Halloween pumpkin explosions", 1, -1);
