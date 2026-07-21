@@ -88,7 +88,7 @@ function HaleWeaponFunc(weapon, player)
     local steamid = NetProps.GetPropString(player, "m_szNetworkIDString");
 
     OldHaleWeaponFunc(weapon, player);
-    if (steamid == SENNI}
+    if (steamid == SENNI)
         weapon.AddAttribute("ragdolls plasma effect", 1, -1)
     else if (steamid == DELFITE)
         weapon.AddAttribute("ragdolls become ash", 1, -1)
