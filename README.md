@@ -82,3 +82,4 @@ Spy -
 
 * Cloak and Dagger mirrors stock Invis Watch statistics.
 * Base Movement Speed is increased by 20%.
+* Spy cannot pick up ammo boxes while invisible.
