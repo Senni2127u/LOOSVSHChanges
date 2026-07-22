@@ -23,17 +23,15 @@ AddListener("spawn", 0, function(player, params)
 {
     local steamid = NetProps.GetPropString(player, "m_szNetworkIDString");
 
-    if (steamid == SENNI ||
-        steamid == LIZARDOFOZ ||
-        steamid == LANKO)
+    if (steamid == SENNI || steamid == LIZARDOFOZ || steamid == LANKO)
     {
-        GiveTargetEffects(player);
+        GiveTargetSparkleEffects(player);
         AddAttributes(player);
         //printl("a target was found, proceeding.") //Debug
     }
 });
 
-function AttachParticleToHead(player, particleName)
+function CommunitySparkleEffect(player, particleName)
 {
     local particle = SpawnEntityFromTable("info_particle_system",
     {
@@ -51,7 +49,7 @@ function AttachParticleToHead(player, particleName)
     return particle;
 }
 
-function GiveTargetEffects(player)
+function GiveTargetSparkleEffects(player)
 {
     // Remove any old particle first.
     local idx = player.entindex();
@@ -64,10 +62,10 @@ function GiveTargetEffects(player)
     }
 
     // Attach a new particle.
-    playerParticles[idx] <- AttachParticleToHead(player, "community_sparkle");
+    playerParticles[idx] <- CommunitySparkleEffect(player, "community_sparkle");
 }
 
-function AddAttributes (player) //I think this is what happens when you play god. - Senni
+function AddAttributes (player)
 {
     local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
     if (weapon)
