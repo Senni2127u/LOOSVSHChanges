@@ -2,7 +2,7 @@
 
 // Saxton Hale Scripts
 IncludeScript("vsh_addons/boss_traits/airblast_stun.nut")
-
+IncludeScript("vsh_addons/boss_traits/damage_scaling_rewrite.nut")
 
 // Scout Scripts
 IncludeScript("vsh_addons/merc_traits/scout_backscatter_accuracy.nut")
