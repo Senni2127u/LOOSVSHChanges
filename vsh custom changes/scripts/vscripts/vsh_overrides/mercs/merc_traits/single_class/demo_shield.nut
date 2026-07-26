@@ -44,7 +44,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         if ((params.damage_type == 1 || params.damage_type == DMG_BLAST) && params.damage < player.GetHealth())
             return;
 
-        if (params.damage_type == DMG_BURN && player.GetHealth() > player.GetMaxHealth() * 0.2) //Check if the attack left Demoman at a lethal HP, if not, don't break the shield. - Senni
+        if (params.damage_type == DMG_BURN && player.GetHealth() > player.GetMaxHealth() * 0.2) //Check if the Sweeping Charge attack left Demoman at a lethal HP, if not, don't break the shield. - Senni
         return;
 
         //Note: Saxton Punch!'s collateral will NOT be resisted. Adding extra-extra resistance to make up for it.
