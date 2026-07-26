@@ -29,23 +29,9 @@ function MeleeWallClimb_Hit(params)
 
 function MeleeWallClimb_Check(params)
 {
-    if (params.const_entity == null)
-    {
-        printl("No entity");
-        return false;
-    }
-
     local classname = params.const_entity.GetClassname();
 
-    switch (classname)
-    {
-        case "func_breakable":
-        //case "func_brush": //This doesn't work properly, no clue why, think it has something to do with damage listener. - Senni
-        case "prop_dynamic":
-        case "prop_dynamic_override":
-            return true; 
-    }
-
+    // Make an exception for stickybombs that are stuck to a surface
     if (classname == "tf_projectile_pipe_remote")
         return GetPropBool(params.const_entity, "m_bTouched");
 
