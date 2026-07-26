@@ -15,12 +15,14 @@ this.Include <- function(path)
 		case "__lizardlib/weapons.nut":
 		//case "__lizardlib/constants.nut":
 		case "/bosses/saxton_hale/abilities/saxton_punch.nut":
+		//case "/bosses/generic/passives/received_damage_scaling.nut":
 		case "/bosses/saxton_hale/abilities/sweeping_charge.nut":
 		case "/mercs/merc_traits/single_class/demo_shield.nut":
 		case "/mercs/merc_traits/single_class/demo_jumper_ammo.nut":
 		case "/mercs/merc_traits/single_class/heavy_received_knockback.nut":
 		case "/mercs/merc_traits/single_class/medic_resistance.nut":
 		case "/mercs/merc_traits/all_class/melee_buffs.nut":
+		case "/mercs/merc_traits/all_class/melee_wall_climb.nut":
 		case "/mercs/voice_lines/all_class/silent_tie.nut":
 
         // Dummy case to catch all of the above, add more if you wish
@@ -42,3 +44,4 @@ this.Include <- function(path)
 
 	IncludeScript("vssaxtonhale/" + path);
 }
+
