@@ -1,17 +1,3 @@
-//=========================================================================
-//Copyright LizardOfOz.
-//
-//Credits:
-//  LizardOfOz - Programming, game design, promotional material and overall development. The original VSH Plugin from 2010.
-//  Maxxy - Saxton Hale's model imitating Jungle Inferno SFM; Custom animations and promotional material.
-//  Velly - VFX, animations scripting, technical assistance.
-//  JPRAS - Saxton model development assistance and feedback.
-//  MegapiemanPHD - Saxton Hale and Gray Mann voice acting.
-//  James McGuinn - Mercenaries voice acting for custom lines.
-//  Yakibomb - give_tf_weapon script bundle (used for Hale's first-person hands model).
-//  Phe - game design assistance.
-//=========================================================================
-
 characterTraitsClasses.push(class extends CharacterTrait
 {
     sentryDamageAccumulated = 0;
@@ -37,11 +23,18 @@ characterTraitsClasses.push(class extends CharacterTrait
             //There's an attribute that gives sentry resistance, but it doesn't give knockback res
             //Mini-sentries deal 80%.
             params.damage *= usingMiniSentry ? 0.8 : 0.5;
-            params.damage_type |= DMG_PREVENT_PHYSICS_FORCE;
             lastHitSentry = params.inflictor;
-            local vel = victim.GetAbsVelocity();
-            victim.SetAbsVelocity(vel * (usingMiniSentry ? 0.2 : 0.5));
-            //printl("sentry knockback and damage reduced") //Debug
+            local oldVel = victim.GetAbsVelocity();
+
+        RunWithDelay2(this, 0.0, function()
+        {
+            local newVel = victim.GetAbsVelocity();
+
+            local delta = newVel - oldVel;
+
+            // Keep only 50% of the knockback.
+            victim.SetAbsVelocity(oldVel + delta * 0.5);
+        });
         }
         else
             lastHitSentry = null;
