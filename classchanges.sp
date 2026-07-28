@@ -437,7 +437,7 @@ void BuildChangeEntries()
     AddLine("Mag size and reserve ammo unchanged.");
 
     AddEntry(TFClass_DemoMan, "Loose Cannon");
-    AddLine("No changes.");
+    AddLine("Projectile speed increased by 45%.");
 
     AddEntry(TFClass_DemoMan, "B.A.S.E. Jumper");
     AddLine("Max health on wearer increased by 25.");
