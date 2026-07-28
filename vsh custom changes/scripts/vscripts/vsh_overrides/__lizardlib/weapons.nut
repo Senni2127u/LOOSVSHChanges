@@ -767,14 +767,14 @@
             || id == 15112
             || id == 15135
             || id == 15136
-            || id == 15154
-            || id == 30665;
+            || id == 15154;
     else if (name == "sydney_sleeper")
         return id == 230;
     else if (name == "bazaar_bargain")
         return id == 402;
     else if (name == "machina")
-        return id == 526;
+        return id == 526
+            || id == 30665;
     else if (name == "hitmans_heatmaker")
         return id == 752;
     else if (name == "classic")
