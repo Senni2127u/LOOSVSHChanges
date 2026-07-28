@@ -1,0 +1,42 @@
+//Copyright Senni
+// Handles Soldier and Demoman Projectile Speed Increases
+// Required modification to weapons.nut to function.
+
+characterTraitsClasses.push(class extends CharacterTrait
+{
+    function CanApply()
+    {
+        local playerClass = player.GetPlayerClass();
+        return player.GetPlayerClass() == TF_CLASS_SOLDIER || playerClass == TF_CLASS_DEMOMAN;
+    }
+
+function OnApply()
+{
+    local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+    if (weapon)
+    {
+        local classname = weapon.GetClassname();
+        if (classname != "tf_wearable") //Catching the Ali-Baba's Wee Booties and Bootlegger, we don't need to apply the stat to these.
+        {
+        if ((!WeaponIs(weapon, "libertylauncher"))) //Already has a projectile speed increase.
+        {
+           if ((!WeaponIs(weapon, "direct_hit"))) //Same here.
+           {
+                if ((!WeaponIs(weapon, "rocket_jumper"))) //If we don't disinclude this, it may mess with timings on Rocket Jumps
+                {
+                    if ((!WeaponIs(weapon, "base_jumper"))) //We exclude this because Demoman's Base Jumper is a primary.
+                {
+                    weapon.AddAttribute("Projectile speed increased", 1.25, -1);
+                }
+           }
+        }
+        
+        }
+            if (WeaponIs(weapon, "loosecannon"))
+            {
+                weapon.AddAttribute("Projectile Speed increased", 1.45, -1) //Due to how TF2 handles physics, Loose Cannon tends to be slower than stock, compensating.
+            }
+        }
+    }
+}
+});
