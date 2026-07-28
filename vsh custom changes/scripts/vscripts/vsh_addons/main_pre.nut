@@ -4,22 +4,25 @@ this.Include <- function(path)
 {
 	if (is_thorne)
 	{
-		IncludeScript("vssaxtonhale/" + path); //Thorne has a different boss, so applying Extender fix in this situation is both pointless and breaks the Countess.
+		IncludeScript("vssaxtonhale/" + path);
 		return;
 	}
 
 	switch (path)
 	{
-		case "__lizardlib/character_trait.nut":
-		case "__lizardlib/game_events.nut":
 		case "__lizardlib/weapons.nut":
-		//case "__lizardlib/constants.nut":
+		case "__lizardlib/game_events.nut":
+		case "__lizardlib/character_trait.nut":
 		case "/bosses/saxton_hale/abilities/saxton_punch.nut":
 		case "/bosses/saxton_hale/abilities/sweeping_charge.nut":
+		case "/mercs/merc_traits/single_class/demo_boots.nut":
 		case "/mercs/merc_traits/single_class/demo_shield.nut":
+		case "/mercs/merc_traits/single_class/pyro_powerjack.nut":
+		case "/mercs/merc_traits/single_class/engineer_sentry.nut":
 		case "/mercs/merc_traits/single_class/demo_jumper_ammo.nut":
-		case "/mercs/merc_traits/single_class/heavy_received_knockback.nut":
 		case "/mercs/merc_traits/single_class/medic_resistance.nut":
+		// case "/mercs/merc_traits/single_class/soldier_market_gardener.nut":
+		case "/mercs/merc_traits/single_class/heavy_received_knockback.nut":
 		case "/mercs/merc_traits/all_class/melee_buffs.nut":
 		case "/mercs/voice_lines/all_class/silent_tie.nut":
 

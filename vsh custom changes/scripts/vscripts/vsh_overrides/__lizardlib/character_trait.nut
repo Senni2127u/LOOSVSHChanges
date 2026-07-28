@@ -105,6 +105,8 @@ AddListener("disconnect", 2, function (player, params)
     DiscardTraits(player);
 });
 
+
+
 function DiscardTraits(player)
 {
     if (player in characterTraits)

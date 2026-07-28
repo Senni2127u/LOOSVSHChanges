@@ -1,27 +1,15 @@
-//Copyright: Delfite (Don't care, use this for whatever you want.)
+// Script by: Delfite (Don't care, use this for whatever you want.)
 
-
-// You would think removing this block of code would just bring back the mercs' stalemate voicelines, but it just ends up turning them mute again.
-/*AddListener("round_end", 0, function (winnerTeam)
-{
-    if (winnerTeam = TF_TEAM_UNASSIGNED)
-        return;
-});*/
-
-// Side Note: Apparently if you use `foreach (player in GetAliveMercs())`, but don't attach any following code, the entire gamemode gets bricked. How silly. -Delfite
 
 PrecacheArbitrarySound("vsh_sfx.silent_tie")
 
+// Delfite: Apparently if you use `foreach (player in GetAliveMercs())`, but don't attach any following code, the entire gamemode gets bricked. How silly.
 AddListener("round_end", 0, function (winnerTeam)
 {
-    if (winnerTeam != TF_TEAM_UNASSIGNED) //If the winning team is not TF_TEAM_UNASSIGNED, return early. -Delfite
+    if (winnerTeam != TF_TEAM_UNASSIGNED) // Delfite: If the winning team is not TF_TEAM_UNASSIGNED, return early.
         return;
-    foreach (player in GetAliveMercs()) //Should the winning team be TF_TEAM_UNASSIGNED, play the mercs' stalemate voicelines. -Delfite
+    foreach (player in GetAliveMercs()) // Delfite: Should the winning team be TF_TEAM_UNASSIGNED, play the mercs' stalemate voicelines.
     {
-        RunWithDelay2(this, 0.12, function ()
-        {
-            player.AcceptInput("SpeakResponseConcept", "TLK_STALEMATE", null, null)
-        })
-        EmitSoundOn("vsh_sfx.silent_tie", player);
+        player.AcceptInput("SpeakResponseConcept", "TLK_STALEMATE", null, null)
     }
 });

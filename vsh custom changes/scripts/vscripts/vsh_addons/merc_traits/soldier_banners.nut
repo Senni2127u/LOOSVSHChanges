@@ -7,13 +7,24 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         if (player.GetPlayerClass() != TF_CLASS_SOLDIER)
             return;
-    
+
         local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
         return weapon && WeaponIs(weapon, "any_banner");
     }
 
-    //This function is responsible for fixing TF_COND_DEFENSEBUFF from not applying its damage resistance to Hale's abilities.
-    //Intended as a fix for the Battalion's Backup, but fixes the condition as a whole. -Delfite
+    // Delfite: This function is responsible for adding Rage to every player's currently equipped banner (if any).
+    function OnFrameTickAlive()
+    {
+        local rage = player.GetRageMeter();
+        if (rage < 100) //Stop charging it once at full, because that's a waste. - Senni
+        {
+            player.SetRageMeter(clampCeiling(100, rage + 0.02525252525252525252525252525253)); //Adding 0.025 to the meter to get 60 seconds - Senni
+            //printl(rage) //Debug
+        }
+    }
+
+    // Delfite: This function is responsible for fixing TF_COND_DEFENSEBUFF from not applying its damage resistance to Hale's abilities.
+    // Delfite: Primarily intended as a fix for the Battalion's Backup, but fixes the condition as a whole.
     function OnDamageTaken(attacker, params)
     {
         if (IsValidBoss(attacker))
@@ -30,17 +41,4 @@ characterTraitsClasses.push(class extends CharacterTrait
             }
         }
     }
-
-
-
-    //This function is responsible for adding Rage to every player's currently equipped banner (if any). -Delfite
-    function OnFrameTickAlive()
-    {
-        local rage = player.GetRageMeter();
-        if (rage < 100) //Stop charging it once at full, because that's a waste. - Senni
-            {
-                player.SetRageMeter(clampCeiling(100, rage + 0.02525252525252525252525252525253)); //Adding 0.025 to the meter to get 60 seconds - Senni
-                //printl(rage) //Debug
-            }
-    }
-})
+});
