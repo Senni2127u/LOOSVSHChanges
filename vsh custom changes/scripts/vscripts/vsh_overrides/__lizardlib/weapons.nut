@@ -12,7 +12,8 @@
 //=========//  Phe - game design assistance.
 //=========================================================================
 
-//Why does this table exist? Because the same weapon can have multiple IDs, namely, pre-JI weapon skins.
+//The models list has been deprecated, Delfite made it so we use the indexes instead, but we will leave it here just in case. - Senni.
+
 ::weaponModels <- {
 }
 
