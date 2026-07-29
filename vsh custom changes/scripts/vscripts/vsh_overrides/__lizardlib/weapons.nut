@@ -119,8 +119,10 @@
         return id == 1153;
     else if (name == "reserve_shooter")
         return id == 415;
-    else if (name == "base_jumper" || name == "parachute")
-        return id == 1101;
+    else if (name == "base_jumper_soldier" || name == "parachute_soldier")
+        return weapon.GetClassname() == "tf_weapon_parachute_secondary"; //Not sure why the game defines them as secondary or primary, item schema just says tf_weapon_parachute, TF2 jank. - Senni
+    else if (name == "base_jumper_demoman" || name == "parachute_demoman")
+        return weapon.GetClassname() == "tf_weapon_parachute_primary";
     else if (name == "half_zatoichi" || name == "katana")
         return id == 357;
     else if (name == "pain_train")
