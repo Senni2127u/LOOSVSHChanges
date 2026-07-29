@@ -37,13 +37,13 @@ characterTraitsClasses.push(class extends CharacterTrait
 			// Delfite: Medium Medkits: 150 health -> 225 health
 			weapon_secondary.AddAttribute("health from packs increased", 1.50, -1);
 		}
-		if (WeaponIs(weapon_secondary, "dalokohs_bar"))
-		{
-			weapon_secondary.AddAttribute("lunchbox adds maxhealth bonus", 0, -1);
-			weapon_secondary.AddAttribute("lunchbox healing decreased", 0.44, -1);
-			weapon_secondary.AddAttribute("charge recharge rate increased", 2, -1);
-			weapon_secondary.AddAttribute("max health additive bonus", 50, -1);
-		}
+		//if (WeaponIs(weapon_secondary, "dalokohs_bar"))
+		//{
+			//weapon_secondary.AddAttribute("lunchbox adds maxhealth bonus", 0, -1); //Commented out due to issues with implementation, revisit at a later date. - Senni
+			//weapon_secondary.AddAttribute("lunchbox healing decreased", 0.44, -1);
+			//weapon_secondary.AddAttribute("charge recharge rate increased", 2, -1);
+			//weapon_secondary.AddAttribute("max health additive bonus", 50, -1);
+		//}
 		if (WeaponIs(weapon_secondary, "buffalo_steak_sandvich"))
 		{
 			weapon_secondary.AddAttribute("energy buff dmg taken multiplier", 1.0, -1);
