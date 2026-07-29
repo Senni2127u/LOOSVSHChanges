@@ -6,7 +6,7 @@
 #include <tf2>
 #include <tf2_stocks>
 
-#define PLUGIN_VERSION  "2.0"
+#define PLUGIN_VERSION  "2.1"
 #define MAX_LINE_LEN    96
 #define MAX_WEAPON_NAME 64
 
@@ -575,12 +575,12 @@ void BuildChangeEntries()
 
     AddEntry(TFClass_Medic, "Blutsauger");
     AddLine("Fire rate increased by 15%.");
-    AddLine("Syringe velocity roughly doubled.");
+    AddLine("Syringe velocity doubled.");
     AddLine("Health on hit increased from 3 to 5.");
 
     AddEntry(TFClass_Medic, "Overdose");
     AddLine("Fire rate increased by 15%.");
-    AddLine("Syringe velocity roughly doubled.");
+    AddLine("Syringe velocity doubled.");
     AddLine("Movement speed on wearer increased by 20%.");
     AddLine("Speed bonus no longer scales down with UberCharge.");
 
