@@ -20,12 +20,23 @@ public Plugin myinfo =
 
 #define MAX_ITEM_DEFS   6
 
+// Controls display order of weapon-specific entries within a class (lower = shown first).
+// Slot_PDA covers watches/PDAs and anything else that isn't primary/secondary/melee.
+enum
+{
+    Slot_PDA = 0,
+    Slot_Primary,
+    Slot_Secondary,
+    Slot_Melee
+}
+
 enum struct ChangeEntry
 {
     TFClassType classType;
     char weaponName[MAX_WEAPON_NAME]; // empty = class-wide, always shown regardless of loadout
     int  itemDefs[MAX_ITEM_DEFS];     // any of these matching the player's equipped weapon shows this entry
     int  itemDefCount;                // 0 = unresolved/none set - falls back to "always show"
+    int  slot;                        // Slot_* - governs ordering within Pass 2 (weapon-specific entries)
     ArrayList lines;                  // handle to an ArrayList of strings (ByteCountToCells(MAX_LINE_LEN) blocks)
 }
 
@@ -219,25 +230,31 @@ void ShowClassChanges(int client)
     }
 
     // Pass 2: weapon-specific entries, only for weapons the player currently has equipped
-    // (or entries whose name failed to resolve, shown as a safe fallback).
-    for (int i = 0; i < total; i++)
+    // (or entries whose name failed to resolve, shown as a safe fallback). Grouped by slot
+    // (PDA, then primary, then secondary, then melee) so e.g. secondaries always list above
+    // melee weapons, regardless of the order they were added in BuildChangeEntries().
+    static const int slotOrder[] = { Slot_PDA, Slot_Primary, Slot_Secondary, Slot_Melee };
+    for (int s = 0; s < sizeof(slotOrder); s++)
     {
-        ChangeEntry e;
-        g_Entries.GetArray(i, e);
+        for (int i = 0; i < total; i++)
+        {
+            ChangeEntry e;
+            g_Entries.GetArray(i, e);
 
-        if (e.classType != class || e.weaponName[0] == '\0')
-            continue;
+            if (e.classType != class || e.weaponName[0] == '\0' || e.slot != slotOrder[s])
+                continue;
 
-        bool show = (e.itemDefCount == 0) || ClientHasAnyWeaponDef(client, e.itemDefs, e.itemDefCount);
-        if (!show)
-            continue;
+            bool show = (e.itemDefCount == 0) || ClientHasAnyWeaponDef(client, e.itemDefs, e.itemDefCount);
+            if (!show)
+                continue;
 
-        char header[80];
-        FormatEx(header, sizeof(header), "-- %s --", e.weaponName);
-        panel.DrawText(header);
+            // Weapon name shown as a selectable menu item (matches the rest of the panel's
+            // clickable style), but PanelHandler() is a no-op, so selecting it does nothing.
+            panel.DrawItem(e.weaponName);
 
-        DrawEntryLines(panel, e);
-        printedAnything = true;
+            DrawEntryLines(panel, e);
+            printedAnything = true;
+        }
     }
 
     if (!printedAnything)
@@ -277,12 +294,13 @@ void GetClassName(TFClassType class, char[] buffer, int maxlen)
 // class-wide note. weaponName == "" means "always show for this class".
 // ------------------------------------------------------------------
 
-void AddEntry(TFClassType class, const char[] weaponName)
+void AddEntry(TFClassType class, const char[] weaponName, int slot = Slot_Primary)
 {
     ChangeEntry e;
     e.classType = class;
     strcopy(e.weaponName, MAX_WEAPON_NAME, weaponName);
     e.itemDefCount = 0; // 0 = unresolved, falls back to "always show" until SetWeaponDef(s) is called
+    e.slot = slot;
     e.lines = new ArrayList(ByteCountToCells(MAX_LINE_LEN));
     g_Entries.PushArray(e);
 }
@@ -312,29 +330,29 @@ void BuildChangeEntries()
     AddEntry(TFClass_Scout, "Back Scatter");
     AddLine("No accuracy penalty.");
 
-    AddEntry(TFClass_Scout, "Pistol");
+    AddEntry(TFClass_Scout, "Pistol", Slot_Secondary);
     AddLine("Reserve ammo quadrupled (36 -> 144).");
     AddLine("Perfectly accurate.");
     AddLine("Fire rate increased by 15%.");
     AddLine("Damage per bullet increased from 15 to 18 (+20%).");
 
-    AddEntry(TFClass_Scout, "Winger");
+    AddEntry(TFClass_Scout, "Winger", Slot_Secondary);
     AddLine("Reserve ammo quadrupled (36 -> 144).");
     AddLine("Perfectly accurate.");
 
-    AddEntry(TFClass_Scout, "Pretty Boy's Pocket Pistol");
+    AddEntry(TFClass_Scout, "Pretty Boy's Pocket Pistol", Slot_Secondary);
     AddLine("Reserve ammo quadrupled (36 -> 144).");
     AddLine("Perfectly accurate.");
     AddLine("Healing per bullet increased from 3 to 5.");
 
-    AddEntry(TFClass_Scout, "Bonk! Atomic Punch");
+    AddEntry(TFClass_Scout, "Bonk! Atomic Punch", Slot_Secondary);
     AddLine("Recharge time reduced by 35%.");
 
-    AddEntry(TFClass_Scout, "Crit-a-Cola");
+    AddEntry(TFClass_Scout, "Crit-a-Cola", Slot_Secondary);
     AddLine("Recharge time reduced by 35%.");
     AddLine("No Marked For Death.");
 
-    AddEntry(TFClass_Scout, "Flying Guillotine");
+    AddEntry(TFClass_Scout, "Flying Guillotine", Slot_Secondary);
     AddLine("Crits whenever it would normally mini-crit.");
     AddLine("Recharge time increased from 5 to 8 seconds (+60%).");
 
@@ -366,26 +384,26 @@ void BuildChangeEntries()
     AddLine("Fire rate increased by 20%.");
     AddLine("Reload speed increased by 20%.");
 
-    AddEntry(TFClass_Soldier, "Buff Banner");
+    AddEntry(TFClass_Soldier, "Buff Banner", Slot_Secondary);
     AddLine("Charge builds passively over 60 seconds.");
 
-    AddEntry(TFClass_Soldier, "Battalion's Backup");
+    AddEntry(TFClass_Soldier, "Battalion's Backup", Slot_Secondary);
     AddLine("Charge builds passively over 60 seconds.");
     AddLine("When Banner is Active, Resists Hale's abilities by 35%.");
 
-    AddEntry(TFClass_Soldier, "Concheror");
+    AddEntry(TFClass_Soldier, "Concheror", Slot_Secondary);
     AddLine("Charge builds passively over 60 seconds.");
 
-    AddEntry(TFClass_Soldier, "Shovel");
+    AddEntry(TFClass_Soldier, "Shovel", Slot_Melee);
     AddLine("Damage increased from 195 to 253 (+30%).");
 
-    AddEntry(TFClass_Soldier, "Escape Plan");
+    AddEntry(TFClass_Soldier, "Escape Plan", Slot_Melee);
     AddLine("Movement speed increased by 40% while active.");
     AddLine("Damage reduced from 195 to 126 (-35%).");
     AddLine("Speed boost no longer scales with missing health.");
     AddLine("No longer applies Marked-For-Death.");
 
-    AddEntry(TFClass_Soldier, "Gunboats");
+    AddEntry(TFClass_Soldier, "Gunboats", Slot_Secondary);
     AddLine("Cancels fall damage.");
 
     // ===================== PYRO =====================
@@ -393,18 +411,18 @@ void BuildChangeEntries()
     AddLine("Base HP increased to 200.");
     AddLine("Airblast only works directly above or below Hale.");
 
-    AddEntry(TFClass_Pyro, "Axtinguisher");
+    AddEntry(TFClass_Pyro, "Axtinguisher", Slot_Melee);
     AddLine("Restores half of missing HP on hit.");
 
-    AddEntry(TFClass_Pyro, "Gas Passer");
+    AddEntry(TFClass_Pyro, "Gas Passer", Slot_Secondary);
     AddLine("Explodes on ignite.");
     AddLine("Now requires 800 damage to fully charge.");
     AddLine("Deploy/Holster speed reduced by 15%.");
 
-    AddEntry(TFClass_Pyro, "Manmelter");
+    AddEntry(TFClass_Pyro, "Manmelter", Slot_Secondary);
     AddLine("Stores crits from primary fire damage.");
 
-    AddEntry(TFClass_Pyro, "Powerjack");
+    AddEntry(TFClass_Pyro, "Powerjack", Slot_Melee);
     AddLine("Movement speed while active increased from 15% to 30%.");
     AddLine("20% damage vulnerability removed.");
     AddLine("Damage reduced by 60%.");
@@ -437,42 +455,42 @@ void BuildChangeEntries()
     AddLine("Mag size and reserve ammo unchanged.");
 
     AddEntry(TFClass_DemoMan, "Loose Cannon");
-    AddLine("Projectile speed increased by 45%.");
+    AddLine("No changes.");
 
-    AddEntry(TFClass_DemoMan, "B.A.S.E. Jumper");
+    AddEntry(TFClass_DemoMan, "B.A.S.E. Jumper", Slot_Secondary);
     AddLine("Max health on wearer increased by 25.");
     AddLine("Blast jump resistance on wearer increased by 60%.");
 
-    AddEntry(TFClass_DemoMan, "Stickybomb Launcher");
+    AddEntry(TFClass_DemoMan, "Stickybomb Launcher", Slot_Secondary);
     AddLine("Projectile speed increased by 20%.");
     AddLine("Damage increased by 10%.");
     AddLine("Blast radius increased by 20%.");
     AddLine("Fire rate increased by 25%.");
 
-    AddEntry(TFClass_DemoMan, "Scottish Resistance");
+    AddEntry(TFClass_DemoMan, "Scottish Resistance", Slot_Secondary);
     AddLine("No changes.");
 
-    AddEntry(TFClass_DemoMan, "Quickiebomb Launcher");
+    AddEntry(TFClass_DemoMan, "Quickiebomb Launcher", Slot_Secondary);
     AddLine("Projectile speed increased by 20%.");
     AddLine("Blast radius increased by 50%.");
     AddLine("Mag size penalty reduced from -50% to -25%.");
     AddLine("Max stickybombs out reduced from 8 to 6.");
 
-    AddEntry(TFClass_DemoMan, "Chargin' Targe");
+    AddEntry(TFClass_DemoMan, "Chargin' Targe", Slot_Secondary);
     AddLine("Blast resistance increased from +30% to +40%.");
     AddLine("Blast jump resistance increased by 60%.");
 
-    AddEntry(TFClass_DemoMan, "Claidheamh Mor");
+    AddEntry(TFClass_DemoMan, "Claidheamh Mor", Slot_Melee);
     AddLine("Gains charge on hit instead of on kill.");
 
-    AddEntry(TFClass_DemoMan, "Tide Turner");
+    AddEntry(TFClass_DemoMan, "Tide Turner", Slot_Secondary);
     AddLine("Gains charge on hit instead of on kill.");
 
-    AddEntry(TFClass_DemoMan, "Ullapool Caber");
+    AddEntry(TFClass_DemoMan, "Ullapool Caber", Slot_Melee);
     AddLine("Blast jump damage resistance increased by 25%.");
     AddLine("Recharge time reduced to 12 seconds.");
 
-    AddEntry(TFClass_DemoMan, "Sticky Jumper");
+    AddEntry(TFClass_DemoMan, "Sticky Jumper", Slot_Secondary);
     AddLine("Limited to one sticky out at a time.");
 
     // ===================== HEAVY =====================
@@ -493,34 +511,34 @@ void BuildChangeEntries()
     AddLine("Can switch weapons while spinning down (unrev).");
     AddLine("Spin movement penalty reduced.");
 
-    AddEntry(TFClass_Heavy, "Gloves of Running Urgently");
+    AddEntry(TFClass_Heavy, "Gloves of Running Urgently", Slot_Melee);
     AddLine("No longer drains health while active.");
 
     AddEntry(TFClass_Heavy, "Family Business");
     AddLine("Accuracy increased by 30%.");
     AddLine("15% damage penalty removed.");
 
-    AddEntry(TFClass_Heavy, "Sandvich");
+    AddEntry(TFClass_Heavy, "Sandvich", Slot_Secondary);
     AddLine("Healing from medkits increased by 50%.");
 
-    AddEntry(TFClass_Heavy, "Dalokohs Bar");
+    AddEntry(TFClass_Heavy, "Dalokohs Bar", Slot_Secondary);
     AddLine("Max health on wearer increased by 50.");
     AddLine("Now heals 133 HP per eat instead of 100.");
     AddLine("Recharge rate is doubled.");
     AddLine("No longer grants max health on eat.");
 
-    AddEntry(TFClass_Heavy, "Buffalo Steak Sandvich");
+    AddEntry(TFClass_Heavy, "Buffalo Steak Sandvich", Slot_Secondary);
     AddLine("Removed damage vulnerability.");
 
-    AddEntry(TFClass_Heavy, "Eviction Notice");
+    AddEntry(TFClass_Heavy, "Eviction Notice", Slot_Melee);
     AddLine("Removed max health drain.");
     AddLine("Damage penalty reduced from -60% to -30%.");
 
-    AddEntry(TFClass_Heavy, "Fists of Steel");
+    AddEntry(TFClass_Heavy, "Fists of Steel", Slot_Melee);
     AddLine("Removed melee damage vulnerability.");
     AddLine("Holster speed penalty reduced from +100% to +50%.");
 
-    AddEntry(TFClass_Heavy, "Warrior's Spirit");
+    AddEntry(TFClass_Heavy, "Warrior's Spirit", Slot_Melee);
     AddLine("Removed damage vulnerability.");
     AddLine("Added +50% holster speed penalty.");
 
@@ -537,12 +555,12 @@ void BuildChangeEntries()
     AddLine("Reload speed increased by 20%.");
     AddLine("Projectile speed roughly doubled.");
 
-    AddEntry(TFClass_Engineer, "Pistol");
+    AddEntry(TFClass_Engineer, "Pistol", Slot_Secondary);
     AddLine("Fire rate increased by 15%.");
     AddLine("Damage increased from 15 to 18 (+20%).");
     AddLine("Perfectly accurate.");
 
-    AddEntry(TFClass_Engineer, "Wrangler");
+    AddEntry(TFClass_Engineer, "Wrangler", Slot_Secondary);
     AddLine("Deploy speed increased by 35%.");
     AddLine("No longer doubles sentry fire rate.");
 
@@ -608,13 +626,13 @@ void BuildChangeEntries()
     AddLine("Reserve ammo increased from 12 to 25 (+100%).");
     AddLine("Damage resistance on wearer increased by 30%.");
 
-    AddEntry(TFClass_Sniper, "SMG");
+    AddEntry(TFClass_Sniper, "SMG", Slot_Secondary);
     AddLine("Fire rate increased by 15%.");
     AddLine("Damage per bullet increased from 8 to 16 (+100%).");
     AddLine("Reserve ammo increased from 75 to 200.");
     AddLine("Perfectly accurate.");
 
-    AddEntry(TFClass_Sniper, "Cleaner's Carbine");
+    AddEntry(TFClass_Sniper, "Cleaner's Carbine", Slot_Secondary);
     AddLine("25% fire rate penalty removed.");
     AddLine("Damage per bullet increased from 8 to 14 (+75%).");
     AddLine("Reserve ammo increased from 75 to 200.");
@@ -625,7 +643,7 @@ void BuildChangeEntries()
     AddLine("Base movement speed increased by 20%.");
     AddLine("Cannot pick up ammo boxes while invisible.");
 
-    AddEntry(TFClass_Spy, "Cloak and Dagger");
+    AddEntry(TFClass_Spy, "Cloak and Dagger", Slot_PDA);
     AddLine("Mirrors the stock Invis Watch.");
 
     AddEntry(TFClass_Spy, "Revolver");
@@ -655,22 +673,26 @@ void BuildChangeEntries()
     static const TFClassType shotgunClasses[] = { TFClass_Soldier, TFClass_Pyro, TFClass_Heavy, TFClass_Engineer };
     for (int i = 0; i < sizeof(shotgunClasses); i++)
     {
-        AddEntry(shotgunClasses[i], "Shotgun");
+        // Shotgun is Engineer's primary weapon, but a secondary for the other classes here.
+        int shotgunSlot = (shotgunClasses[i] == TFClass_Engineer) ? Slot_Primary : Slot_Secondary;
+        AddEntry(shotgunClasses[i], "Shotgun", shotgunSlot);
         AddLine("Damage increased by 40%.");
         AddLine("Accuracy increased by 30%.");
         AddLine("Reload speed increased by 15%.");
     }
 
-    AddEntry(TFClass_Soldier, "Reserve Shooter");
+    AddEntry(TFClass_Soldier, "Reserve Shooter", Slot_Secondary);
     AddLine("Accuracy increased by 30%.");
 
-    AddEntry(TFClass_Pyro, "Reserve Shooter");
+    AddEntry(TFClass_Pyro, "Reserve Shooter", Slot_Secondary);
     AddLine("Accuracy increased by 30%.");
 
     static const TFClassType panicAttackClasses[] = { TFClass_Soldier, TFClass_Pyro, TFClass_Heavy, TFClass_Engineer };
     for (int i = 0; i < sizeof(panicAttackClasses); i++)
     {
-        AddEntry(panicAttackClasses[i], "Panic Attack");
+        // Panic Attack is Engineer's primary weapon, but a secondary for the other classes here.
+        int panicAttackSlot = (panicAttackClasses[i] == TFClass_Engineer) ? Slot_Primary : Slot_Secondary;
+        AddEntry(panicAttackClasses[i], "Panic Attack", panicAttackSlot);
         AddLine("Accuracy increased by 40%.");
         AddLine("20% damage penalty removed.");
     }
@@ -842,10 +864,11 @@ void ApplyDefindexOverrides()
     SetWeaponDef("Enforcer", 460, TFClass_Spy);
 
     // Multi-class - Shotgun's defindex genuinely differs per class in the schema
-    SetWeaponDef("Shotgun", 10, TFClass_Soldier);
-    SetWeaponDef("Shotgun", 12, TFClass_Pyro);
-    SetWeaponDef("Shotgun", 11, TFClass_Heavy);
-    SetWeaponDef("Shotgun", 9, TFClass_Engineer);
+    int shotgunIds[] = { 9, 10, 11, 12, 199, 1141, 15003, 15016, 15044, 15047, 15085, 15109, 15132, 15133, 15152 };
+    SetWeaponDefs("Shotgun", shotgunIds, sizeof(shotgunIds), TFClass_Soldier);
+    SetWeaponDefs("Shotgun", shotgunIds, sizeof(shotgunIds), TFClass_Pyro);
+    SetWeaponDefs("Shotgun", shotgunIds, sizeof(shotgunIds), TFClass_Heavy);
+    SetWeaponDefs("Shotgun", shotgunIds, sizeof(shotgunIds), TFClass_Engineer);
 
     // Reserve Shooter and Panic Attack share one defindex across every class that carries them
     SetWeaponDef("Reserve Shooter", 415);
