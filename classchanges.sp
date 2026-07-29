@@ -350,7 +350,7 @@ void BuildChangeEntries()
 
     AddEntry(TFClass_Scout, "Crit-a-Cola", Slot_Secondary);
     AddLine("Recharge time reduced by 35%.");
-    AddLine("No Marked For Death.");
+    AddLine("No Marked For Death While Active.");
 
     AddEntry(TFClass_Scout, "Flying Guillotine", Slot_Secondary);
     AddLine("Crits whenever it would normally mini-crit.");
@@ -362,7 +362,7 @@ void BuildChangeEntries()
     AddLine("Reload speed increased by 25%.");
 
     AddEntry(TFClass_Soldier, "Black Box");
-    AddLine("Up to 50+ HP on hit.");
+    AddLine("Gain up to 50 health on hit.");
 
     AddEntry(TFClass_Soldier, "Beggar's Bazooka");
     AddLine("Projectile speed increased by 25%.");
@@ -455,7 +455,7 @@ void BuildChangeEntries()
     AddLine("Mag size and reserve ammo unchanged.");
 
     AddEntry(TFClass_DemoMan, "Loose Cannon");
-    AddLine("No changes.");
+    AddLine("Projectile speed is increased by 45%");
 
     AddEntry(TFClass_DemoMan, "B.A.S.E. Jumper", Slot_Secondary);
     AddLine("Max health on wearer increased by 25.");
