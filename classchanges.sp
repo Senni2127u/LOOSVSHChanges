@@ -521,11 +521,11 @@ void BuildChangeEntries()
     AddEntry(TFClass_Heavy, "Sandvich", Slot_Secondary);
     AddLine("Healing from medkits increased by 50%.");
 
-    AddEntry(TFClass_Heavy, "Dalokohs Bar", Slot_Secondary);
-    AddLine("Max health on wearer increased by 50.");
-    AddLine("Now heals 133 HP per eat instead of 100.");
-    AddLine("Recharge rate is doubled.");
-    AddLine("No longer grants max health on eat.");
+    //AddEntry(TFClass_Heavy, "Dalokohs Bar", Slot_Secondary); //Commented out due to issues in implementation, needs revisited at a later date. - Senni
+    //AddLine("Max health on wearer increased by 50.");
+    //AddLine("Now heals 133 HP per eat instead of 100.");
+    //AddLine("Recharge rate is doubled.");
+    //AddLine("No longer grants max health on eat.");
 
     AddEntry(TFClass_Heavy, "Buffalo Steak Sandvich", Slot_Secondary);
     AddLine("Removed damage vulnerability.");
