@@ -778,7 +778,7 @@ void ApplyDefindexOverrides()
     SetWeaponDef("Loch-n-Load", 308, TFClass_DemoMan);
     SetWeaponDef("Loose Cannon", 996, TFClass_DemoMan);
     SetWeaponDef("B.A.S.E. Jumper", 1101, TFClass_DemoMan);
-    SetWeaponDef("Stickybomb Launcher", 20, TFClass_DemoMan);
+    SetWeaponDefs("Stickybomb Launcher", stickylauncherIds, sizeof(stickylauncherIds), TFClass_DemoMan);
     SetWeaponDef("Scottish Resistance", 130, TFClass_DemoMan);
     SetWeaponDef("Quickiebomb Launcher", 1150, TFClass_DemoMan);
     SetWeaponDefs("Chargin' Targe", chargintargeIds, sizeof(chargintargeIds), TFClass_DemoMan);
