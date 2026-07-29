@@ -14,6 +14,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
         if (pda2 != null)
             pda2.AddAttribute("move speed bonus", 1.20, -1);
+            pda2.AddAttribute("NoCloakWhenCloaked", 1, -1);
         if (WeaponIs(pda2, "cloak_and_dagger"))
         {
             pda2.AddAttribute("set cloak is movement based", 0, -1);

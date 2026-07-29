@@ -21,31 +21,31 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
             weapon_secondary.AddAttribute("fire rate bonus", 0.85, -1);
             weapon_secondary.AddAttribute("damage bonus", 1.25, -1);
-			printl("Pistol stats applied.")
+			//printl("Pistol stats applied.")
         }
         if (WeaponIs(weapon_secondary, "pbpp"))
         {
             weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
             weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
             weapon_secondary.AddAttribute("heal on hit for rapidfire", 5.0, -1);
-			printl("PBPP stats applied.")
+			//printl("PBPP stats applied.")
         }
         if (WeaponIs(weapon_secondary, "winger"))
         {
             weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
             weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
-			printl("Winger stats applied.")
+			//printl("Winger stats applied.")
         }
 		if (WeaponIs(weapon_secondary, "bonk_atomic_punch"))
         {
             weapon_secondary.AddAttribute("effect bar recharge rate increased", 0.65, -1);
-			printl("Bonk stats applied.")
+			//printl("Bonk stats applied.")
         }
 		if (WeaponIs(weapon_secondary, "crit_a_cola"))
         {
             weapon_secondary.AddAttribute("mod_mark_attacker_for_death", 0, -1);
             weapon_secondary.AddAttribute("effect bar recharge rate increased", 0.65, -1);
-			printl("Crit-a-cola stats applied.")
+			//printl("Crit-a-cola stats applied.")
         }
 		if (WeaponIs(weapon_secondary, "flying_guillotine"))
         {
@@ -55,7 +55,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             // Delfite: NO! Projectile speed doesn't work on throwables! I hate you Valve!
             weapon_secondary.AddAttribute("effect bar recharge rate increased", 1.6, -1);
             // Delfite: To compensate for the staggering crit damage, we'll make the cleaver less spammable.
-			printl("Guillotine stats applied.")
+			//printl("Guillotine stats applied.")
         }
 		player.Regenerate(true)
     }

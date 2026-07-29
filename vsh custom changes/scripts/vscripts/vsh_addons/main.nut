@@ -14,6 +14,7 @@ IncludeScript("vsh_addons/merc_traits/soldier_primaries.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_secondaries.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_melees.nut")
 IncludeScript("vsh_addons/merc_traits/soldier_banners.nut")
+IncludeScript("vsh_addons/merc_traits/soldier_base_jumper.nut")
 
 // Pyro Scripts
 IncludeScript("vsh_addons/merc_traits/pyro_primaries.nut")
@@ -27,6 +28,7 @@ IncludeScript("vsh_addons/merc_traits/demoman_grenade_launchers.nut")
 IncludeScript("vsh_addons/merc_traits/demoman_stickybomb_launchers.nut")
 IncludeScript("vsh_addons/merc_traits/demoman_melees.nut")
 IncludeScript("vsh_addons/merc_traits/demoman_caber_recharge.nut")
+IncludeScript("vsh_addons/merc_traits/demoman_base_jumper.nut")
 // Boot and Shield scripts can be found in main_pre.nut, since they're both overrides.
 
 // Heavy Scripts

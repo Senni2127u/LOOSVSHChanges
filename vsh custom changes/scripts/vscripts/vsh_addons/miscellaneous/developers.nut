@@ -86,11 +86,9 @@ function HaleWeaponFunc(weapon, player)
     local steamid = NetProps.GetPropString(player, "m_szNetworkIDString");
 
     OldHaleWeaponFunc(weapon, player);
-    if (steamid == SENNI)
-        weapon.AddAttribute("ragdolls plasma effect", 1, -1)
-    else if (steamid == DELFITE)
+    if (steamid == DELFITE)
         weapon.AddAttribute("ragdolls become ash", 1, -1)
-    else if (steamid == LIZARDOFOZ || steamid == LANKO)
+    else if (steamid == LIZARDOFOZ || steamid == LANKO || steamid == SENNI)
         weapon.AddAttribute("turn to gold", 1, -1)
 
     // Add custom weapon attributes here

@@ -12,7 +12,8 @@
 //=========//  Phe - game design assistance.
 //=========================================================================
 
-//Why does this table exist? Because the same weapon can have multiple IDs, namely, pre-JI weapon skins.
+//The models list has been deprecated, Delfite made it so we use the indexes instead, but we will leave it here just in case. - Senni.
+
 ::weaponModels <- {
 }
 
@@ -118,8 +119,10 @@
         return id == 1153;
     else if (name == "reserve_shooter")
         return id == 415;
-    else if (name == "base_jumper" || name == "parachute")
-        return id == 1101;
+    else if (name == "base_jumper_soldier" || name == "parachute_soldier")
+        return weapon.GetClassname() == "tf_weapon_parachute_secondary"; //Not sure why the game defines them as secondary or primary, item schema just says tf_weapon_parachute, TF2 jank. - Senni
+    else if (name == "base_jumper_demoman" || name == "parachute_demoman")
+        return weapon.GetClassname() == "tf_weapon_parachute_primary";
     else if (name == "half_zatoichi" || name == "katana")
         return id == 357;
     else if (name == "pain_train")
@@ -766,14 +769,14 @@
             || id == 15112
             || id == 15135
             || id == 15136
-            || id == 15154
-            || id == 30665;
+            || id == 15154;
     else if (name == "sydney_sleeper")
         return id == 230;
     else if (name == "bazaar_bargain")
         return id == 402;
     else if (name == "machina")
-        return id == 526;
+        return id == 526
+            || id == 30665;
     else if (name == "hitmans_heatmaker")
         return id == 752;
     else if (name == "classic")

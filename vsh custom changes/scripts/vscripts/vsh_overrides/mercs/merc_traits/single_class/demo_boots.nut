@@ -38,17 +38,15 @@ characterTraitsClasses.push(class extends CharacterTrait
     weapon_secondary = null;
     weapon_melee = null;
 
-	function CanApply()
-	{
-		weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY)
+    function CanApply()
+    {
+        weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY)
         weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE)
 
-		if (player.GetPlayerClass() != TF_CLASS_DEMOMAN) // Delfite: If the player ain't a demoman, then skip 'em.
-			return false;
-        for (wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			// Delfite: Boots aren't considered a weapon, so we'll iterate through every merc and apply the stats to their boots, same as Senni did for the Gunboats.
-			if (WeaponIs(wearable, "any_demo_boots"))
+        if (player.GetPlayerClass() != TF_CLASS_DEMOMAN)
+            return false;
+        while (wearable = FindByClassname(wearable, "tf_wearable"))
+            if (wearable.GetOwner() == player && WeaponIs(wearable, "any_demo_boots"))
 			{
 				wearable.AddAttribute("move speed bonus shield required", 1.0, -1)
 				// Remove the speed boost currently on the boots...
@@ -68,20 +66,12 @@ characterTraitsClasses.push(class extends CharacterTrait
                 {
                     wearable.AddAttribute("move speed bonus", 1.15, -1)
 				}
+                player.Regenerate(true)
 				return true;
 			}
-			if (WeaponIs(wearable, "base_jumper"))
-			{
-				wearable.AddAttribute("max health additive bonus", 25, -1)
-				wearable.AddAttribute("rocket jump damage reduction", 0.40, -1)
-                // Delfite: Couldn't hurt to give some blast jump resistance to the B.A.S.E. Jumper.
-				// printl("B.A.S.E. Jumper found on a demoman.")
-				return true;
-			}
-            player.Regenerate(true)
-		}
         return false;
-	}
+    }
+
 
     function OnDiscard()
     {

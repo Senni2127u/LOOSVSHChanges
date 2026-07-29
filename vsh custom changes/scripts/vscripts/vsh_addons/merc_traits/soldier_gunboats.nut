@@ -27,12 +27,12 @@ characterTraitsClasses.push(class extends CharacterTrait
         return false;
     }
 
-    function OnDiscard()
-    {
-        if (wearable && wearable.IsValid())
-        {
-            wearable.RemoveAttribute("cancel falling damage");
-            wearable.RemoveAttribute("rocket jump damage reduction");
-        }
-    }
+    // function OnDiscard()
+    // {
+    //     if (wearable && wearable.IsValid())
+    //     {
+    //         wearable.RemoveAttribute("cancel falling damage");
+    //         wearable.RemoveAttribute("rocket jump damage reduction");
+    //     }
+    // }
 });
