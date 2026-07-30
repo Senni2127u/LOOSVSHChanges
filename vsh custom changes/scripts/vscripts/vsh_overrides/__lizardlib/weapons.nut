@@ -101,6 +101,7 @@
             || id == 160
             || id == 209
             || id == 294
+            || id == 1202   // Lugermorph (2026)
             || id == 15013
             || id == 15018
             || id == 15035
@@ -519,6 +520,7 @@
             || id == 909
             || id == 958
             || id == 967
+            || id == 1206   // Iron Curtain (2026)
             || id == 15004
             || id == 15020
             || id == 15026
@@ -923,7 +925,8 @@
         return id == 30
             || id == 212
             || id == 297
-            || id == 947;
+            || id == 947
+            || id == 1205;  // Enthusiast's Timepiece (2026)
     else if (name == "dead_ringer")
         return id == 59;
     else if (name == "cloak_and_dagger" || name == "cloakanddagger")
