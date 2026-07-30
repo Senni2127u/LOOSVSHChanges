@@ -39,10 +39,10 @@ characterTraitsClasses.push(class extends CharacterTrait
                 // weapon_primary.AddAttribute("clip size penalty", 0.75, -1)
             }
         }
-        if (WeaponIs(weapon_primary, "crusaders_crossbow"))
-        {
-            weapon_primary.AddAttribute("damage bonus", 2, -1)
-        }
+        // if (WeaponIs(weapon_primary, "crusaders_crossbow"))
+        // {
+        //     weapon_primary.AddAttribute("damage bonus", 2, -1)
+        // }
         player.Regenerate(true)
     }
 
