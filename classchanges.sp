@@ -714,7 +714,7 @@ void ApplyDefindexOverrides()
     // Scout
     int scattergunIds[] = { 13, 200, 669, 799, 808, 888, 897, 906, 915, 964, 973, 15002, 15015, 15021, 15029, 15036, 15053, 15065, 15069, 15106, 15107, 15108, 15131, 15151, 15157 };
     int fanIds[] = { 45, 1078 };
-    int pistolIds[] = { 22, 23, 160, 294 }; //Pistols have two different IDs for both Engineer and Scout, just catch both.
+    int pistolIds[] = { 22, 23, 160, 294, 1202 }; //Pistols have two different IDs for both Engineer and Scout, just catch both.
     int bonkpunchIds[] = { 46, 1145 };
     int batIds[]  = { 0, 190, 221, 264, 474, 572, 660, 423, 880, 939, 954, 999, 1013, 1071, 1123, 1127, 30667, 30758 };
     int madmilkIds[] = { 222, 1121 };
@@ -788,7 +788,7 @@ void ApplyDefindexOverrides()
     SetWeaponDef("Sticky Jumper", 265, TFClass_DemoMan);
 
     // Heavy
-    int minigunIds[] = { 15, 202, 298, 654, 793, 802, 882, 891, 900, 909, 958, 967, 15004, 15020, 15026, 15031, 15040, 15055, 15086, 15087, 15088, 15098, 15099, 15123, 15124, 15125, 15147 };
+    int minigunIds[] = { 15, 202, 298, 654, 793, 802, 882, 891, 900, 909, 958, 967, 1206, 15004, 15020, 15026, 15031, 15040, 15055, 15086, 15087, 15088, 15098, 15099, 15123, 15124, 15125, 15147 };
     int huolongheaterIds[] = { 811, 832 };
     int sandvichIds[] = { 42, 863, 1002 };
     int chocolatebarIds[] = { 159, 433 };
@@ -854,7 +854,7 @@ void ApplyDefindexOverrides()
     int redtapeIds[] = { 810, 831 };
     int knifeIds[] = { 4, 194, 423, 638, 665, 727, 794, 803, 883, 892, 901, 910, 959, 968, 1071, 15062, 15094, 15095, 15096, 15118, 15119, 15143, 15144, 30758 };
     int yerIds[] = { 225, 574 };
-    int inviswatchIds[] = { 30, 212, 297, 947 };
+    int inviswatchIds[] = { 30, 212, 297, 947, 1205 };
 
 
     SetWeaponDef("Cloak and Dagger", 60, TFClass_Spy);
