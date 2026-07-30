@@ -10,6 +10,7 @@
 //  James McGuinn - Mercenaries voice acting for custom lines.
 //  Yakibomb - give_tf_weapon script bundle (used for Hale's first-person hands model).
 //  Phe - game design assistance.
+//  Bradasparky - Helped fix the charge-on-hit also applying when a shield bash happened.
 //=========================================================================
 
 PrecacheArbitrarySound("vsh_sfx.shield_break");
@@ -84,40 +85,37 @@ characterTraitsClasses.push(class extends CharacterTrait
 	weapon_secondary = null;
     wearable = null;
 
-	function CanApply()
+    function CanApply()
     {
-		if (player.GetPlayerClass() != TF_CLASS_DEMOMAN)
-			return false;
-		for (wearable = player.FirstMoveChild(); wearable != null; wearable = wearable.NextMovePeer())
-		{
-			// Delfite: Shields aren't considered a weapon, so we'll iterate through every merc and apply the stats to their shields, same as Senni did for the Gunboats.
-			if (WeaponIs(wearable, "any_shield"))
-			{
-				// printl("Shield found.")
-				wearableIsTideturner = WeaponIs(wearable, "tideturner")
-                if (WeaponIs(wearable, "chargin_targe"))
+        return player.GetPlayerClass() == TF_CLASS_DEMOMAN;
+    }
+
+    function OnApply()
+    {
+        RunWithDelay2(this, 0.1, function()
+        {
+            while (wearable = FindByClassname(wearable, "tf_wearable_demo*"))
+                if (wearable.GetOwner() == player && WeaponIs(wearable, "any_shield"))
                 {
-                    wearable.AddAttribute("rocket jump damage reduction", 0.4, -1)
-                    wearable.AddAttribute("dmg taken from blast reduced", 0.6, -1)
+                    printl("Shield found.")
+                    wearableIsTideturner = WeaponIs(wearable, "tideturner")
+                    if (WeaponIs(wearable, "chargin_targe"))
+                    {
+                        wearable.AddAttribute("rocket jump damage reduction", 0.4, -1)
+                        wearable.AddAttribute("dmg taken from blast reduced", 0.6, -1)
+                    }
                 }
-				return true;
-			}
-		}
-        return false;
-	}
+        })
+    }
 
     // Delfite: Instead of applying the "charge on hit" attribute to demo's current melee, we'll just add charge via NetProps.
 	function OnDamageDealt(victim, params)
     {
-        if (params.damage_type & 128 && wearableIsTideturner)
-            SetPropFloat(player, "m_Shared.m_flChargeMeter", clampCeiling(100.0, GetPropFloat(player, "m_Shared.m_flChargeMeter") + 75.0))
-    }
-
-    function OnDiscard()
-    {
-        if (wearable && wearable.IsValid())
+        // printl("Damage dealt (Tideturner check).")
+        if (params.damage_type & 128 && wearableIsTideturner && params.weapon == player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE))
         {
-            wearable.RemoveAttribute("rocket jump damage reduction");
+            SetPropFloat(player, "m_Shared.m_flChargeMeter", clampCeiling(100.0, GetPropFloat(player, "m_Shared.m_flChargeMeter") + 75.0))
+            // printl("Supplied charge to the player's meter via the Tideturner.")
         }
     }
 });
