@@ -7,17 +7,22 @@ characterTraitsClasses.push(class extends CharacterTrait
 {
     function CanApply()
     {
-        if (player.GetPlayerClass() != TF_CLASS_SOLDIER)
-            return false;
-        local wearable = null;
-        while (wearable = FindByClassname(wearable, "tf_wearable"))
-            if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats")) //Gunboats aren't considered a weapon, so this is a workaround.
-            {
-                wearable.AddAttribute("cancel falling damage", 1, -1);
-                return true;
-            }
-        return false;
+        return player.GetPlayerClass() == TF_CLASS_SOLDIER;
     }
+
+    function OnApply()
+    {
+        RunWithDelay2(this, 0.1, function() //This delay is hopefully to prevent issues with it not applying. - Senni
+            {
+            local wearable = null;
+                while (wearable = FindByClassname(wearable, "tf_wearable"))
+                    if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats")) //Gunboats aren't considered a weapon, so this is a workaround. - Senni
+                    {
+                        wearable.AddAttribute("cancel falling damage", 1, -1);
+                    }
+        })
+    }
+
 
     // function OnDiscard()
     // {
