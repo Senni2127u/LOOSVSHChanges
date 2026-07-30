@@ -97,7 +97,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             while (wearable = FindByClassname(wearable, "tf_wearable_demo*"))
                 if (wearable.GetOwner() == player && WeaponIs(wearable, "any_shield"))
                 {
-                    printl("Shield found.")
+                    // printl("Shield found.")
                     wearableIsTideturner = WeaponIs(wearable, "tideturner")
                     if (WeaponIs(wearable, "chargin_targe"))
                     {
