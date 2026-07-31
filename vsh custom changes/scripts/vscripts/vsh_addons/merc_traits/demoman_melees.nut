@@ -1,4 +1,4 @@
-//Script by Senni
+// Script by Senni, Delfite, with assistance from Bradasparky.
 // Handles Claidheamh Mor's on kill effects being on hit instead.
 // Requires modification to weapons.nut to function.
 
@@ -28,11 +28,14 @@ characterTraitsClasses.push(class extends CharacterTrait
         }
     }
 
-    // Delfite: Instead of applying the "charge on hit" attribute to demo's current melee, we'll just add charge via NetProps.
-	function OnDamageDealt(victim, params)
+    function OnDamageDealt(victim, params)
     {
-        if (params.damage_type & 128 && meleeIsClaidheamhMor)
+        // printl("Damage dealt (Claid check).")
+        if (params.damage_type & 128 && meleeIsClaidheamhMor && params.weapon == player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE))
+        {
             SetPropFloat(player, "m_Shared.m_flChargeMeter", clampCeiling(100.0, GetPropFloat(player, "m_Shared.m_flChargeMeter") + 25.0))
+            // printl("Supplied charge to the player's meter via the Claidheamh Mor.")
+        }
     }
 
     function OnDiscard()
