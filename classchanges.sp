@@ -831,6 +831,7 @@ void ApplyDefindexOverrides()
     SetWeaponDefs("Syringe Gun", syringegunIds, sizeof(syringegunIds), TFClass_Medic);
     SetWeaponDef("Blutsauger", 36, TFClass_Medic);
     SetWeaponDef("Overdose", 412, TFClass_Medic);
+    SetWeaponDefs("Crusader's Crossbow", crossbowIds, sizeof(crossbowIds), TFClass_Medic);
 
     // Sniper
     int sniperrifleIds[] = { 14, 201, 664, 792, 801, 851, 881, 890, 899, 908, 957, 966, 15000, 15007, 15019, 15023, 15033, 15059, 15070, 15071, 15072, 15111, 15112, 15135, 15136, 15154 };
