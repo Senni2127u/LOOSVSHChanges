@@ -11,10 +11,11 @@ this.Include <- function(path)
 	switch (path)
 	{
 		case "__lizardlib/weapons.nut":
+		case "/util/player_cache.nut": //fixes an issue with class unassigned players giving the boss more HP.
 		case "__lizardlib/game_events.nut":
 		case "__lizardlib/character_trait.nut":
-		case "/bosses/saxton_hale/abilities/saxton_punch.nut":
-		case "/bosses/saxton_hale/abilities/sweeping_charge.nut":
+		case "/bosses/saxton_hale/abilities/saxton_punch.nut": //Extender fix.
+		case "/bosses/saxton_hale/abilities/sweeping_charge.nut": //Extender fix.
 		case "/mercs/merc_traits/single_class/demo_boots.nut":
 		case "/mercs/merc_traits/single_class/demo_shield.nut":
 		case "/mercs/merc_traits/single_class/pyro_powerjack.nut":
@@ -23,8 +24,8 @@ this.Include <- function(path)
 		case "/mercs/merc_traits/single_class/medic_resistance.nut":
 		// case "/mercs/merc_traits/single_class/soldier_market_gardener.nut":
 		case "/mercs/merc_traits/single_class/heavy_received_knockback.nut":
-		case "/mercs/merc_traits/all_class/melee_buffs.nut":
-		case "/mercs/voice_lines/all_class/silent_tie.nut":
+		case "/mercs/merc_traits/all_class/melee_buffs.nut": //Wall Climb fix.
+		case "/mercs/voice_lines/all_class/silent_tie.nut": //No stalemate voicelines fix.
 
         // Dummy case to catch all of the above, add more if you wish
         // Make sure the dir matches the original path. Ex: "/mercs/..." as opposed to "mercs/..."
@@ -37,7 +38,7 @@ this.Include <- function(path)
             // Uncomment the print below to verify in console that
             // all the files that SHOULD be included, are included
 
-            //printl("Including: vsh_overrides/" + path + "\n");
+    		//printl("Including: vsh_overrides/" + path + "\n");
             IncludeScript("vsh_overrides/" + path);
             return;
         }
