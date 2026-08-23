@@ -28,29 +28,25 @@
     for (local i = 1; i <= MAX_PLAYERS; i++)
     {
         local player = PlayerInstanceFromIndex(i);
-        if (IsValidClient(player))
-        {
-            validClientsL.push(player);
-            if (player.GetTeam() > TF_TEAM_SPECTATOR)
+            if (IsValidClient(player))
             {
+                validClientsL.push(player);
+                if (player.GetTeam() <= TF_TEAM_SPECTATOR)
+                continue;
+
+                if (GetPropInt(player, "m_Shared.m_iDesiredPlayerClass") == TF_CLASS_UNDEFINED)
+                continue;
+            {
+                validPlayersL.push(player);
+                local isAlive = IsPlayerAlive(player);
                 local isMerc = !IsBoss(player);
-                //A player who has joined Mercs but hasn't picked a class yet is still TF_TEAM_SPECTATOR-exempt, so without this check they'd count as a valid merc before ever actually playing.
-                //The boss itself is exempt from this check since it's chosen via the gamemode randomly.
-                local hasChosenClass = !isMerc || player.GetPlayerClass() != TF_CLASS_UNDEFINED;
 
-                if (hasChosenClass)
-                {
-                    validPlayersL.push(player);
-
-                    local isAlive = IsPlayerAlive(player);
-
-                    if (isAlive && isMerc)
-                        aliveMercsL.push(player);
-                    if (isAlive)
-                        alivePlayersL.push(player);
-                    if (isMerc)
-                        validMercsL.push(player);
-                }
+                if (isAlive && isMerc)
+                    aliveMercsL.push(player);
+                if (isAlive)
+                    alivePlayersL.push(player);
+                if (isMerc)
+                    validMercsL.push(player);
             }
         }
     }
