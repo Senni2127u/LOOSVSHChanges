@@ -11,7 +11,7 @@ this.Include <- function(path)
 	switch (path)
 	{
 		case "__lizardlib/weapons.nut":
-		case "/util/player_cache.nut": //fixes an issue with class unassigned players giving the boss more HP.
+		//case "/util/player_cache.nut": //fixes an issue with class unassigned players giving the boss more HP.
 		case "__lizardlib/game_events.nut":
 		case "__lizardlib/character_trait.nut":
 		case "/bosses/saxton_hale/abilities/saxton_punch.nut": //Extender fix.
