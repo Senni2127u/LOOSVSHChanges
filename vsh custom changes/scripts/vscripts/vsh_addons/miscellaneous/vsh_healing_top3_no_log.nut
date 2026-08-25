@@ -59,7 +59,7 @@ function PrintAndLogTopHealers(reason)
 
     if (top.len() > 0)
     {
-        local msg = "\x01Top Healing:\x01 ";
+        local msg = "\x01Top Healers:\x01 ";
 
         for (local i = 0; i < top.len(); i++)
         {
