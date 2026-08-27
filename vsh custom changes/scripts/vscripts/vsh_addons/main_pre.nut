@@ -10,6 +10,7 @@ this.Include <- function(path)
 
 	switch (path)
 	{
+		case "/util/player_cache.nut": //Fix for players who have no assigned class giving HP to the boss.
 		case "__lizardlib/weapons.nut":
 		case "__lizardlib/game_events.nut":
 		case "__lizardlib/character_trait.nut":
