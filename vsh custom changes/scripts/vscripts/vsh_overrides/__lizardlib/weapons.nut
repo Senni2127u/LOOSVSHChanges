@@ -27,13 +27,13 @@
 {
     local item = null;
     local itemsToKill = [];
-    while (item = FindByClassname(item, "tf_we*"))
+    while (item = Entities.FindByClassname(item, "tf_we*"))
     {
         if (item.GetOwner() == player)
             itemsToKill.push(item);
     }
     item = null;
-    while (item = FindByClassname(item, "tf_powerup_bottle"))
+    while (item = Entities.FindByClassname(item, "tf_powerup_bottle"))
     {
         if (item.GetOwner() == player)
             itemsToKill.push(item);
