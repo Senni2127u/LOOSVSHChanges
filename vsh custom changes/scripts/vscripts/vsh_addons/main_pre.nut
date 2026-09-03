@@ -11,6 +11,7 @@ this.Include <- function(path)
 	switch (path)
 	{
 		case "__lizardlib/weapons.nut":
+		case "/_gamemode/boss_queue.nut": //Opt out feature for boss.
 		case "__lizardlib/game_events.nut":
 		case "__lizardlib/character_trait.nut":
 		case "/bosses/saxton_hale/abilities/saxton_punch.nut": //Extender fix.
