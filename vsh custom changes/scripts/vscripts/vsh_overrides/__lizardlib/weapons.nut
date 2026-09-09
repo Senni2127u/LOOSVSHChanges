@@ -790,7 +790,6 @@
     else if (name == "smg")
         return id == 16
             || id == 203
-            || id == 1105
             || id == 1149
             || id == 15001
             || id == 15022
@@ -805,7 +804,8 @@
         return id == 57;
     else if (name == "jarate")
         return id == 58
-            || id == 1083;
+            || id == 1083
+            || id == 1105;
     else if (name == "darwins_danger_shield" || name == "darwins")
         return id == 231;
     else if (name == "cozy_camper")
