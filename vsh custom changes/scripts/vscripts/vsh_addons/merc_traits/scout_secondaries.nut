@@ -1,8 +1,9 @@
 // Script by: Delfite.
+// This script handles everything to do with Scout's secondaries.
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-	weapon_secondary = null;
+	// weapon_secondary = null;
 
     function CanApply()
     {
@@ -11,30 +12,39 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-        weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+        // weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
 
         if (WeaponIs(weapon_secondary, "pistol"))
         {
-            weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
-            NetProps.SetPropInt(player, "m_iAmmo.002", 144)
-            weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
-            weapon_secondary.AddAttribute("fire rate bonus", 0.85, -1);
-            weapon_secondary.AddAttribute("damage bonus", 1.25, -1);
-			// printl("Pistol stats applied.")
+            RunWithDelay2(this, 0.1, function ()
+            {
+                weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
+                SetPropInt(player, "m_iAmmo.002", 144)
+                // Delfite: Failed attempt at assigning a damage type to a weapon.
+                // SetPropInt(weapon_secondary, "m_nDamageType", TF_DMG_CUSTOM_PENETRATE_MY_TEAM)
+                // printl(GetPropInt(weapon_secondary, "m_nDamageType"))
+                weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
+                weapon_secondary.AddAttribute("fire rate bonus", 0.85, -1);
+                weapon_secondary.AddAttribute("damage bonus", 1.25, -1);
+
+                // printl("Pistol stats applied.")
+            })
         }
         if (WeaponIs(weapon_secondary, "pbpp"))
         {
             weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
-            NetProps.SetPropInt(player, "m_iAmmo.002", 144)
+            SetPropInt(player, "m_iAmmo.002", 144)
             weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
             weapon_secondary.AddAttribute("heal on hit for rapidfire", 5, -1); // Decimals get rounded to the nearest whole number.
+            weapon_secondary.AddAttribute("projectile penetration", 1, -1);
 			// printl("PBPP stats applied.")
         }
         if (WeaponIs(weapon_secondary, "winger"))
         {
             weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
-            NetProps.SetPropInt(player, "m_iAmmo.002", 144)
+            SetPropInt(player, "m_iAmmo.002", 144)
             weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
+            weapon_secondary.AddAttribute("projectile penetration", 1, -1);
 			// printl("Winger stats applied.")
         }
 		if (WeaponIs(weapon_secondary, "bonk_atomic_punch"))

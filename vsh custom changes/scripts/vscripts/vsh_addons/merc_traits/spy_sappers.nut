@@ -3,7 +3,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-	weapon_building = null;
+	// weapon_secondary = null;
 
     function CanApply()
     {
@@ -12,22 +12,22 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-		weapon_building = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+		// weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
 
-        if (WeaponIs(weapon_building, "sapper") || WeaponIs(weapon_building, "red_tape_recorder"))
+        if (WeaponIs(weapon_secondary, "sapper") || WeaponIs(weapon_secondary, "red_tape_recorder"))
         {
-            // weapon_building.AddAttribute("move speed bonus", 1.25, -1)
-            // weapon_building.AddAttribute("provide on active", 1, -1)
+            // weapon_secondary.AddAttribute("move speed bonus", 1.25, -1)
+            // weapon_secondary.AddAttribute("provide on active", 1, -1)
         }
     }
 
 	function OnDiscard()
 	{
 		// Delfite: We perform IsValid on the weapons so we know they're not still storing information on an entity that doesn't exist.
-        if (weapon_building && weapon_building.IsValid())
+        if (weapon_secondary && weapon_secondary.IsValid())
         {
-            weapon_building.RemoveAttribute("move speed bonus");
-            weapon_building.RemoveAttribute("provide on active");
+            weapon_secondary.RemoveAttribute("move speed bonus");
+            weapon_secondary.RemoveAttribute("provide on active");
             //printl("Secondary attributes discarded.")
         }
 	}

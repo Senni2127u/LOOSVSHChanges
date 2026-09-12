@@ -20,6 +20,12 @@ class CharacterTrait
 {
     player = null;
 
+    active_weapon = null;
+    weapon_primary = null;
+    weapon_secondary = null;
+    weapon_melee = null;
+    weapon_pda = null;
+
     function TryApply(player)
     {
         if (!IsValidPlayer(player))
@@ -30,6 +36,10 @@ class CharacterTrait
         if (!(player in characterTraits))
             characterTraits[player] <- [];
         characterTraits[player].push(this);
+        weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY)
+        weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY)
+        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE)
+        weapon_pda = player.GetWeaponBySlot(TF_WEAPONSLOTS.PDA);
         OnApply();
         return this;
     }
@@ -48,9 +58,13 @@ class CharacterTrait
     function OnKill(victim, params) { }
     function OnDeath(attacker, params) { }
     function OnHurtDealtEvent(victim, params) { }
+    function OnHurtTakenEvent(attacker, params) { }
     function OnDiscard() { }
     function OnAirblasted(victim, attacker, params) { }
     function OnAirblastOther(victim, attacker, params) { }
+    function OnGasIgniteEvent(victim, params) { }
+    function OnGasIgnitedEvent(douser, params) { }
+    function OnPatientHealed(healer, params) { }
 
     function DoTick(timeDelta)
     {
@@ -176,6 +190,11 @@ AddListener("player_hurt", 0, function (attacker, victim, params)
         foreach (characterTrait in characterTraits[attacker])
             try { characterTrait.OnHurtDealtEvent.call(characterTrait, victim, params); }
             catch(e) { throw e; }
+
+    if (victim in characterTraits)
+        foreach (characterTrait in characterTraits[victim])
+            try { characterTrait.OnHurtTakenEvent.call(characterTrait, attacker, params); }
+            catch(e) { throw e; }
 });
 
 AddListener("airblasted", 0, function (attacker, victim, params)
@@ -190,3 +209,24 @@ AddListener("airblasted", 0, function (attacker, victim, params)
             try { characterTrait.OnAirblasted.call(characterTrait, victim, attacker, params); }
             catch(e) { throw e; }
 });
+
+AddListener("gas_ignition", 0, function (douser, victim, params)
+{
+    if (douser in characterTraits)
+        foreach (characterTrait in characterTraits[douser])
+            try { characterTrait.OnGasIgniteEvent.call(characterTrait, victim, params); }
+            catch(e) { throw e; }
+
+    if (victim in characterTraits)
+        foreach (characterTrait in characterTraits[victim])
+            try { characterTrait.OnGasIgnitedEvent.call(characterTrait, douser, params); }
+            catch(e) { throw e; }
+});
+
+AddListener("patient_healed", 0, function (healer, params)
+{
+    if (healer in characterTraits)
+        foreach (characterTrait in characterTraits[healer])
+            try { characterTrait.OnPatientHealed.call(characterTrait, healer, params); }
+            catch(e) { throw e; }
+})

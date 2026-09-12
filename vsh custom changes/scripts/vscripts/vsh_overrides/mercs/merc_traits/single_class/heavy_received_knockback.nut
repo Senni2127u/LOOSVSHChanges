@@ -12,30 +12,44 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-characterTraitsClasses.push(class extends CharacterTrait
-{
-    launch = false;
+// Delfite: Code migrated to `__player_traits.nut`
 
-    function CanApply()
-    {
-        return player.GetPlayerClass() == TF_CLASS_HEAVY;
-    }
+// characterTraitsClasses.push(class extends CharacterTrait
+// {
+//     launch = false;
 
-    function OnDamageTaken(attacker, params)
-    {
-        launch = IsValidBoss(attacker);
-        if (launch)
-            params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
-    }
+//     function CanApply()
+//     {
+//         return player.GetPlayerClass() == TF_CLASS_HEAVY;
+//     }
 
-    function OnDamageTakenPost(attacker, params)
-    {
-        if (!launch)
-            return;
+//     function OnDamageTaken(attacker, params)
+//     {
+//         launch = IsValidBoss(attacker);
+//         if (launch)
+//             params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
+//     }
 
-        local deltaVector = player.GetOrigin() - attacker.GetOrigin();
-        deltaVector.z = 0;
-        deltaVector.Norm();
-        player.Yeet(deltaVector * 600 + Vector(0, 0, 450));
-    }
-});
+//     function OnDamageTakenPost(attacker, params)
+//     {
+//         local weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY)
+//         local active_weapon = player.GetActiveWeapon()
+//         if (!launch)
+//             return;
+
+//         if (player.IsInvulnerable() && GetPropInt(weapon_primary, "m_iWeaponState") > 0 && active_weapon == weapon_primary)
+//         {
+//             local deltaVector = player.GetOrigin() - attacker.GetOrigin();
+//             deltaVector.z = 0;
+//             deltaVector.Norm();
+//             player.Yeet(deltaVector * 300 + Vector(0, 0, 250));
+//         }
+//         else
+//         {
+//             local deltaVector = player.GetOrigin() - attacker.GetOrigin();
+//             deltaVector.z = 0;
+//             deltaVector.Norm();
+//             player.Yeet(deltaVector * 600 + Vector(0, 0, 450));
+//         }
+//     }
+// });

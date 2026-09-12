@@ -23,6 +23,16 @@
         SetPropInt(item, "m_AttributeManager.m_Item.m_iItemDefinitionIndex", id);
 }
 
+// Delfite: Custom function. Returns the item's definition index seen in `items_game.txt`. Works with cosmetics as well.
+::GetItemDefIndex <- function(item)
+{
+    if (item != null)
+    {
+        local def_index = GetPropInt(item, "m_AttributeManager.m_Item.m_iItemDefinitionIndex");
+        return def_index;
+    }
+}
+
 ::ClearPlayerWearables <- function(player)
 {
     local item = null;
@@ -743,7 +753,7 @@
     //Sniper Primaries [8,0]
     else if (name == "any_sniper_rifle" || name == "any_sniperrifle")
         return weapon.GetClassname() == "tf_weapon_sniperrifle" || weapon.GetClassname() == "tf_weapon_sniperrifle_decap" || weapon.GetClassname() == "tf_weapon_sniperrifle_classic";
-    else if (name == "any_bow")
+    else if (name == "any_bow" || name == "huntsman")
         return weapon.GetClassname() == "tf_weapon_compound_bow";
     else if (name == "sniper_rifle")
         return id == 14
@@ -790,7 +800,6 @@
     else if (name == "smg")
         return id == 16
             || id == 203
-            || id == 1105
             || id == 1149
             || id == 15001
             || id == 15022
@@ -804,8 +813,9 @@
     else if (name == "razorback")
         return id == 57;
     else if (name == "jarate")
-        return id == 58
-            || id == 1083;
+        return id == 58     // Jarate
+            || id == 1083   // Festive Jarate
+            || id == 1105;  // Beauty Mark
     else if (name == "darwins_danger_shield" || name == "darwins")
         return id == 231;
     else if (name == "cozy_camper")

@@ -1,6 +1,9 @@
 //Copyright: Senni, Delfite, Horiuchi, Bradasparky.
 //Remember to put your name next to your comments so we know who changed what.
 
+
+PrecacheScriptSound("Player.ResistanceMedium")
+
 characterTraitsClasses.push(class extends CharacterTrait
 {
     function CanApply()
@@ -8,15 +11,16 @@ characterTraitsClasses.push(class extends CharacterTrait
         if (player.GetPlayerClass() != TF_CLASS_SOLDIER)
             return;
 
-        local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
-        return weapon && WeaponIs(weapon, "any_banner");
+        local weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+        return weapon_secondary && WeaponIs(weapon_secondary, "any_banner");
     }
 
     // Delfite: This function is responsible for adding Rage to every player's currently equipped banner (if any).
     function OnFrameTickAlive()
     {
         local rage = player.GetRageMeter();
-        if (rage < 100) //Stop charging it once at full, because that's a waste. - Senni
+
+        if (rage < 100 && !player.IsRageDraining()) // Delfite: Stop charging the banner at 100% and while it's draining.
         {
             player.SetRageMeter(clampCeiling(100, rage + 0.02525252525252525252525252525253)); //Adding 0.025 to the meter to get 60 seconds - Senni
             //printl(rage) //Debug
@@ -24,19 +28,22 @@ characterTraitsClasses.push(class extends CharacterTrait
     }
 
     // Delfite: This function is responsible for fixing TF_COND_DEFENSEBUFF from not applying its damage resistance to Hale's abilities.
-    // Delfite: Primarily intended as a fix for the Battalion's Backup, but fixes the condition as a whole.
+    // Primarily intended as a fix for the Battalion's Backup, but fixes the condition as a whole.
     function OnDamageTaken(attacker, params)
     {
         if (IsValidBoss(attacker))
         {
-            if ((params.damage_type & (DMG_CLUB))) //Ignore Saxton's normal hits, the game already handles the resistance. - Senni
+            if (params.damage_type & DMG_CLUB) //Ignore Saxton's normal hits, the game already handles the resistance. - Senni
             {
+                EmitSoundOnClient("Player.ResistanceMedium", player)
                 return;
             }
 
             if (player.InCond(TF_COND_DEFENSEBUFF))
             {
                 params.damage *= 0.65
+                // Delfite: Play a sound to the player so they know the banner resisted the damage.
+                EmitSoundOnClient("Player.ResistanceMedium", player)
                 //printl("damage resisted on merc") //Debug to make sure resistance is applied - Senni
             }
         }

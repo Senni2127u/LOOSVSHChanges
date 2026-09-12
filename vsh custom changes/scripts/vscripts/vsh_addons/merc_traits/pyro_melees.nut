@@ -2,7 +2,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-    weapon_melee = null;
+    // weapon_melee = null;
 
     function CanApply()
     {
@@ -11,14 +11,17 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+        // weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
         if (WeaponIs(weapon_melee, "powerjack"))
         {
             weapon_melee.AddAttribute("heal on kill", 0, -1)
-            weapon_melee.AddAttribute("move speed bonus", 1.30, -1)
+            weapon_melee.AddAttribute("mult_player_movespeed_active", 1.3, -1);
             weapon_melee.AddAttribute("dmg taken increased", 1, -1)
             weapon_melee.AddAttribute("damage penalty", 0.40, -1)
-            weapon_melee.AddAttribute("provide on active", 1, -1)
+
+            // Delfite: Removing the original attributes for consistency's sake.
+            weapon_melee.AddAttribute("move speed bonus", 1.0, -1)
+            weapon_melee.AddAttribute("provide on active", 0, -1)
         }
     }
 

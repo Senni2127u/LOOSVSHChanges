@@ -1,7 +1,8 @@
-// Credit: Bradasparky and Senni
-// Usage: Reveals all players during Last Mann Standing.
+// Credit: Bradasparky, Senni, Delfite.
+// The script handles outlining all remaining players during Last Mann Standing.
 // No required modifications to base gamemode files.
-local g_LastMannStandingTriggered = false;
+
+local LastMannStandingTriggered = false;
 
 AddListener("setup_end", 999, function()
 {
@@ -32,20 +33,20 @@ AddListener("setup_start", 999, function()
 {
     foreach (player in GetValidClients())
         SetPropBool(player, "m_bGlowEnabled", false);
-    g_LastMannStandingTriggered = false;
+    LastMannStandingTriggered = false;
 });
 
 function OutlineRemainingPlayers(death)
 {
-    RunWithDelay2(this, 0.5, function()
+    RunWithDelay2(this, 0.05, function()
     {
         local alive = GetAliveMercs();
         local aliveCount = alive.len();
         local bossalive = GetAliveBossPlayers();
 
-        if (aliveCount == 3 && !g_LastMannStandingTriggered && !IsRoundOver())
+        if (aliveCount <= 3 && !LastMannStandingTriggered && !IsRoundOver())
         {
-            g_LastMannStandingTriggered = true;
+            LastMannStandingTriggered = true;
 
             foreach (merc in alive)
             {

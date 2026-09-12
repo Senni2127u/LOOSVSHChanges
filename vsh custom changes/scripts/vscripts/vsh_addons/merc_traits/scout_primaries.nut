@@ -4,7 +4,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-    weapon_primary = null;
+    // weapon_primary = null;
 
     function CanApply()
     {
@@ -13,9 +13,11 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-        weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+        // weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+
         if (WeaponIs(weapon_primary, "scattergun"))
         {
+            weapon_primary.AddAttribute("projectile penetration", 1, -1);
             weapon_primary.AddAttribute("damage bonus", 1.30, -1);
         }
         if (WeaponIs(weapon_primary, "backscatter"))
@@ -28,6 +30,21 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_primary.AddAttribute("reload time decreased", 0.9, -1);
             weapon_primary.AddAttribute("damage bonus", 1.15, -1);
         }
+    }
+
+    lastTimeApplied = 0;
+
+    function OnDamageDealt(victim, params)
+    {
+        // Delfite: Removed check for the Festive FaN, since it's bundled into the regular FaN's index list.
+        if (Time() - lastTimeApplied < 0.1 || !IsBoss(victim)
+            || (!WeaponIs(params.weapon, "force_a_nature")))
+            return;
+        local deltaVector = victim.GetOrigin() - player.GetOrigin();
+        deltaVector.z = 100;
+        local distance = deltaVector.Norm();
+        if (distance < 600)
+            victim.Yeet(deltaVector * (300 - distance / 2));
     }
 
     function OnDiscard()

@@ -12,9 +12,6 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         local pda2 = player.GetWeaponBySlot(TF_WEAPONSLOTS.PDA2);
 
-        if (pda2 != null)
-            pda2.AddAttribute("move speed bonus", 1.20, -1);
-            pda2.AddAttribute("NoCloakWhenCloaked", 1, -1);
         if (WeaponIs(pda2, "cloak_and_dagger"))
         {
             pda2.AddAttribute("set cloak is movement based", 0, -1);
@@ -22,5 +19,11 @@ characterTraitsClasses.push(class extends CharacterTrait
             pda2.AddAttribute("NoCloakWhenCloaked", 1, -1);
             pda2.AddAttribute("ReducedCloakFromAmmo", 1, -1);
         }
+    }
+
+    function OnDamageTaken(attacker, params)
+    {
+        if (player.InCond(TF_COND_STEALTHED) && IsBoss(attacker))
+            params.damage *= 0.5;
     }
 });

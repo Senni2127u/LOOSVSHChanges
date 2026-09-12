@@ -2,16 +2,16 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-    weapon_secondary = null;
+    // weapon_secondary = null;
 
-	function CanApply() //Since these changes only apply to demoman, we only need to check if the player is a demoman. -Delfite
+	function CanApply()
 	{
 		return player.GetPlayerClass() == TF_CLASS_SNIPER;
 	}
 
 	function OnApply()
 	{
-		weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+		// weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
 
 
 		// Delfite: This rebalance of the SMG is intended to make it a TRUE SMG.
@@ -39,7 +39,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 			weapon_secondary.AddAttribute("maxammo secondary increased", 2.67, -1)
 			// 200 spare rounds.
 			weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1)
-			// Perfect accuracy.
+			// Perfectly accurate.
 			// printl("Cleaner's Carbine stats applied.")
 		}
 		player.Regenerate(true)

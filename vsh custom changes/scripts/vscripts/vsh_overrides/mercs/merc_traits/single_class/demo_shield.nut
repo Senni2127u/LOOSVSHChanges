@@ -99,7 +99,7 @@ characterTraitsClasses.push(class extends CharacterTrait
                     if (WeaponIs(wearable, "chargin_targe"))
                     {
                         wearable.AddAttribute("rocket jump damage reduction", 0.4, -1)
-                        wearable.AddAttribute("dmg taken from blast reduced", 0.6, -1)
+                        wearable.AddAttribute("dmg taken from blast reduced", 0.5, -1)
                     }
                 }
         })

@@ -4,7 +4,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-    weapon_melee = null;
+    // weapon_melee = null;
     meleeIsClaidheamhMor = false;
 
     function CanApply()
@@ -14,17 +14,23 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+        // weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
 
         if (WeaponIs(weapon_melee, "claidheamh_mor"))
         {
-            // weapon.AddAttribute("charge meter on hit" 0.25, -1);
             weapon_melee.AddAttribute("dmg taken increased" 1.0, -1);
             meleeIsClaidheamhMor = true;
+        }
+        if (WeaponIs(weapon_melee, "scotsman_skullcutter"))
+        {
+            weapon_melee.AddAttribute("move speed penalty" 1.0, -1);
         }
         if (WeaponIs(weapon_melee, "ullapool_caber"))
         {
             weapon_melee.AddAttribute("rocket jump damage reduction", 0.75, -1)
+            weapon_melee.AddAttribute("item_meter_charge_type", 3, -1)
+            weapon_melee.AddAttribute("mult_item_meter_charge_rate", 3, -1)
+            weapon_melee.AddAttribute("item_meter_damage_for_full_charge", 300, -1)
         }
     }
 

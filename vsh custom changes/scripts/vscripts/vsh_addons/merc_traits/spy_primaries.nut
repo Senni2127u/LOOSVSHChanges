@@ -3,7 +3,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-	weapon_primary = null;
+	// weapon_primary = null;
 
     function CanApply()
     {
@@ -12,7 +12,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-		weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+		// weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
 
         if (WeaponIs(weapon_primary, "any_revolver"))
         {

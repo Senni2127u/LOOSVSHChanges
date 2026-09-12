@@ -35,23 +35,29 @@ class SaxtonPunchTrait extends BossTrait
 
 
     function CritPunchReady()
+    {
+        meter = 0;
+        vsh_vscript.Hale_SetRedArm(boss, true);
+        BossPlayViewModelAnim(boss, "vsh_megapunch_ready");
+        boss.AddCond(TF_COND_CRITBOOSTED);
+
+        // Delfite: Play a sound to everyone on the server to notify them Saxton Punch is charged.
+        // Previously, the sound would just play on Hale, but this method works regardless of distance.
+        EmitSoundOnClient("Weapon_Capper.SingleCrit", boss) //sfx warning when it's fully charged.
+        foreach (player in GetAliveMercs())
         {
-            meter = 0;
-            vsh_vscript.Hale_SetRedArm(boss, true);
-            BossPlayViewModelAnim(boss, "vsh_megapunch_ready");
-            boss.AddCond(TF_COND_CRITBOOSTED);
-            EmitSoundOn("Weapon_Capper.SingleCrit", boss) //sfx warning when it's fully charged.
+            EmitSoundOnClient("Weapon_Capper.SingleCrit", player) //sfx warning when it's fully charged.
         }
+    }
 
     function CritPunchVoiceline()
+    {
+        PlayAnnouncerVO(boss, "saxton_punch_ready");
+        RunWithDelay2(this, 10.0, function() //Some voicelines can be long, overcompensating here for that reason.
         {
-            PlayAnnouncerVO(boss, "saxton_punch_ready");
-            RunWithDelay2(this, 10.0, function() //Some voicelines can be long, overcompensating here for that reason.
-            {
-                playedWarning = false;
-            }
-        )
-        }
+            playedWarning = false;
+        });
+    }
 
     function OnTickAlive(timeDelta)
     {
@@ -63,7 +69,7 @@ class SaxtonPunchTrait extends BossTrait
                 CritPunchReady()
             }
 
-        if (meter >= -3 && !playedWarning)
+            if (meter >= -3 && !playedWarning)
             {
                 playedWarning = true;
                 CritPunchVoiceline();

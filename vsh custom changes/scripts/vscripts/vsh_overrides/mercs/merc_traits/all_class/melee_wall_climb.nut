@@ -29,7 +29,10 @@ function MeleeWallClimb_Hit(params)
 
 function MeleeWallClimb_Check(params)
 {
-    if (params.const_entity == null)
+    if (params.inflictor != null && params.inflictor.IsValid() && params.inflictor.GetClassname() == "tf_projectile_ball_ornament")
+        return false;
+
+    else if (params.const_entity == null)
     {
         printl("No entity");
         return false;
@@ -43,7 +46,7 @@ function MeleeWallClimb_Check(params)
         //case "func_brush": //This doesn't work properly, no clue why, think it has something to do with damage listener. - Senni
         case "prop_dynamic":
         case "prop_dynamic_override":
-            return true; 
+            return true;
     }
 
     if (classname == "tf_projectile_pipe_remote")

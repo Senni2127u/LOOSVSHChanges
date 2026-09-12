@@ -5,7 +5,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 {
     timer = null
     caberChecked = null
-    weapon_melee = null
+    // weapon_melee = null
 
     function CanApply()
     {
@@ -16,7 +16,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         timer = 0
         caberChecked = false
-        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+        // weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
     }
 
     function OnTickAlive(timeDelta)

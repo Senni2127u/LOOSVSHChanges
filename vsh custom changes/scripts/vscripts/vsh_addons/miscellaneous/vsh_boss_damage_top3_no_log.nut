@@ -22,15 +22,15 @@ function GetBoss()
     return bosses[0]; // adjust if you have multi-boss
 }
 
-function GetPlayerName(p)
-{
-    return NetProps.GetPropString(p, "m_szNetname");
-}
+// function GetPlayerName(p)
+// {
+//     return NetProps.GetPropString(p, "m_szNetname");
+// }
 
-function GetPlayerSteamID(p)
-{
-    return NetProps.GetPropString(p, "m_szNetworkIDString");
-}
+// function GetPlayerSteamID(p)
+// {
+//     return NetProps.GetPropString(p, "m_szNetworkIDString");
+// }
 
 function AppendLineToFile(path, line)
 {
@@ -77,7 +77,7 @@ function PrintAndLogTop3(reason)
     for (local i = 0; i < top.len(); i++)
     {
         local p = top[i].player;
-        local name = GetPlayerName(p);
+        local name = p.GetPlayerName();
         printl(format("#%d %s - %d", i + 1, name, top[i].damage));
     }
 
@@ -88,7 +88,7 @@ if (top.len() > 0)
     for (local i = 0; i < top.len(); i++)
     {
         local p = top[i].player;
-        local name = GetPlayerName(p);
+        local name = p.GetPlayerName();
 
         // Gold, Silver, Bronze/Copper
         local color;

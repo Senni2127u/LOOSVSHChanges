@@ -173,8 +173,8 @@ function OnGameEvent_player_disconnect(params)
     FireListeners("disconnect", player, params);
 }
 
-function OnGameEvent_object_deflected(params) {
-
+function OnGameEvent_object_deflected(params)
+{
     local attacker = GetPlayerFromUserID(params["userid"]);
     if (!IsValidPlayer(attacker))
         return;
@@ -190,4 +190,83 @@ function OnGameEvent_scorestats_accumulated_update(params)
     {
         DiscardTraits(player);
     }
+}
+
+function OnGameEvent_gas_doused_player_ignited(params)
+{
+    local douser = EntIndexToHScript(params["douser"]);
+    if (!IsValidPlayer(douser))
+        return;
+    local victim = EntIndexToHScript(params.victim);
+    if (!IsValidPlayer(victim))
+        return;
+    FireListeners("gas_ignition", douser, victim, params);
+}
+
+// Delfite: This table gets cleared automatically on round restart.
+::PlayerBuildings <- {}
+
+function OnGameEvent_player_builtobject(params)
+{
+    local builder = GetPlayerFromUserID(params["userid"]);
+    if (!IsValidPlayer(builder))
+        return;
+    local building = EntIndexToHScript(params.index);
+    if (!(builder in PlayerBuildings))
+        PlayerBuildings[builder] <- []
+    foreach (ent in PlayerBuildings[builder]) // This is indexing a table.
+    {
+        if (ent == building)
+            return;
+    }
+    PlayerBuildings[builder].push(building)
+    // printl(building + " | ObjectType: " + GetPropInt(building, "m_iObjectType")) // Debug. Prints the building that was last built.
+}
+
+function OnGameEvent_object_detonated(params)
+{
+    local builder = GetPlayerFromUserID(params["userid"]);
+    if (!IsValidPlayer(builder))
+        return;
+    local building = EntIndexToHScript(params.index);
+    // index is the key. The key is optional. index and ent will be read at the same time. We want to remove each building by
+    // its index so we remove the correct one when it's destroyed, otherwise they'll be in the wrong order inside the array.
+    // For each key, we have a corresponding value: ent. We iterate through PlayerBuildings to find ent by index.
+    foreach (index, ent in PlayerBuildings[builder]) // This is indexing a table.
+    {
+        if (ent == building)
+        {
+            PlayerBuildings[builder].remove(index)
+            break;
+        }
+    }
+    // printl(building) // Debug. Prints the building that was removed last.
+}
+
+function OnGameEvent_object_destroyed(params)
+{
+    local builder = GetPlayerFromUserID(params["userid"]);
+    if (!IsValidPlayer(builder))
+        return;
+    local building = EntIndexToHScript(params.index);
+    // index is the key. The key is optional. index and ent will be read at the same time. We want to remove each building by
+    // its index so we remove the correct one when it's destroyed, otherwise they'll be in the wrong order inside the array.
+    // For each key, we have a corresponding value: ent. We iterate through PlayerBuildings to find ent by index.
+    foreach (index, ent in PlayerBuildings[builder]) // This is indexing a table.
+    {
+        if (ent == building)
+        {
+            PlayerBuildings[builder].remove(index)
+            break;
+        }
+    }
+    // printl(building) // Debug. Prints the building that was removed last.
+}
+
+function OnGameEvent_player_healed(params)
+{
+    local healer = GetPlayerFromUserID(params.healer);
+    if (!IsValidPlayer(healer))
+        return;
+    FireListeners("patient_healed", healer, params)
 }

@@ -37,7 +37,7 @@ class SweepingChargeTrait extends BossTrait
     voiceRNG = "a";
     bashedByHale = [];
     midAirWindUpOverload = 0;
-    triggerCatapult = null;
+    // triggerCatapult = null;
 
     function OnApply()
     {
@@ -45,21 +45,36 @@ class SweepingChargeTrait extends BossTrait
             hudAbilityInstances[player] <- [];
         hudAbilityInstances[player].push(this);
 
-        triggerCatapult = SpawnEntityFromTable("trigger_catapult", {
-            origin = "0 0 0",
-            spawnflags = 1,
-            StartDisabled = 1,
-            IsEnabled = false,
-            physicsSpeed = 300,
-            playerSpeed = 300,
-            launchDirection = "-90 270 0",
-            filtername = "filter_team_boss"
-        })
+        // Delfite: According to Bradasparky, this catapult does absolutely nothing. Supposedly, it was supposed to make charging up slopes smoother,
+        // but testing shows that to not be the case, so I'm commenting out all of the code associated with it.
+        // triggerCatapult = SpawnEntityFromTable("trigger_catapult", {
+        //     origin = "0 0 0",
+        //     spawnflags = 1,
+        //     StartDisabled = 1,
+        //     IsEnabled = false,
+        //     physicsSpeed = 300,
+        //     playerSpeed = 300,
+        //     launchDirection = "-90 270 0",
+        //     filtername = "filter_team_boss"
+        // })
 
-        triggerCatapult.KeyValueFromInt("solid", 2)
-        triggerCatapult.KeyValueFromString("mins", "-64 -64 -96")
-        triggerCatapult.KeyValueFromString("maxs", "64 64 96")
+        // triggerCatapult.KeyValueFromInt("solid", 2)
+        // triggerCatapult.KeyValueFromString("mins", "-64 -64 -96")
+        // triggerCatapult.KeyValueFromString("maxs", "64 64 96")
         InSweepingCharge = false;
+
+        boss.SetGravity(1.0)
+
+        RunWithDelay2(this, 0.25, function ()
+        {
+            local viewmodel = null;
+            while (viewmodel = FindByClassname(viewmodel, "tf_wearable_vm"))
+                if (viewmodel.GetOwner() == boss)
+                    viewmodel.SetBodygroup(0, 1);
+
+                haleBlueArmEnabled = true;
+                Hale_ColorThirdPersonArms(boss);
+        })
     }
 
     function OnTickAlive(timeDelta)
@@ -73,6 +88,15 @@ class SweepingChargeTrait extends BossTrait
             if (meter > 0)
             {
                 EmitSoundOnClient("TFPlayer.ReCharged", boss);
+
+                local viewmodel = null;
+                while (viewmodel = FindByClassname(viewmodel, "tf_wearable_vm"))
+                    if (viewmodel.GetOwner() == boss)
+                        viewmodel.SetBodygroup(0, 1);
+
+                haleBlueArmEnabled = true;
+                Hale_ColorThirdPersonArms(boss);
+
                 meter = 0;
             }
             else
@@ -150,7 +174,7 @@ class SweepingChargeTrait extends BossTrait
         local haleForwardDirection = boss.EyeAngles().Forward();
         local forwardOffset = haleForwardDirection * 60;
 
-        EntFireByHandle(triggerCatapult, "Enable", "", 0, boss, boss);
+        // EntFireByHandle(triggerCatapult, "Enable", "", 0, boss, boss);
 
         BossPlayViewModelAnim(boss, "vsh_dash_loop");
 
@@ -163,6 +187,10 @@ class SweepingChargeTrait extends BossTrait
         boss.SetGravity(0.3);
         voiceTime = 0;
         midAirWindUpOverload = 0;
+
+        // Delfite: Setting Hale's charge meter here fixes him being able to make sharp turns while looking at the ground.
+        // While it may have looked incredibly silly, it did tend to cause frustration for the person dying to it.
+        SetPropFloat(boss, "m_Shared.m_flChargeMeter", 100);
 
         boss.AddCondEx(TF_COND_SHIELD_CHARGE, chargeDuration, null);
         boss.AddCondEx(TF_COND_KNOCKED_INTO_AIR, chargeDuration, null);
@@ -184,7 +212,7 @@ class SweepingChargeTrait extends BossTrait
         isCurrentlyDashing = false;
         InSweepingCharge = false;
         boss.SetGravity(1);
-        EntFireByHandle(triggerCatapult, "Disable", "", 0, boss, boss)
+        // EntFireByHandle(triggerCatapult, "Disable", "", 0, boss, boss)
         boss.AddCustomAttribute("no_attack", 1, 0.5);
     }
 
@@ -198,7 +226,7 @@ class SweepingChargeTrait extends BossTrait
         SetPropEntity(boss, "m_hGroundEntity", null);
         local force = 1400;
         boss.SetAbsVelocity(haleForwardDirection*force)
-        triggerCatapult.SetAbsOrigin(boss.GetCenter());
+        // triggerCatapult.SetAbsOrigin(boss.GetCenter());
 
         CreateAoEAABB(boss.GetCenter() + forwardOffset, Vector(-65, -65, -80), Vector(65, 65, 130),
             function (target, deltaVector, distance) {
