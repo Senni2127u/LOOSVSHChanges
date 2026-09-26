@@ -30,7 +30,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
             SetPropFloat(params.weapon, "m_flNextPrimaryAttack", Time() + 2.0);
             SetPropFloat(player, "m_flNextAttack", Time() + 2.0);
-            SetPropFloat(player, "m_flStealthNextChangeTime", Time());
+            SetPropFloat(player, "m_Shared.m_flStealthNextChangeTime", Time());
             EmitSoundOn("Player.Spy_Shield_Break", victim);
             if (victim.GetHealth() > params.damage * 2.5)
                 PlayAnnouncerVO(victim, "stabbed");
@@ -41,7 +41,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             }
             else if (WeaponIs(params.weapon, "big_earner"))
             {
-                player.AddCondEx(TF_COND_SPEED_BOOST, 3, player);
+                player.AddCondEx(TF_COND_SPEED_BOOST, 8, player);
                 player.SetSpyCloakMeter(clampFloor(100, player.GetSpyCloakMeter() + 30));
             }
             else if (WeaponIs(params.weapon, "your_eternal_reward") || WeaponIs(params.weapon, "wanga_prick"))

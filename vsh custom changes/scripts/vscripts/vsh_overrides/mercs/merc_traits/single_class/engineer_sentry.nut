@@ -19,6 +19,7 @@ AddListener("setup_start", 0, function()
 	// Most of these commands aren't super useful within the context of VSH, but I thought putting them here would be
 	// good as a means of documenting their existence. Plus, the ammo cheat comes in handy for testing.
 	Convars.SetValue("tf_sentrygun_ammocheat", 0)                                                   // Default: 0
+	Convars.SetValue("tf_sentrygun_notarget", 0)                                                    // Default: 0
 	Convars.SetValue("tf_sentrygun_damage", 16)                                                     // Default: 16
 	Convars.SetValue("tf_sentrygun_kill_after_redeploy_time_achievement", 10)                       // Default: 10
 	Convars.SetValue("tf_sentrygun_max_absorbed_damage_while_controlled_for_achievement", 500)      // Default: 500
@@ -26,17 +27,16 @@ AddListener("setup_start", 0, function()
 	Convars.SetValue("tf_sentrygun_metal_per_shell", 1)                                             // Default: 1
 	Convars.SetValue("tf_sentrygun_mini_damage", 8)                                                 // Default: 8
 	Convars.SetValue("tf_sentrygun_newtarget_dist", 200)                                            // Default: 200
-	Convars.SetValue("tf_sentrygun_notarget", 0)                                                    // Default: 0
 
-	// printl("tf_sentrygun_ammocheat = " + Convars.GetFloat("tf_sentrygun_ammocheat"))
-	// printl("tf_sentrygun_damage = " + Convars.GetFloat("tf_sentrygun_damage"))
-	// printl("tf_sentrygun_kill_after_redeploy_time_achievement = " + Convars.GetFloat("tf_sentrygun_kill_after_redeploy_time_achievement"))
-	// printl("tf_sentrygun_max_absorbed_damage_while_controlled_for_achievement = " + Convars.GetFloat("tf_sentrygun_max_absorbed_damage_while_controlled_for_achievement"))
-	// printl("tf_sentrygun_metal_per_rocket = " + Convars.GetFloat("tf_sentrygun_metal_per_rocket"))
-	// printl("tf_sentrygun_metal_per_shell = " + Convars.GetFloat("tf_sentrygun_metal_per_shell"))
-	// printl("tf_sentrygun_mini_damage = " + Convars.GetFloat("tf_sentrygun_mini_damage"))
-	// printl("tf_sentrygun_newtarget_dist = " + Convars.GetFloat("tf_sentrygun_newtarget_dist"))
-	// printl("tf_sentrygun_notarget = " + Convars.GetFloat("tf_sentrygun_notarget"))
+	// printdev("tf_sentrygun_ammocheat = " + Convars.GetFloat("tf_sentrygun_ammocheat"))
+	// printdev("tf_sentrygun_notarget = " + Convars.GetFloat("tf_sentrygun_notarget"))
+	// printdev("tf_sentrygun_damage = " + Convars.GetFloat("tf_sentrygun_damage"))
+	// printdev("tf_sentrygun_kill_after_redeploy_time_achievement = " + Convars.GetFloat("tf_sentrygun_kill_after_redeploy_time_achievement"))
+	// printdev("tf_sentrygun_max_absorbed_damage_while_controlled_for_achievement = " + Convars.GetFloat("tf_sentrygun_max_absorbed_damage_while_controlled_for_achievement"))
+	// printdev("tf_sentrygun_metal_per_rocket = " + Convars.GetFloat("tf_sentrygun_metal_per_rocket"))
+	// printdev("tf_sentrygun_metal_per_shell = " + Convars.GetFloat("tf_sentrygun_metal_per_shell"))
+	// printdev("tf_sentrygun_mini_damage = " + Convars.GetFloat("tf_sentrygun_mini_damage"))
+	// printdev("tf_sentrygun_newtarget_dist = " + Convars.GetFloat("tf_sentrygun_newtarget_dist"))
 });
 
 PrecacheScriptSound("Powerup.PickUpTemp.Crit")
@@ -45,7 +45,10 @@ PrecacheScriptSound("Building_Sentry.Damage")
 characterTraitsClasses.push(class extends CharacterTrait
 {
 	weapon_primary = null;
+	weapon_secondary = null;
 	weapon_melee = null;
+	Pistol = null;
+    sentrygun = null;
 	sentryDamageAccumulated = 0;
 
     sentry_level_limit = 2
@@ -56,8 +59,11 @@ characterTraitsClasses.push(class extends CharacterTrait
     teleporter_exit = null;
 
 	lastHitSentry = null;
+    sentryCritsActive = false;
 	primaryIsFrontierJustice = false;
 	usingMiniSentry = false;
+
+    you = null;
 
 
 	function CanApply()
@@ -68,25 +74,56 @@ characterTraitsClasses.push(class extends CharacterTrait
     // TODO: Implement "Building_Sentrygun.ShaftLaserPass" as a ScriptSound that plays when Hale gets spotted by a wrangled sentry.
     function OnApply()
     {
+        you = player;
         weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+        weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
         weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
 
         if (WeaponIs(weapon_primary, "frontier_justice"))
             primaryIsFrontierJustice = true;
         if (WeaponIs(weapon_melee, "gunslinger"))
             usingMiniSentry = true;
+        if (WeaponIs(weapon_secondary, "pistol"))
+            Pistol = weapon_secondary
+    }
+
+    function OnObjectBuilt(builder, building, params)
+    {
+        local building_type = GetPropInt(building, "m_iObjectType")
+        if (building_type == 2)
+            sentrygun = building
+        // printdev("building: " + sentrygun)
+    }
+
+    function OnObjectDestroyed(builder, building, params)
+    {
+        local building_type = GetPropInt(building, "m_iObjectType")
+        if (building_type == 2)
+            sentrygun = null;
+        // printdev("building: " + sentrygun)
     }
 
 
     function OnDamageTaken(attacker, params)
     {
-        // if (params.inflictor != null && IsValidBoss(inflictor))
-        // {
-        //     for (local sentrygun; sentrygun = Entities.FindByClassname(sentrygun, "obj_sentrygun");)
-        //     {
-        //         EmitSoundOn("Building_Sentry.Damage", sentrygun)
-        //     }
-        // }
+        if (params.const_entity == sentrygun)
+        {
+            // for (local sentrygun; sentrygun = Entities.FindByClassname(sentrygun, "obj_sentrygun");)
+            // {
+            printdev("Sentry took damage.")
+            EmitSoundOn("Building_Sentry.Damage", sentrygun)
+            // foreach (building in PlayerBuildings[player])
+            // {
+            //     printdev("Scanning for sentry...")
+            //     local building_type = GetPropInt(building, "m_iObjectType")
+            //     if (building_type == 2)
+            //     {
+            //         printdev("Playing sound on sentry...")
+            //         EmitSoundOn("Building_Sentry.Damage", sentrygun)
+            //     }
+            // }
+            // }
+        }
     }
 
     function OnDamageDealt(victim, params)
@@ -98,18 +135,31 @@ characterTraitsClasses.push(class extends CharacterTrait
             // from Hale, making map traversal much more annoying for him and creating a not-so-fun-to-fight-against situation for him. This, combined with
             // multiple sentries often being in play, necessitated a solution. Sentries now inflict SUBSTANTIALLY less knockback on Hale, but sentries will
             // be easier to build in order to compensate. Hopefully this rework makes Engineer more fun to play as and against.
-            params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
+            
+            if (player.IsAlive())
+            {
+                params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
+                foreach (player in GetAliveMercs())
+                {
+                    if (player.GetPlayerClass() == TF_CLASS_MEDIC && player.GetHealTarget() == you)
+                    {
+                        local chargeReleased = GetPropBool(weapon_secondary, "m_bChargeRelease")
+                        if (player.chargeReleased)
+                            params.damage_type = DMG_PREVENT_PHYSICS_FORCE | Constants.FDmgType.DMG_ACID;
+                    }
+                }
+            }
+            else
+                params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
+
             params.damage *= usingMiniSentry ? 0.8 : 0.5;
             lastHitSentry = params.inflictor;
-            // printl("Sentrygun dealt damage!")
-            // printl(params.damage_type + " | " + params.inflictor)
+            // printdev("Sentrygun dealt damage!")
+            // printdev(params.damage_type + " | " + params.inflictor)
             local deltaVector = victim.GetCenter() - params.inflictor.GetOrigin();
             deltaVector.Norm();
             victim.Yeet(deltaVector * 5);
-
-            // TODO: Give the Tomislav a move speed bonus.
-
-            // printl(lastHitSentry)
+            // printdev(lastHitSentry)
 
 
 
@@ -128,7 +178,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             //     if (sentry_metal >= 0 && sentry_level < 3)
             //         SetPropInt(lastHitSentry, "m_iUpgradeMetal", clampCeiling(sentry_metal_required, sentry_metal + 2))
 
-            //     // printl("Sentry Upgrade Metal: " + GetPropInt(lastHitSentry, "m_iUpgradeMetal"))
+            //     // printdev("Sentry Upgrade Metal: " + GetPropInt(lastHitSentry, "m_iUpgradeMetal"))
             // }
 
             foreach (building in PlayerBuildings[player])
@@ -158,8 +208,8 @@ characterTraitsClasses.push(class extends CharacterTrait
                         SetPropInt(building, "m_iUpgradeMetal", clampCeiling(sentry_metal_required, sentry_metal + 2))
                             break;
                     default:
-                        printl("Unknown ObjectType found: " + building_type + " | " + building)
-                        printl("If you see this message, screenshot your console and send it to me on Discord: @delfite.")
+                        printdev("Unknown ObjectType found: " + building_type + " | " + building)
+                        printdev("If you see this message, screenshot your console and send it to me on Discord: @delfite.")
                             break;
                 }
             }
@@ -190,7 +240,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         {
             if (lastHitSentry != null)
             {
-                // printl(GetPropInt(player, "m_Shared.m_iRevengeCrits"));
+                // printdev(GetPropInt(player, "m_Shared.m_iRevengeCrits"));
                 //Frontier Justice crits.
                 sentryDamageAccumulated += params.damageamount;
                 while (sentryDamageAccumulated >= 120)
@@ -222,6 +272,23 @@ characterTraitsClasses.push(class extends CharacterTrait
         if (!(player in PlayerBuildings))
             return;
 
+        local projectile = null;
+        while (projectile = FindByClassname(projectile, "tf_projectile_sentryrocket"))
+        {
+            // printdev("Projectile Owner: " + projectile.GetOwner())
+            if (projectile.GetOwner() == sentrygun) // projectile is a class object, aka an "instance".
+            {
+                projectile.ValidateScriptScope()
+                local projectileScope = projectile.GetScriptScope();
+                if (!("CHECKED" in projectileScope))
+                {
+                    projectile.SetAbsVelocity(projectile.GetAbsVelocity() * 2)
+                    // printdev(projectile + " | " + projectile.GetAbsVelocity())
+                    projectileScope["CHECKED"] <- null;
+                }
+            }
+        }
+
         local entrance = null;
         local exit = null;
         local entrance_level = 0;
@@ -236,13 +303,13 @@ characterTraitsClasses.push(class extends CharacterTrait
                 {
                     entrance = building
                     entrance_level = GetPropInt(entrance, "m_iUpgradeLevel")
-                    // printl("Found an Entrance.")
+                    // printdev("Found an Entrance.")
                 }
                 else if (GetPropInt(building, "m_iObjectMode") == 1)
                 {
                     exit = building
                     exit_level = GetPropInt(exit, "m_iUpgradeLevel")
-                    // printl("Found an Exit.")
+                    // printdev("Found an Exit.")
                 }
             }
         }
@@ -252,13 +319,13 @@ characterTraitsClasses.push(class extends CharacterTrait
             {
                 SetPropInt(exit, "m_iUpgradeMetal", 0)
                 SetPropInt(exit, "m_iUpgradeLevel", entrance_level)
-                printl("Trying upgrade on Exit.")
+                printdev("Trying upgrade on Exit.")
             }
             if (entrance_level < exit_level)
             {
                 SetPropInt(entrance, "m_iUpgradeMetal", 0)
                 SetPropInt(entrance, "m_iUpgradeLevel", exit_level)
-                printl("Trying upgrade on Entrance.")
+                printdev("Trying upgrade on Entrance.")
             }
         }
     }

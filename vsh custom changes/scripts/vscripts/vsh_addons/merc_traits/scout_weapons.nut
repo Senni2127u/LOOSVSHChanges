@@ -1,0 +1,198 @@
+// Script by: Senni, Delfite.
+// With assistance from: Bradasparky.
+// Script handles everything to do with Scout's weapons.
+// All code in this script was previously split into 3 different scripts, one for each weapon slot.
+// The code was merged into one file for easier variable management, reduced lag when using Tick functions, and slightly better RAM usage.
+// Requires modification of `weapons.nut` to function.
+
+totalHealthKits <- 0;
+
+characterTraitsClasses.push(class extends CharacterTrait
+{
+    weapon_primary = null;
+    weapon_secondary = null;
+    weapon_melee = null;
+
+    //Primary handles.
+    ForceANature = null;
+
+    //Secondary handles.
+
+    // Melee handles.
+    BostonBasher = null;
+    CandyCane = null;
+
+    lastTimeApplied = 0;
+
+    function CanApply()
+    {
+        return player.GetPlayerClass() == TF_CLASS_SCOUT;
+    }
+
+    function OnApply()
+    {
+        weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+        weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+
+        // Primary definitions.
+        if (WeaponIs(weapon_primary, "scattergun"))
+        {
+            weapon_primary.AddAttribute("damage bonus", 1.40, -1);
+        }
+        else if (WeaponIs(weapon_primary, "force_a_nature"))
+        {
+            ForceANature = weapon_primary;
+        }
+        else if (WeaponIs(weapon_primary, "backscatter"))
+        {
+            weapon_primary.AddAttribute("spread penalty", 1.0, -1);
+        }
+        else if (WeaponIs(weapon_primary, "shortstop"))
+        {
+            weapon_primary.AddAttribute("weapon spread bonus", 0.35, -1);
+            weapon_primary.AddAttribute("reload time decreased", 0.9, -1);
+            weapon_primary.AddAttribute("damage bonus", 1.15, -1);
+        }
+
+        // Secondary definitions.
+        if (WeaponIs(weapon_secondary, "pistol"))
+        {
+            // RunWithDelay2(this, 0.1, function ()
+            // {
+                weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
+                SetPropInt(player, "m_iAmmo.002", 144)
+                // Delfite: Failed attempt at assigning a damage type to a weapon.
+                // SetPropInt(weapon_secondary, "m_nDamageType", TF_DMG_CUSTOM_PENETRATE_MY_TEAM)
+                // printdev(GetPropInt(weapon_secondary, "m_nDamageType"))
+                weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
+                weapon_secondary.AddAttribute("fire rate bonus", 0.85, -1);
+                weapon_secondary.AddAttribute("damage bonus", 1.25, -1);
+
+                // printdev("Pistol stats applied.")
+            // })
+        }
+        else if (WeaponIs(weapon_secondary, "pbpp"))
+        {
+            weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
+            SetPropInt(player, "m_iAmmo.002", 144)
+            weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
+            weapon_secondary.AddAttribute("heal on hit for rapidfire", 5, -1); // Decimals get rounded to the nearest whole number.
+            weapon_secondary.AddAttribute("projectile penetration", 1, -1);
+            // Delfite: So, it turns out `player.Regenerate` is hard-coded to only restore
+            // 36 reserve ammo to the PBPP SPECIFICALLY. My bewilderment is immeasurable.
+			// printdev("PBPP stats applied.")
+        }
+        else if (WeaponIs(weapon_secondary, "winger"))
+        {
+            weapon_secondary.AddAttribute("maxammo secondary increased", 4.0, -1);
+            SetPropInt(player, "m_iAmmo.002", 144)
+            weapon_secondary.AddAttribute("weapon spread bonus", 0.0, -1);
+            weapon_secondary.AddAttribute("projectile penetration", 1, -1);
+			// printdev("Winger stats applied.")
+        }
+		else if (WeaponIs(weapon_secondary, "bonk_atomic_punch"))
+        {
+            weapon_secondary.AddAttribute("effect bar recharge rate increased", 0.65, -1);
+			// printdev("Bonk stats applied.")
+        }
+		else if (WeaponIs(weapon_secondary, "crit_a_cola"))
+        {
+            weapon_secondary.AddAttribute("mod_mark_attacker_for_death", 0, -1);
+            weapon_secondary.AddAttribute("effect bar recharge rate increased", 0.65, -1);
+			// printdev("Crit-a-cola stats applied.")
+        }
+		else if (WeaponIs(weapon_secondary, "flying_guillotine"))
+        {
+            weapon_secondary.AddAttribute("minicrits become crits", 1, -1);
+            // Delfite: 225 damage crit, accounting for bleed.
+            // weapon_secondary.AddAttribute("Projectile speed increased", 2.0, -1);
+            // Delfite: NO! Projectile speed doesn't work on throwables! I hate you Valve!
+            weapon_secondary.AddAttribute("effect bar recharge rate increased", 1.6, -1);
+            // Delfite: Recharge time: 5 seconds -> 8 seconds (+60%)
+            // Delfite: To compensate for the staggering crit damage, we'll make the cleaver take longer to recharge.
+			// printdev("Guillotine stats applied.")
+        }
+
+        // Melee definitions.
+        if (WeaponIs(weapon_melee, "bat"))
+        {
+            // weapon_melee.AddAttribute("damage bonus", 1.86, -1);
+            // printdev("Bat stats applied.")
+        }
+        else if (WeaponIs(weapon_melee, "atomizer"))
+        {
+            weapon_melee.AddAttribute("deploy time increased", 1.25, -1);
+            // printdev("Atomizer stats applied.")
+        }
+        else if (WeaponIs(weapon_melee, "boston_basher"))
+        {
+            BostonBasher = weapon_melee;
+            weapon_melee.AddAttribute("damage bonus", 1.5, -1);
+            weapon_melee.AddAttribute("bleeding duration", 8, -1);
+            // printdev("Boston Basher stats applied.")
+        }
+        else if (WeaponIs(weapon_melee, "candy_cane"))
+        {
+            CandyCane = weapon_melee;
+            weapon_melee.AddAttribute("dmg taken from blast increased", 1.0, -1);
+            // printdev("Candy Cane stats applied.")
+        }
+    }
+
+    function OnDamageDealt(victim, params)
+    {
+        if (params.weapon == ForceANature || Time() - lastTimeApplied < 0.1 || !IsBoss(victim))
+            return;
+        local deltaVector = victim.GetOrigin() - player.GetOrigin();
+        deltaVector.z = 100;
+        local distance = deltaVector.Norm();
+        if (distance < 600)
+            victim.Yeet(deltaVector * (300 - distance / 2));
+
+        if (params.weapon == CandyCane)
+        {
+            if (!(params.damage_type & 128) || vsh_vscript.totalHealthKits > 30)
+                return;
+            local healthKit = SpawnEntityFromTable("item_healthkit_small", {
+                "OnPlayerTouch": "!self,Kill,,0,-1",
+            });
+            vsh_vscript.totalHealthKits++;
+            healthKit.SetMoveType(Constants.EMoveType.MOVETYPE_FLYGRAVITY, Constants.EMoveCollide.MOVECOLLIDE_FLY_BOUNCE);
+            healthKit.SetAbsOrigin(victim.GetCenter());
+            healthKit.SetVelocity(Vector(RandomFloat(-50, 50), RandomFloat(-50, 50), 250));
+            RunWithDelay2(this, 30, function(healthKit)
+            {
+                vsh_vscript.totalHealthKits--;
+                if (healthKit != null && healthKit.IsValid())
+                    healthKit.Kill();
+            }, healthKit);
+        }
+
+        if (params.weapon == BostonBasher && victim == player)
+        {
+            player.RemoveCond(TF_COND_BLEEDING)
+            if (params.damage_type & DMG_CLUB)
+            {
+                // Delfite: Give the player some extra height when they hit themselves with the Boston Basher.
+                local deltaVector = player.GetCenter() - params.inflictor.GetOrigin();
+                deltaVector.Norm();
+                player.Yeet(deltaVector * 400);
+                params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
+                // printdev("Player launched.")
+            }
+        }
+    }
+
+    function OnDiscard()
+	{
+		// Delfite: We perform IsValid on the weapons so we know they're not still storing information on an entity that doesn't exist.
+        if (weapon_primary && weapon_primary.IsValid())
+        {
+            weapon_primary.RemoveAttribute("damage bonus");
+            weapon_primary.RemoveAttribute("weapon spread bonus");
+            weapon_primary.RemoveAttribute("reload time decreased");
+            //printdev("Secondary attributes discarded.")
+        }
+	}
+});

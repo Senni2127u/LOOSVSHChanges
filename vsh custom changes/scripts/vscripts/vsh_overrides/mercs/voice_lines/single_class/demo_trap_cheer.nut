@@ -12,22 +12,41 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-characterTraitsClasses.push(class extends CharacterTrait
+PrecacheArbitrarySound("demo.trap_cheer")
+PrecacheArbitrarySound("vsh_sfx.gardened")
+
+characterTraitsClasses.push(class extends CustomVoiceLine
 {
+    playInterval = 0.5;
+    damageDoneRecently = 0;
+    isCrit = false;
+
     function CanApply()
     {
-        local playerClass = player.GetPlayerClass();
-        return playerClass == TF_CLASS_SOLDIER || playerClass == TF_CLASS_PYRO;
+        return player.GetPlayerClass() == TF_CLASS_DEMOMAN;
+    }
+
+    function OnTickAlive(tickDelta)
+    {
+        damageDoneRecently = clampFloor(0, damageDoneRecently / 2.0);
     }
 
     function OnDamageDealt(victim, params)
     {
-        if (!victim.IsPlayer() || victim.IsOnGround() || victim.GetWaterLevel() >= 2 || victim == player)
+        isCrit = params.damage_type & DMG_ACID
+    }
+
+    function OnHurtDealtEvent(victim, params)
+    {
+        if (!IsBoss(victim) || Time() - lastPlay < playInterval)
             return;
-        if (WeaponIs(params.weapon, "direct_hit") || WeaponIs(params.weapon, "reserve_shooter"))
+        damageDoneRecently += params.damageamount;
+        if (damageDoneRecently > 500)
         {
-            // params.crit_type = 1;
-            params.damage_type = params.damage_type | Constants.FDmgType.DMG_ACID;
+            lastPlay = Time();
+            EmitPlayerVO(player, "trap_cheer");
+            if (isCrit)
+                EmitSoundOn("vsh_sfx.gardened", player);
         }
     }
 });

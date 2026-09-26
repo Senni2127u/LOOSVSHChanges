@@ -1,6 +1,8 @@
 // Script by: Delfite, with assistance from Bradasparky.
 // This monstrosity of a script is responsible for making the mercs more efficient while under the Buff Banner's effects.
 
+// Delfite: The first of the more advanced scripts I made for LOOS VSH. Brad helped me learn a lot while working on this thing.
+
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
@@ -25,7 +27,6 @@ characterTraitsClasses.push(class extends CharacterTrait
     weapon_melee_fire_rate = 1;
     weapon_melee_construction_rate = 1;
     weapon_melee_sentry_fire_rate = 1;
-    //TODO: Make sniper rifles charge faster while under the banner's effects.
 
     function OnApply()
     {
@@ -63,19 +64,19 @@ characterTraitsClasses.push(class extends CharacterTrait
                         weapon_primary_reload_speed = weapon_primary.GetAttribute("Reload time decreased", 1.0)
                         weapon_primary.AddAttribute("fire rate bonus", weapon_primary_fire_rate - 0.25, -1);
                         weapon_primary.AddAttribute("Reload time decreased", weapon_primary_reload_speed - 0.35, -1);
-                        //printl("Rocket/Grenade Launcher buffs applied.")
+                        //printdev("Rocket/Grenade Launcher buffs applied.")
                     }
                     else if (weapon_primary.GetClassname() == "tf_weapon_flamethrower")
                     {
                         weapon_primary_fire_rate = weapon_primary.GetAttribute("fire rate bonus", 1.0)
                         weapon_primary.AddAttribute("damage bonus", weapon_primary_fire_rate - 0.15, -1)
-                        //printl("Flamethrower buff applied.")
+                        //printdev("Flamethrower buff applied.")
                     }
                     else if (weapon_primary.GetClassname() == "tf_weapon_rocketlauncher_fireball") // Delfite: The damage bonus attribute gets inverted on the DF for some reason.
                     {
                         weapon_primary_fire_rate = weapon_primary.GetAttribute("fire rate bonus", 1.0)
                         weapon_primary.AddAttribute("damage bonus", weapon_primary_fire_rate + 0.15, -1)
-                        //printl("Dragon's Fury buff applied.")
+                        //printdev("Dragon's Fury buff applied.")
                     }
                     else
                     {
@@ -83,12 +84,12 @@ characterTraitsClasses.push(class extends CharacterTrait
                         weapon_primary_reload_speed = weapon_primary.GetAttribute("Reload time decreased", 1.0)
                         weapon_primary.AddAttribute("fire rate bonus", weapon_primary_fire_rate - 0.15, -1);
                         weapon_primary.AddAttribute("Reload time decreased", weapon_primary_reload_speed - 0.5, -1);
-                        //printl("Generic primary buffs applied.")
+                        //printdev("Generic primary buffs applied.")
                         if (WeaponIs(weapon_primary, "any_sniperrifle"))
                         {
                             weapon_primary_SRifle_charge_rate = weapon_primary.GetAttribute("SRifle Charge rate increased", 1.0)
                             weapon_primary.AddAttribute("SRifle Charge rate increased", weapon_primary_SRifle_charge_rate + 1.0, -1)
-                            //printl("Sniper Rifle buff applied.")
+                            //printdev("Sniper Rifle buff applied.")
                         }
                     }
                 }
@@ -105,9 +106,9 @@ characterTraitsClasses.push(class extends CharacterTrait
                     if (player.GetPlayerClass() == 5) // Delfite: Is the player a Medic?
                     {
                         weapon_secondary.AddAttribute("ubercharge rate bonus", weapon_secondary_ubercharge_rate + 0.15, -1);
-                        //printl("Ubercharge buff removed.")
+                        //printdev("Ubercharge buff removed.")
                     }
-                    //printl("Generic secondary buff applied.")
+                    //printdev("Generic secondary buff applied.")
                     //TODO: Make buildings construct much faster while under Mini-crits
                 }
             }
@@ -123,12 +124,12 @@ characterTraitsClasses.push(class extends CharacterTrait
                         weapon_melee_sentry_fire_rate = weapon_melee.GetAttribute("engy sentry fire rate increased", 1.0)
                         weapon_melee.AddAttribute("Construction rate increased", weapon_melee_construction_rate + 0.7, -1);
                         weapon_melee.AddAttribute("engy sentry fire rate increased", weapon_melee_sentry_fire_rate - 0.10, -1)
-                        //printl("Building construction buff applied.")
+                        //printdev("Building construction buff applied.")
                     }
-                    //printl("Generic melee buff applied.")
+                    //printdev("Generic melee buff applied.")
                 }
             }
-            //printl("didWeApplyOurStatsYetWhileUnderTheBanner = true"); //Debug
+            //printdev("didWeApplyOurStatsYetWhileUnderTheBanner = true"); //Debug
         }
         else
         {
@@ -145,27 +146,27 @@ characterTraitsClasses.push(class extends CharacterTrait
                     {
                         weapon_primary.AddAttribute("fire rate bonus", weapon_primary_fire_rate, -1);
                         weapon_primary.AddAttribute("Reload time decreased", weapon_primary_reload_speed, -1);
-                        //printl("Rocket/Grenade Launcher buffs removed.")
+                        //printdev("Rocket/Grenade Launcher buffs removed.")
                     }
                     else if (weapon_primary.GetClassname() == "tf_weapon_flamethrower")
                     {
                         weapon_primary.AddAttribute("damage bonus", weapon_primary_fire_rate, -1)
-                        //printl("Flamethrower buff removed.")
+                        //printdev("Flamethrower buff removed.")
                     }
                     else if (weapon_primary.GetClassname() == "tf_weapon_rocketlauncher_fireball") // Delfite: The damage bonus attribute gets inverted on the DF for some reason.
                     {
                         weapon_primary.AddAttribute("damage bonus", weapon_primary_fire_rate, -1)
-                        //printl("Dragon's Fury buff removed.")
+                        //printdev("Dragon's Fury buff removed.")
                     }
                     else
                     {
                         weapon_primary.AddAttribute("fire rate bonus", weapon_primary_fire_rate, -1);
                         weapon_primary.AddAttribute("Reload time decreased", weapon_primary_reload_speed, -1);
-                        //printl("Generic primary buffs removed.")
+                        //printdev("Generic primary buffs removed.")
                         if (WeaponIs(weapon_primary, "any_sniperrifle"))
                         {
                             weapon_primary.AddAttribute("SRifle Charge rate increased", weapon_primary_SRifle_charge_rate, -1)
-                            //printl("Sniper Rifle buff removed.")
+                            //printdev("Sniper Rifle buff removed.")
                         }
                     }
                 }
@@ -180,10 +181,10 @@ characterTraitsClasses.push(class extends CharacterTrait
                     if (player.GetPlayerClass() == 5) // Delfite: Is the player a Medic?
                     {
                         weapon_secondary.AddAttribute("ubercharge rate bonus", weapon_secondary_ubercharge_rate, -1);
-                        //printl("Ubercharge buff removed.")
+                        //printdev("Ubercharge buff removed.")
                     }
 
-                    //printl("Generic secondary buffs removed.")
+                    //printdev("Generic secondary buffs removed.")
                 }
             }
 
@@ -192,12 +193,12 @@ characterTraitsClasses.push(class extends CharacterTrait
                 if (!WeaponIs(weapon_melee, "market_gardener"))
                 {
                     weapon_melee.AddAttribute("fire rate bonus", weapon_melee_fire_rate, -1);
-                    //printl("Generic melee buff removed.")
+                    //printdev("Generic melee buff removed.")
                     if (player.GetPlayerClass() == 9) // Delfite: Is the player an Engineer?
                     {
                         weapon_melee.AddAttribute("Construction rate increased", weapon_melee_construction_rate, -1);
                         weapon_melee.AddAttribute("engy sentry fire rate increased", weapon_melee_sentry_fire_rate, -1)
-                        //printl("Building construction buff removed.")
+                        //printdev("Building construction buff removed.")
                     }
                 }
             }
@@ -213,7 +214,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_primary.RemoveAttribute("Reload time decreased");
             weapon_primary.RemoveAttribute("damage bonus");
             weapon_primary.RemoveAttribute("SRifle Charge rate increased");
-            //printl("Primary attributes discarded.")
+            //printdev("Primary attributes discarded.")
         }
 
         if (weapon_secondary && weapon_secondary.IsValid())
@@ -222,7 +223,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_secondary.RemoveAttribute("Reload time decreased");
             weapon_secondary.RemoveAttribute("engy sentry fire rate increased");
             weapon_secondary.RemoveAttribute("ubercharge rate bonus");
-            //printl("Secondary attributes discarded.")
+            //printdev("Secondary attributes discarded.")
         }
 
         if (weapon_melee && weapon_melee.IsValid())
@@ -230,7 +231,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_melee.RemoveAttribute("fire rate bonus");
             weapon_melee.RemoveAttribute("Construction rate increased");
             weapon_melee.RemoveAttribute("engy sentry fire rate increased");
-            //printl("Melee attributes discarded.")
+            //printdev("Melee attributes discarded.")
         }
     }
 });

@@ -41,7 +41,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         {
             ::killer <- player
             ::assister <- GetPlayerFromUserID(params.assister)
-            // printl("Killer: " + killer + " | Assister: " + assister)
+            // printdev("Killer: " + killer + " | Assister: " + assister)
         }
     }
 })
@@ -53,11 +53,11 @@ AddListener("round_end", 0, function (winnerTeam)
 
     foreach (player in GetAliveMercs())
     {
-        // printl("Searching through players...")
+        // printdev("Searching through players...")
         if (player == killer && killer.GetPlayerClass() == TF_CLASS_MEDIC)
         {
-            // printl("Killer found.")
-            // printl("The killer is a Medic.")
+            // printdev("Killer found.")
+            // printdev("The killer is a Medic.")
             RunWithDelay2(this, 1.5, function ()
             {
                 // EmitSoundOn("medic_hat_taunts0" + RandomInt(1,4), killer)
@@ -72,8 +72,8 @@ AddListener("round_end", 0, function (winnerTeam)
         }
         else if (player == assister && assister.GetPlayerClass() == TF_CLASS_MEDIC)
         {
-            // printl("Assister found.")
-            // printl("The assister is a Medic.")
+            // printdev("Assister found.")
+            // printdev("The assister is a Medic.")
             RunWithDelay2(this, 1.5, function ()
             {
                 // EmitSoundOn("medic_hat_taunts0" + RandomInt(1,4), assister)

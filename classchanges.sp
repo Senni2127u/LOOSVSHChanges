@@ -3,17 +3,18 @@
 
 #include <sourcemod>
 #include <sdktools>
+#include <sdkhooks>
 #include <tf2>
 #include <tf2_stocks>
 
-#define PLUGIN_VERSION  "2.1"
+#define PLUGIN_VERSION  "2.2"
 #define MAX_LINE_LEN    96
 #define MAX_WEAPON_NAME 64
 
 public Plugin myinfo =
 {
     name        = "VSH Class Changes",
-    author      = "Senni",
+    author      = "Senni, Delfite",
     description = "Displays custom class balance changes, filtered to the weapons the player currently has equipped.",
     version     = PLUGIN_VERSION
 };
@@ -57,6 +58,7 @@ public void OnPluginStart()
     g_Entries = new ArrayList(sizeof(ChangeEntry));
     BuildChangeEntries();
     ApplyDefindexOverrides();
+    HookEvent("player_spawn", Event_OnPlayerSpawn);
 }
 
 public void OnMapStart()
@@ -66,6 +68,14 @@ public void OnMapStart()
         delete g_hAdvertTimer;
     }
     g_hAdvertTimer = CreateTimer(60.0, Timer_Advert, _, TIMER_REPEAT);
+}
+
+void Event_OnPlayerSpawn(Event event, const char[] name, bool dontBroadcast)
+{
+    int client_id = event.GetInt("userid");
+    int client = GetClientOfUserId(client_id);
+    
+    ShowClassChanges(client);
 }
 
 public Action Timer_Advert(Handle timer)
@@ -320,7 +330,7 @@ void BuildChangeEntries()
 {
     // ===================== SCOUT =====================
     AddEntry(TFClass_Scout, "Scattergun");
-    AddLine("Damage increased by 30%.");
+    AddLine("Damage increased by 40%.");
 
     AddEntry(TFClass_Scout, "Shortstop");
     AddLine("Accuracy increased by 65%.");
@@ -355,6 +365,18 @@ void BuildChangeEntries()
     AddEntry(TFClass_Scout, "Flying Guillotine", Slot_Secondary);
     AddLine("Crits whenever it would normally mini-crit.");
     AddLine("Recharge time increased from 5 to 8 seconds (+60%).");
+
+    AddEntry(TFClass_Scout, "Atomizer", Slot_Melee);
+    AddLine("Deploy speed penalty reduced: +50% -> +25%.");
+
+    AddEntry(TFClass_Scout, "Candy Cane", Slot_Melee);
+    AddLine("Explosive damage vulnerability removed.");
+
+    AddEntry(TFClass_Scout, "Boston Basher", Slot_Melee);
+    AddLine("Damage increased from 105 to 158 (+50%).");
+    AddLine("Bleed duration increased from 5 seconds to 8 seconds.");
+    AddLine("You no longer bleed when you hit yourself.");
+    AddLine("Hitting yourself grants a significant boost in upward momentum.");
 
     // ===================== SOLDIER =====================
     AddEntry(TFClass_Soldier, "Rocket Launcher");
@@ -567,22 +589,64 @@ void BuildChangeEntries()
     // ===================== MEDIC =====================
     AddEntry(TFClass_Medic, "");
     AddLine("Spawn with 100% UberCharge.");
+    AddLine("-50% Ubercharge build rate while healing another Medic.");
 
     AddEntry(TFClass_Medic, "Syringe Gun");
-    AddLine("Fire rate increased by 15%.");
-    AddLine("Syringe velocity doubled.");
+    AddLine("Fire rate increased by +30%.");
+    AddLine("Reload speed increased by +40%.");
+    AddLine("Reserve ammo doubled (150 -> 300).");
     AddLine("Damage per syringe increased from 10 to 15 (+50%).");
+    AddLine("Gain +0.8% Ubercharge on hit.");
 
     AddEntry(TFClass_Medic, "Blutsauger");
-    AddLine("Fire rate increased by 15%.");
-    AddLine("Syringe velocity doubled.");
+    AddLine("Fire rate increased by 30%.");
+    AddLine("Reload speed increased by +40%.");
+    AddLine("Reserve ammo doubled (150 -> 300).");
     AddLine("Health on hit increased from 3 to 5.");
 
     AddEntry(TFClass_Medic, "Overdose");
-    AddLine("Fire rate increased by 15%.");
-    AddLine("Syringe velocity doubled.");
-    AddLine("Movement speed on wearer increased by 20%.");
+    AddLine("Fire rate increased by 30%.");
+    AddLine("Reload speed increased by +40%.");
+    AddLine("Reserve ammo doubled (150 -> 300).");
+    AddLine("Damage penalty increased .");
+    AddLine("Movement speed on wearer increased by 20% (10% with the Vita-Saw).");
     AddLine("Speed bonus no longer scales down with UberCharge.");
+
+    AddEntry(TFClass_Medic, "Crusader's Crossbow");
+    AddLine("Damage reduced by -60% while under the Kritzkrieg's effects.");
+
+    AddEntry(TFClass_Medic, "Medigun");
+    AddLine("Heal from your own Ubercharge.");
+    AddLine("You must have your Medigun out in order to benefit from the healing.");
+    AddLine("While being healed by your Medigun, other Medics will have their Ubercharge build rate reduced by 90% while healing you.");
+
+    AddEntry(TFClass_Medic, "Kritzkrieg");
+    AddLine("Ubercharge duration increased: 8 seconds -> 10 seconds.");
+    AddLine("Heal from your own Ubercharge.");
+    AddLine("You do not need to have your Medigun out in order to benefit from the healing.");
+    AddLine("While being healed by your Medigun: Other Medics will have their Ubercharge build rate reduced by 90% while healing you.");
+    AddLine("Grants critical hits and infinite ammo to all of your weapons and to your patient while your charge is draining.");
+    AddLine("If you or your patient are out of ammo, both of you will be granted 1 ammo.");
+    AddLine("Collecting ammo during the charge will result in no ammo being granted to either of you.");
+
+    AddEntry(TFClass_Medic, "Quick-Fix");
+    AddLine("Max overheal penalty removed.");
+
+    AddEntry(TFClass_Medic, "Bonesaw");
+    AddLine("+25% movement speed while active.");
+
+    AddEntry(TFClass_Medic, "Ubersaw");
+    AddLine("Firing speed penalty removed.");
+    AddLine("Ubercharge gained on hit reduced: +25% -> +20%.");
+
+    AddEntry(TFClass_Medic, "Vita-Saw");
+    AddLine("+7.5% movement speed per organ harvested (Max: +30%).");
+    AddLine("+15 max health per organ harvested (Max: +60).");
+
+    AddEntry(TFClass_Medic, "Solemn Vow");
+    AddLine("Firing speed penalty removed.");
+    AddLine("Whenever Hale hits you: Gain an 8-second speed boost.");
+    AddLine("1.5 seconds after getting hit: Heal for +75 health.");
 
     // ===================== SNIPER =====================
     AddEntry(TFClass_Sniper, "Sniper Rifle");
@@ -682,10 +746,10 @@ void BuildChangeEntries()
     }
 
     AddEntry(TFClass_Soldier, "Reserve Shooter", Slot_Secondary);
-    AddLine("Accuracy increased by 30%.");
+    AddLine("Deals crits instead of mini-crits against airborne targets.");
 
     AddEntry(TFClass_Pyro, "Reserve Shooter", Slot_Secondary);
-    AddLine("Accuracy increased by 30%.");
+    AddLine("Deals crits instead of mini-crits against airborne targets.");
 
     static const TFClassType panicAttackClasses[] = { TFClass_Soldier, TFClass_Pyro, TFClass_Heavy, TFClass_Engineer };
     for (int i = 0; i < sizeof(panicAttackClasses); i++)
@@ -730,6 +794,9 @@ void ApplyDefindexOverrides()
     SetWeaponDefs("Bonk! Atomic Punch", bonkpunchIds, sizeof(bonkpunchIds), TFClass_Scout);
     SetWeaponDef("Crit-a-Cola", 163, TFClass_Scout);
     SetWeaponDefs("Flying Guillotine", cleaverIds, sizeof(cleaverIds), TFClass_Scout);
+    SetWeaponDef("Atomizer", 450, TFClass_Scout);
+    SetWeaponDefs("Boston Basher", bostonbasherIds, sizeof(bostonbasherIds), TFClass_Scout);
+    SetWeaponDef("Candy Cane", 317, TFClass_Scout);
 
     // Soldier
     int rocketlauncherIds[] = { 18, 205, 513, 658, 800, 809, 889, 898, 907, 916, 965, 974, 15006, 15014, 15028, 15043, 15052, 15057, 15081, 15104, 15105, 15129, 15130, 15150 };
@@ -832,6 +899,11 @@ void ApplyDefindexOverrides()
     SetWeaponDef("Blutsauger", 36, TFClass_Medic);
     SetWeaponDef("Overdose", 412, TFClass_Medic);
     SetWeaponDefs("Crusader's Crossbow", crossbowIds, sizeof(crossbowIds), TFClass_Medic);
+    SetWeaponDefs("Medigun", medigunIds, sizeof(medigunIds), TFClass_Medic);
+    SetWeaponDef("Kritzkrieg", 35, TFClass_Medic);
+    SetWeaponDef("Quick-Fix", 411, TFClass_Medic);
+    SetWeaponDefs("Bonesaw", bonesawIds, sizeof(bonesawIds), TFClass_Medic);
+    SetWeaponDefs("Ubersaw", ubersawIds, sizeof(ubersawIds), TFClass_Medic);
 
     // Sniper
     int sniperrifleIds[] = { 14, 201, 664, 792, 801, 851, 881, 890, 899, 908, 957, 966, 15000, 15007, 15019, 15023, 15033, 15059, 15070, 15071, 15072, 15111, 15112, 15135, 15136, 15154 };

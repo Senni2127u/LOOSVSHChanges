@@ -13,13 +13,13 @@
 ::CTFBot.GetPlayerSteamID <- CTFPlayer.GetPlayerSteamID;
 
 // Delfite: Alternative version of GetPlayerName. Useful in scenarios where handles are less convenient.
-::GetPlayerNameFromParam <- function(player)
+::GetPlayerNameFromParams <- function(player)
 {
     return GetPropString(player, "m_szNetname");
 }
 
 // Delfite: Alternative version of GetPlayerSteamID. Useful in scenarios where handles are less convenient.
-::GetPlayerSteamIDFromParam <- function(player)
+::GetPlayerSteamIDFromParams <- function(player)
 {
     return GetPropString(player, "m_szNetworkIDString");
 }
@@ -65,7 +65,7 @@ AddListener("spawn", 0, function(player, params)
     validCosmeticFound = false;
     GiveTargetParticleEffects(player);
     AddAttributes(player);
-    //printl("a target was found, proceeding.") //Debug
+    //printdev("a target was found, proceeding.") //Debug
 });
 
 function CommunitySparkleEffect(player, particleName)
@@ -147,7 +147,7 @@ function BurningFlamesEffect(player, particleName)
 
         playerParticles[player.entindex()] <- particle;
 
-        // printl("Particle added.")
+        // printdev("Particle added.")
         return particle;
     })
 }
@@ -171,17 +171,17 @@ function AddAttributes (player)
             // if (weapon_primary.IsValid())
             // {
             //     weapon_primary.AddAttribute("selfmade description", 2, -1)
-            //     printl("Selfmade 1: " + weapon_primary.GetAttribute("selfmade description", 1))
+            //     printdev("Selfmade 1: " + weapon_primary.GetAttribute("selfmade description", 1))
             // }
             // if (weapon_secondary.IsValid())
             // {
             //     weapon_secondary.AddAttribute("selfmade description", 2, -1)
-            //     printl("Selfmade 2: " + weapon_secondary.GetAttribute("selfmade description", 1))
+            //     printdev("Selfmade 2: " + weapon_secondary.GetAttribute("selfmade description", 1))
             // }
             // if (weapon_melee.IsValid())
             // {
             //     weapon_melee.AddAttribute("selfmade description", 2, -1)
-            //     printl("Selfmade 3: " + weapon_melee.GetAttribute("selfmade description", 1))
+            //     printdev("Selfmade 3: " + weapon_melee.GetAttribute("selfmade description", 1))
             // }
 
             while (wearable = FindByClassname(wearable, "tf_wearable"))
@@ -207,24 +207,25 @@ function AddAttributes (player)
                             break;
 
                             default:
-                                wearable.AddAttribute("voice pitch scale", 0.955, -1)
-                                printl(wearable.GetAttribute("voice pitch scale", 1.0))
+                                wearable.AddAttribute("voice pitch scale", 0.9505, -1)
+                                wearable.AddAttribute("force level display", 999, -1)
+                                printdev(wearable.GetAttribute("voice pitch scale", 1.0))
                                 wearable.AddAttribute("attach particle effect", 2, -1)
                                 wearable.AddAttribute("killstreak tier", 1, -1)
                                 wearable.AddAttribute("killstreak idleeffect", 3, -1)
                                 SetPropInt(wearable, "m_AttributeManager.m_Item.m_iEntityQuality", 5)
                                 // Delfite: I would've liked to set my cosmetic level higher, but the NetProp caps out at 127 before overflowing. Tragic.
-                                SetPropInt(wearable, "m_AttributeManager.m_Item.m_iEntityLevel", 127)
+                                // SetPropInt(wearable, "m_AttributeManager.m_Item.m_iEntityLevel", 127)
 
-                                // printl(GetPropEntityArray(player, "m_hMyWearables", 000))
-                                // printl("ItemDefIndex: " + GetItemDefIndex(wearable))
-                                // printl("Particle Effect: " + wearable.GetAttribute("attach particle effect", 0))
-                                // printl("EntityLevel: " + GetPropInt(wearable, "m_AttributeManager.m_Item.m_iEntityLevel"))
+                                // printdev(GetPropEntityArray(player, "m_hMyWearables", 000))
+                                // printdev("ItemDefIndex: " + GetItemDefIndex(wearable))
+                                // printdev("Particle Effect: " + wearable.GetAttribute("attach particle effect", 0))
+                                // printdev("EntityLevel: " + GetPropInt(wearable, "m_AttributeManager.m_Item.m_iEntityLevel"))
                                 validCosmeticFound = true;
                             break;
                         }
                         // Delfite: Sadly, GetSlot doesn't work on wearables :(
-                        // printl("wearable slot: " + wearable.GetSlot())
+                        // printdev("wearable slot: " + wearable.GetSlot())
                     }
                 }
 
@@ -251,7 +252,7 @@ function GiveTargetParticleEffects(player)
 
         delete playerParticles[idx];
     }
-    // printl("Particle removed.")
+    // printdev("Particle removed.")
 
     if (validCosmeticFound)
         return;
@@ -269,7 +270,7 @@ function GiveTargetParticleEffects(player)
             if (player.GetTeam() == TF_TEAM_BOSS)
             {
                 playerParticles[idx] <- BurningFlamesEffect(player, "burningplayer_flyingbits");
-                // printl("Particle attached.")
+                // printdev("Particle attached.")
             }
                 break;
 
@@ -307,7 +308,7 @@ function HaleWeaponFunc(weapon, player)
 
     // Add custom weapon attributes here
     //weapon.AddAttribute("ragdolls plasma effect", 1, -1)
-    //printl("Called Override");
+    //printdev("Called Override");
 }
 
 ::TF_CUSTOM_WEAPONS_REGISTRY["Hale's Own Fists"].func = HaleWeaponFunc;

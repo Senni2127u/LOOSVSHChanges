@@ -15,6 +15,7 @@ this.Include <- function(path)
 		case "__lizardlib/game_events.nut":
 		case "__lizardlib/character_trait.nut":
 		case "_gamemode/boss_queue.nut":
+		case "_gamemode/forced_arena.nut":
 		case "/bosses/saxton_hale/misc/colored_arms.nut":
 		case "/bosses/saxton_hale/abilities/saxton_punch.nut":
 		case "/bosses/saxton_hale/abilities/sweeping_charge.nut":
@@ -44,10 +45,12 @@ this.Include <- function(path)
 		case "/mercs/merc_traits/single_class/spy_invis_res.nut":
 		case "/mercs/merc_traits/all_class/airborne_minicrits.nut":
 		case "/mercs/merc_traits/all_class/melee_buffs.nut":
+		case "/mercs/merc_traits/all_class/last_mann_standing.nut":
+		case "/mercs/voice_lines/single_class/demo_trap_cheer.nut":
+		case "/mercs/voice_lines/single_class/sniper_run.nut":
 		case "/mercs/voice_lines/all_class/silent_tie.nut":
 		case "/mercs/voice_lines/all_class/tracing_boss.nut":
 		case "/mercs/voice_lines/all_class/victory.nut":
-		case "/mercs/voice_lines/single_class/sniper_run.nut":
 
         // Dummy case to catch all of the above, add more if you wish
         // Make sure the dir matches the original path. Ex: "/mercs/..." as opposed to "mercs/..."
@@ -60,7 +63,7 @@ this.Include <- function(path)
             // Uncomment the print below to verify in console that
             // all the files that SHOULD be included, are included
 
-            //printl("Including: vsh_overrides/" + path + "\n");
+            //printdev("Including: vsh_overrides/" + path + "\n");
             IncludeScript("vsh_overrides/" + path);
             return;
         }

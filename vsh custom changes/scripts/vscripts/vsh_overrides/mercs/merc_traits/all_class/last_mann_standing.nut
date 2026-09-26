@@ -14,20 +14,12 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-    function CanApply()
+    function OnTickAlive(timeDelta)
     {
-        local playerClass = player.GetPlayerClass();
-        return playerClass == TF_CLASS_SOLDIER || playerClass == TF_CLASS_PYRO;
-    }
-
-    function OnDamageDealt(victim, params)
-    {
-        if (!victim.IsPlayer() || victim.IsOnGround() || victim.GetWaterLevel() >= 2 || victim == player)
-            return;
-        if (WeaponIs(params.weapon, "direct_hit") || WeaponIs(params.weapon, "reserve_shooter"))
-        {
-            // params.crit_type = 1;
-            params.damage_type = params.damage_type | Constants.FDmgType.DMG_ACID;
-        }
+        local mercsAlive = GetAliveMercCount();
+        if (mercsAlive <= 3 && !player.IsStealthed())
+            player.AddCondEx(TF_COND_OFFENSEBUFF, 0.2, player);
+        if (mercsAlive == 1)    //No, it's not "else if", because engie + sentry combo benefits from both crits and minicrits
+            player.AddCondEx(TF_COND_CRITBOOSTED_ON_KILL, 0.2, player);
     }
 });

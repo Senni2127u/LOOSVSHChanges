@@ -130,11 +130,11 @@
         return id == 1153;
     else if (name == "reserve_shooter")
         return id == 415;
-    else if (name == "base_jumper_soldier" || name == "parachute_soldier")
+    else if (name == ("base_jumper_soldier" || "parachute_soldier"))
         return weapon.GetClassname() == "tf_weapon_parachute_secondary"; //Not sure why the game defines them as secondary or primary, item schema just says tf_weapon_parachute, TF2 jank. - Senni
-    else if (name == "base_jumper_demoman" || name == "parachute_demoman")
+    else if (name == ("base_jumper_demoman" || "parachute_demoman"))
         return weapon.GetClassname() == "tf_weapon_parachute_primary";
-    else if (name == "half_zatoichi" || name == "katana")
+    else if (name == ("half_zatoichi" || "katana"))
         return id == 357;
     else if (name == "pain_train")
         return id == 154;
@@ -179,28 +179,28 @@
         return id == 220;
     else if (name == "soda_popper")
         return id == 448;
-    else if (name == "baby_faces_blaster" || name == "bfb")
+    else if (name == ("baby_faces_blaster" || "bfb"))
         return id == 772;
-    else if (name == "back_scatter" || name == "backscatter")
+    else if (name == ("back_scatter" || "backscatter"))
         return id == 1103;
 
     //Scout Secondaries [1,1]
-    else if (name == "any_drink" || name == "energydrink")
+    else if (name == ("any_drink" || "energydrink"))
         return weapon.GetClassname() == "tf_weapon_lunchbox_drink";
     else if (name == "mad_milk")
         return id == 222
             || id == 1121;
-    else if (name == "bonk_atomic_punch" || name == "bonk")
+    else if (name == ("bonk_atomic_punch" || "bonk"))
         return id == 46
             || id == 1145;
-    else if (name == "crit_a_cola" || name == "critacola")
+    else if (name == ("crit_a_cola" || "critacola"))
         return id == 163;
-    else if (name == "flying_guillotine" || name == "guillotine")
+    else if (name == ("flying_guillotine" || "guillotine"))
         return id == 812
             || id == 833;
     else if (name == "winger")
         return id == 449;
-    else if (name == "pretty_boys_pocket_pistol" || name == "pbpp")
+    else if (name == ("pretty_boys_pocket_pistol" || "pbpp"))
         return id == 773;
 
     //Scout Melees [1,2]
@@ -230,7 +230,7 @@
     else if (name == "boston_basher")
         return id == 325
             || id == 452;
-    else if (name == "sun_on_a_stick" || name == "soas")
+    else if (name == ("sun_on_a_stick" || "soas"))
         return id == 349;
     else if (name == "fan_o_war")
         return id == 355;
@@ -272,11 +272,11 @@
         return id == 237;
     else if (name == "liberty_launcher")
         return id == 414;
-    else if (name == "cow_mangler_5000" || name == "cow_mangler")
+    else if (name == ("cow_mangler_5000" || "cow_mangler"))
         return id == 441;
     else if (name == "beggars_bazooka")
         return id == 730;
-    else if (name == "air_strike" || name == "airstrike")
+    else if (name == ("air_strike" || "airstrike"))
         return id == 1104;
 
     //Soldier Secondaries [2,1]
@@ -287,11 +287,11 @@
             || id == 1001;
     else if (name == "gunboats")
         return id == 133;
-    else if (name == "battalions_backup")
+    else if (name == ("battalions_backup" || "batts"))
         return id == 226;
-    else if (name == "concheror")
+    else if (name == ("concheror" || "conch"))
         return id == 354;
-    else if (name == "righteous_bison")
+    else if (name == ("righteous_bison" || "bison"))
         return id == 442;
     else if (name == "mantreads")
         return id == 444;

@@ -73,12 +73,12 @@ function PrintAndLogTop3(reason)
 
     local top = GetTopBossDamagers(3);
 
-    printl(format("=== TOP BOSS DAMAGE (THIS ROUND) [%s] ===", reason));
+    printdev(format("=== TOP BOSS DAMAGE (THIS ROUND) [%s] ===", reason));
     for (local i = 0; i < top.len(); i++)
     {
         local p = top[i].player;
         local name = p.GetPlayerName();
-        printl(format("#%d %s - %d", i + 1, name, top[i].damage));
+        printdev(format("#%d %s - %d", i + 1, name, top[i].damage));
     }
 
 if (top.len() > 0)

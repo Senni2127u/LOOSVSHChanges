@@ -20,11 +20,12 @@ class CharacterTrait
 {
     player = null;
 
-    active_weapon = null;
-    weapon_primary = null;
-    weapon_secondary = null;
-    weapon_melee = null;
-    weapon_pda = null;
+    // Delfite: Don't do what I did here! This method creates a lot of duplicates since we have a lot of individual traits.
+    // active_weapon = null;
+    // weapon_primary = null;
+    // weapon_secondary = null;
+    // weapon_melee = null;
+    // weapon_pda = null;
 
     function TryApply(player)
     {
@@ -36,10 +37,10 @@ class CharacterTrait
         if (!(player in characterTraits))
             characterTraits[player] <- [];
         characterTraits[player].push(this);
-        weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY)
-        weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY)
-        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE)
-        weapon_pda = player.GetWeaponBySlot(TF_WEAPONSLOTS.PDA);
+        // weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
+        // weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+        // weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+        // weapon_pda = player.GetWeaponBySlot(TF_WEAPONSLOTS.PDA);
         OnApply();
         return this;
     }
@@ -65,6 +66,9 @@ class CharacterTrait
     function OnGasIgniteEvent(victim, params) { }
     function OnGasIgnitedEvent(douser, params) { }
     function OnPatientHealed(healer, params) { }
+    function OnObjectBuilt(builder, building, params) { }
+    function OnObjectDestroyed(builder, building, params) { }
+    function OnPlayerShoot(params) { }
 
     function DoTick(timeDelta)
     {
@@ -153,7 +157,7 @@ AddListener("damage_hook", 0, function (attacker, victim, params)
             try { characterTrait.OnDamageDealt.call(characterTrait, victim, params); }
             catch(e) { throw e; }
 
-    local onDamageTaken = victim in characterTraits && victim.IsPlayer();
+    local onDamageTaken = victim in characterTraits;
     if (onDamageTaken)
         foreach (characterTrait in characterTraits[victim])
             try { characterTrait.OnDamageTaken.call(characterTrait, attacker, params); }
@@ -228,5 +232,30 @@ AddListener("patient_healed", 0, function (healer, params)
     if (healer in characterTraits)
         foreach (characterTrait in characterTraits[healer])
             try { characterTrait.OnPatientHealed.call(characterTrait, healer, params); }
+            catch(e) { throw e; }
+})
+
+AddListener("object_built", 0, function (builder, building, params)
+{
+    if (builder in characterTraits)
+        foreach (characterTrait in characterTraits[builder])
+            try { characterTrait.OnObjectBuilt.call(characterTrait, builder, building, params); }
+            catch(e) { throw e; }
+})
+
+AddListener("object_destroyed", 0, function (builder, building, params)
+{
+    if (builder in characterTraits)
+        foreach (characterTrait in characterTraits[builder])
+            try { characterTrait.OnObjectDestroyed.call(characterTrait, builder, building, params); }
+            catch(e) { throw e; }
+})
+
+AddListener("player_shoot", 0, function (player, params)
+{
+    printdev("player_shoot listener fired.")
+    if (player in characterTraits)
+        foreach (characterTrait in characterTraits[player])
+            try { characterTrait.OnPlayerShoot.call(characterTrait, player, params); }
             catch(e) { throw e; }
 })

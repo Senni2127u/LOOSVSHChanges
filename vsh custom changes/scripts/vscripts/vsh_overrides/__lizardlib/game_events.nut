@@ -105,15 +105,15 @@ function OnGameEvent_player_death(params)
     FireListeners("death", attacker, player, params);
 }
 
-function OnGameEvent_object_destroyed(params)
-{
-    if (IsNotValidRound())
-        return;
-    local attacker = GetPlayerFromParams(params, "attacker");
-    if (!IsValidPlayer(attacker))
-        return;
-    FireListeners("builing_destroyed", attacker, params);
-}
+// function OnGameEvent_object_destroyed(params)
+// {
+//     if (IsNotValidRound())
+//         return;
+//     local attacker = GetPlayerFromParams(params, "attacker");
+//     if (!IsValidPlayer(attacker))
+//         return;
+//     FireListeners("builing_destroyed", attacker, params);
+// }
 
 function OnGameEvent_rps_taunt_event(params)
 {
@@ -220,7 +220,8 @@ function OnGameEvent_player_builtobject(params)
             return;
     }
     PlayerBuildings[builder].push(building)
-    // printl(building + " | ObjectType: " + GetPropInt(building, "m_iObjectType")) // Debug. Prints the building that was last built.
+    // printdev(building + " | ObjectType: " + GetPropInt(building, "m_iObjectType")) // Debug. Prints the building that was last built.
+    FireListeners("object_built", builder, building, params);
 }
 
 function OnGameEvent_object_detonated(params)
@@ -240,7 +241,8 @@ function OnGameEvent_object_detonated(params)
             break;
         }
     }
-    // printl(building) // Debug. Prints the building that was removed last.
+    // printdev(building) // Debug. Prints the building that was removed last.
+    FireListeners("object_destroyed", builder, building, params);
 }
 
 function OnGameEvent_object_destroyed(params)
@@ -260,7 +262,8 @@ function OnGameEvent_object_destroyed(params)
             break;
         }
     }
-    // printl(building) // Debug. Prints the building that was removed last.
+    // printdev(building) // Debug. Prints the building that was removed last.
+    FireListeners("object_destroyed", builder, building, params);
 }
 
 function OnGameEvent_player_healed(params)
@@ -269,4 +272,15 @@ function OnGameEvent_player_healed(params)
     if (!IsValidPlayer(healer))
         return;
     FireListeners("patient_healed", healer, params)
+}
+
+// TODO: Use OnGameEvent_player_stealsandvich to turn Heavy's lunchbox items into small landmines.
+// Delfite: Of course. Of course this GameEvent "isn't implemented". Thanks Valve!
+function OnGameEvent_player_shoot(params)
+{
+    printdev("OnGameEvent_player_shoot triggered.")
+    local player = GetPlayerFromUserID(params["userid"])
+    if (!IsValidPlayer(player))
+        return;
+    FireListeners("player_shoot", player, params)
 }

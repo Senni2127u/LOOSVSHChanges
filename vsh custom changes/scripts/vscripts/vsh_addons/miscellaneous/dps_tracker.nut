@@ -16,7 +16,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         damageLastTick += params.damageamount
         // victim.SetHealth(1000)
-        // printl(damageLastTick)
+        // printdev(damageLastTick)
     }
 
     function OnFrameTickAliveOrDead()

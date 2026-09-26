@@ -15,7 +15,7 @@
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
-    // weapon_melee = null;
+    weapon_melee = null;
 
     function CanApply()
     {
@@ -24,18 +24,17 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
-        // weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+        weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
         if (!weapon_melee)
             return;
 
         weapon_melee.AddAttribute("single wep deploy time decreased", 0.75, -1);
 
-        //Instead of only giving the mercs a melee range buff when they're near Hale, we can just give it to them globally so wallclimbing is a little easier.
-        //Strangely, the melee range multiplier of an Engineer's wrench doesn't seem to change the distance at which he can hit his own buildings.
-        //No clue why, but sure TF2, we can work with that. -Delfite
+        // Delfite: Instead of only giving the mercs a melee range buff when they're near Hale, we can just give it to them globally so wallclimbing
+        // is a little easier. Strangely, the melee range multiplier of an Engineer's wrench doesn't seem to change the distance at which he can hit
+        // his own buildings. No clue why, but sure TF2, we can work with that.
         if (!WeaponIs(weapon_melee, "disciplinary_action") && !WeaponIs(weapon_melee, "any_sword"))
             weapon_melee.AddAttribute("melee range multiplier", 1.6, -1);
-
     }
 
 
@@ -43,7 +42,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         local active_weapon = player.GetActiveWeapon();
         if (active_weapon != weapon_melee)
-            //printl(active_weapon + " | " + weapon)
+            //printdev(active_weapon + " | " + weapon)
             return;
 
         if (!WeaponIs(active_weapon, "market_gardener") && !WeaponIs(active_weapon, "holiday_punch") && !WeaponIs(active_weapon, "bushwacka"))
@@ -68,16 +67,20 @@ characterTraitsClasses.push(class extends CharacterTrait
                     if (WeaponIs(params.weapon, "any_sword"))
                         force = 100
                     else if (WeaponIs(params.weapon, "tideturner"))
-                        force = 100
+                        force = 180
                     else if (WeaponIs(params.weapon, "eviction_notice"))
                         force = 130
+                    else if (WeaponIs(params.weapon, "market_gardener"))
+                    {
+                        if (player.InCond(TF_COND_BLASTJUMPING) && !player.IsOnGround())
+                            force = 40
+                        else
+                            force = 300
+                    }
                     else
                         force = 300
-                    // local force = !WeaponIs(params.weapon, "any_sword")
-                    //     && !WeaponIs(params.weapon, "tideturner")
-                    //     && !WeaponIs(params.weapon, "eviction_notice") ? 300 : 100;
                     victim.Yeet(deltaVector * force + Vector(0, 0, force));
-                    //printl("A")
+                    //printdev("A")
                 }
             }
         }

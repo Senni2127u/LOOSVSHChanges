@@ -12,6 +12,14 @@
 //  Phe - game design assistance.
 //=========================================================================
 
+// Script modified by: Delfite.
+
+::roundIsOver <- false;
+AddListener("round_end", 0, function (winnerTeam)
+{
+	roundIsOver = true;
+});
+
 PrecacheArbitrarySound("sniper.run")
 
 characterTraitsClasses.push(class extends CustomVoiceLine
@@ -33,7 +41,7 @@ characterTraitsClasses.push(class extends CustomVoiceLine
     {
         weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
 
-        // printl("sniper_run.nut loaded.")
+        // printdev("sniper_run.nut loaded.")
         if (WeaponIs(weapon_primary, "any_bow"))
             primaryIsHuntsman = true;
     }
@@ -53,11 +61,14 @@ characterTraitsClasses.push(class extends CustomVoiceLine
 
     function OnTickAlive(timeDelta)
     {
+        if (roundIsOver)
+            return;
+
         local distanceToBoss = 0;
-        local myCenter = player.GetCenter();
+        local my_center = player.GetCenter();
         foreach (boss in GetAliveBossPlayers())
         {
-            distanceToBoss = (boss.GetCenter() - myCenter).Length()
+            distanceToBoss = (boss.GetCenter() - my_center).Length()
         }
 
         if (distanceToBoss < 500 && !player.IsInvulnerable())
@@ -65,10 +76,10 @@ characterTraitsClasses.push(class extends CustomVoiceLine
             switch(primaryIsHuntsman)
             {
                 case true:
-                    // printl("Huntsman is equipped.")
-                    if (my_health <= (195 * Huntsman_Resistance_Factor))
+                    // printdev("Huntsman is equipped.")
+                    if (my_health <= (195 * HUNTSMAN_RESISTANCE_FACTOR))
                     {
-                        // printl("Health is <= 137, playing voiceline...")
+                        // printdev("Health is <= 137, playing voiceline...")
                         return EmitPlayerVO(player, "run");
                         break;
                     }
@@ -76,10 +87,10 @@ characterTraitsClasses.push(class extends CustomVoiceLine
                         break;
 
                 case false:
-                    // printl("Huntsman is not equipped.")
+                    // printdev("Huntsman is not equipped.")
                     if (my_health <= 195)
                     {
-                        // printl("Health is <= 195, playing voiceline...")
+                        // printdev("Health is <= 195, playing voiceline...")
                         return EmitPlayerVO(player, "run");
                         break;
                     }
@@ -87,8 +98,7 @@ characterTraitsClasses.push(class extends CustomVoiceLine
                         break;
 
                 default:
-                    printl("Our top scientists can't figure out how primaryIsHuntsman returned something other than a boolean!")
-                    printl("If you're reading this, contact @delfite on Discord with a screenshot of your console window.")
+                    printdev("Our top scientists can't figure out how primaryIsHuntsman returned something other than a boolean!")
                         break;
             }
         }

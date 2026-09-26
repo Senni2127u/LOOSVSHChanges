@@ -20,6 +20,11 @@ PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "vsh
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "vsh_mighty_slam" })
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "stomp_text" })
 
+::SaxtonPunchTrigger <- function ()
+{
+    BossTrait.SaxtonPunchTrait.meter = -3
+}
+
 class SaxtonPunchTrait extends BossTrait
 {
     meter = -30;

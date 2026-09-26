@@ -63,6 +63,6 @@ function OutlineRemainingPlayers(death)
     });
 }
             // Debug stuff, only uncomment if there is issue with alive player tracking.
-            //printl("alive.len() = " + alive.len());
-            //printl("death = " + death.tointeger());
-            //printl("aliveCount = " + aliveCount)
+            //printdev("alive.len() = " + alive.len());
+            //printdev("death = " + death.tointeger());
+            //printdev("aliveCount = " + aliveCount)
