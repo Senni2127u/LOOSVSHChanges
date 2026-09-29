@@ -25,6 +25,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     weapon_melee = null;
 
     // Primary handles.
+    SyringeGun = null;
     Crossbow = null;
 
     // Secondary handles.
@@ -61,8 +62,9 @@ characterTraitsClasses.push(class extends CharacterTrait
     secondaryReserveIsStored = false;
 
     crossbowPenaltyApplied = false;
-    chargedSFXPlaybackRunning = false;
-    chargedSFXPlayed = false;
+    // Delfite: Set chargedSFXPlayed to true on round start so hitting Hale doesn't immediately play the sequence.
+    chargedSFXPlaybackRunning = true;
+    chargedSFXPlayed = true;
     chargeReleased = false;
 
     function CanApply()
@@ -79,7 +81,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         // Primary definitions.
         if (!WeaponIs(weapon_primary, "crusaders_crossbow"))
         {
-            // Delfite: Only god knows why, but the "projectile speed increased" attribute doesn't work on Syringe Guns. Damn you Valve!
+            // Delfite: Only god knows why, but the "Projectile speed increased" attribute doesn't work on Syringe Guns. Damn you Valve!
             weapon_primary.AddAttribute("fire rate bonus", 0.70, -1)
             weapon_primary.AddAttribute("reload time decreased", 0.60, -1)
             weapon_primary.AddAttribute("maxammo primary increased", 2.0, -1)
@@ -87,8 +89,9 @@ characterTraitsClasses.push(class extends CharacterTrait
             // weapon_primary.AddAttribute("Projectile speed increased", 3.0, -1)
             if (WeaponIs(weapon_primary, "syringe_gun"))
             {
-                weapon_primary.AddAttribute("add uber charge on hit", 0.008, -1)
-                weapon_primary.AddAttribute("damage bonus", 1.50, -1)
+                SyringeGun = weapon_primary;
+                SyringeGun.AddAttribute("add uber charge on hit", 0.008, -1)
+                SyringeGun.AddAttribute("damage bonus", 1.50, -1)
             }
             else if (WeaponIs(weapon_primary, "overdose"))
             {
@@ -162,10 +165,10 @@ characterTraitsClasses.push(class extends CharacterTrait
 		}
 		else if (WeaponIs(weapon_melee, "vitasaw"))
 		{
+            Vitasaw = weapon_melee
             // Delfite: "lunchbox adds minicrits" controls the organ spawning mechanic on the Vita-Saw when you hit someone.
             // Setting it to anything other than 2 just disables the mechanic.
             // weapon_melee.AddAttribute("lunchbox adds minicrits", 2, -1)
-            Vitasaw = weapon_melee
 		}
         RunWithDelay2(this, 0.0, OnApply0Delay)
         player.Regenerate(true)
@@ -205,12 +208,12 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnDamageDealt(victim, params)
     {
-        if ((Ubersaw || WeaponIs(weapon_primary, "syringe_gun")) && IsValidBoss(victim))
+        if ((weapon_melee == Ubersaw || weapon_primary == SyringeGun) && IsValidBoss(victim))
         {
             RunWithDelay2(this, 0.1, function ()
             {
                 // printdev("First succeeded.")
-                if (player.IsAlive() && (WeaponIs(active_weapon, "ubersaw") || WeaponIs(active_weapon, "syringe_gun")) && !chargedSFXPlaybackRunning && !chargedSFXPlayed)
+                if (player.IsAlive() && active_weapon == (Ubersaw || SyringeGun) && !chargedSFXPlaybackRunning && !chargedSFXPlayed)
                 {
                     // printdev("Second succeeded.")
                     if (!WeaponIs(weapon_secondary, "vaccinator") && GetPropFloat(weapon_secondary, "m_flChargeLevel") == 1.0)
@@ -245,7 +248,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnDamageTaken(attacker, params)
     {
-        if (Solemn_Vow && !player.IsInvulnerable() && IsValidBoss(attacker))
+        if (weapon_melee == Solemn_Vow && !player.IsInvulnerable() && IsValidBoss(attacker))
         {
             player.AddCondEx(TF_COND_SPEED_BOOST, 8, null)
             RunWithDelay2(this, 1.5, function ()
@@ -554,7 +557,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         }
     }
 
-    function OnDeath()
+    function OnDeath(attacker, params)
     {
         StopSoundOn("WeaponMedigun.Charged", player)
     }

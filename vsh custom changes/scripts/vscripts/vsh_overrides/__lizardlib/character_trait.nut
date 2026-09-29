@@ -65,7 +65,6 @@ class CharacterTrait
     function OnAirblastOther(victim, attacker, params) { }
     function OnGasIgniteEvent(victim, params) { }
     function OnGasIgnitedEvent(douser, params) { }
-    function OnPatientHealed(healer, params) { }
     function OnObjectBuilt(builder, building, params) { }
     function OnObjectDestroyed(builder, building, params) { }
     function OnPlayerShoot(params) { }
@@ -227,14 +226,6 @@ AddListener("gas_ignition", 0, function (douser, victim, params)
             catch(e) { throw e; }
 });
 
-AddListener("patient_healed", 0, function (healer, params)
-{
-    if (healer in characterTraits)
-        foreach (characterTrait in characterTraits[healer])
-            try { characterTrait.OnPatientHealed.call(characterTrait, healer, params); }
-            catch(e) { throw e; }
-})
-
 AddListener("object_built", 0, function (builder, building, params)
 {
     if (builder in characterTraits)
@@ -251,6 +242,14 @@ AddListener("object_destroyed", 0, function (builder, building, params)
             catch(e) { throw e; }
 })
 
+// AddListener("object_hurt", 0, function (attacker, building, params)
+// {
+//     if (building in characterTraits)
+//         foreach (characterTrait in characterTraits[building])
+//             try { characterTrait.OnObjectHurt.call(characterTrait, building)}
+// })
+
+// Delfite: Not implemented, because Valve is lazy and forgot to do that I guess.
 AddListener("player_shoot", 0, function (player, params)
 {
     printdev("player_shoot listener fired.")

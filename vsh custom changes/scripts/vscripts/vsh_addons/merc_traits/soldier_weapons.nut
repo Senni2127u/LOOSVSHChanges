@@ -7,6 +7,8 @@
 
 
 PrecacheScriptSound("Player.ResistanceMedium")
+PrecacheArbitrarySound("soldier.gardened")
+PrecacheArbitrarySound("vsh_sfx.gardened");
 
 AddListener("setup_start", 1, function()
 {
@@ -33,6 +35,9 @@ characterTraitsClasses.push(class extends CharacterTrait
     weapon_secondary = null;
 	weapon_melee = null;
 
+    overheal_difference = 0;
+    overheal_limit = 0;
+
 	damageAccumulated = 0;
 
     you = null;
@@ -48,9 +53,11 @@ characterTraitsClasses.push(class extends CharacterTrait
     BuffBanner = null;
     Batts = null;
     Conch = null;
-    Gunboats = null;
+    // Gunboats = null;
 
 	// Melee handles.
+    Katana = null;
+    MarketGardener = null;
 
     lastHitWasAirStrike = false;
 	lastHitWasShotgun = false;
@@ -170,6 +177,14 @@ characterTraitsClasses.push(class extends CharacterTrait
 			weapon_melee.AddAttribute("damage penalty", 0.65, -1);
 			// Delfite: The escape plan already uses the "provide on active" attribute, so there's no need to include it here.
 		}
+		else if (WeaponIs(weapon_melee, "half_zatoichi"))
+		{
+			Katana = weapon_melee;
+		}
+		else if (WeaponIs(weapon_melee, "market_gardener"))
+		{
+			MarketGardener = weapon_melee;
+		}
 
 		// Wearable definitions.
 		RunWithDelay2(this, 0.1, function() //This delay is hopefully to prevent issues with it not applying. - Senni
@@ -180,12 +195,25 @@ characterTraitsClasses.push(class extends CharacterTrait
                 if (wearable.GetOwner() == player && WeaponIs(wearable, "gunboats")) //Gunboats aren't considered a weapon, so this is a workaround. - Senni
                 {
                     wearable.AddAttribute("cancel falling damage", 1, -1);
-                    Gunboats = wearable
+                    // Gunboats = wearable
                     break;
                 }
             }
         })
+        RunWithDelay2(this, 0.1, OnApply1Delay);
 	}
+
+    function OnApply1Delay()
+    {
+        // Delfite: If you want to define the player's max overheal for a specific weapon/combination of weapons, do it here.
+        // The purpose of this is to reduce calls to C++ functions for performance reasons. That includes stuff like GetMaxHealth.
+		// Obviously, you should replace PYRO_PRIMARY_OVERHEAL_MULT with a different constant depending on the merc and weapon.
+        // if (weapon_primary == (Flamethrower || Backburner || Degreaser))
+        //     overheal_limit = overheal_difference * PYRO_PRIMARY_OVERHEAL_MULT + player.GetMaxHealth()
+        // else
+            overheal_limit = overheal_difference + player.GetMaxHealth()
+        player.Regenerate(true);
+    }
 
 	function OnFrameTickAlive()
     {
@@ -193,29 +221,9 @@ characterTraitsClasses.push(class extends CharacterTrait
             RageThink()
     }
 
-	function OnDamageTaken(attacker, params)
-    {
-        if (RocketJumper != null && params.weapon == RocketJumper)
-        {
-            local your_center = player.GetCenter();
-            foreach (boss in GetAliveBossPlayers())
-            {
-                local distanceToBoss = (boss.GetCenter() - your_center).Length()
-                if (distanceToBoss < 180)
-                    RocketJumper.AddAttribute("self dmg push force increased", 1.40, -1)
-                else
-                    RocketJumper.RemoveAttribute("self dmg push force increased");
-                break;
-            }
-        }
-    }
-
     function OnDamageDealt(victim, params)
     {
-
-		if (Shotgun != null)
-			lastHitWasShotgun = params.weapon == Shotgun
-
+        lastHitWasShotgun = params.weapon == Shotgun
 		lastHitWasAirStrike = player != victim && params.weapon == Airstrike;
         if (lastHitWasAirStrike)
         {
@@ -233,19 +241,36 @@ characterTraitsClasses.push(class extends CharacterTrait
             })
         }
 
+        // Delfite: This code makes the Rocket Jumper inflict no damage to Hale.
         if (params.weapon == RocketJumper && player != victim)
         {
-            printdev("Rocket Jumper hit someone.")
+            // printdev("Rocket Jumper hit someone.")
             local your_center = player.GetCenter();
             foreach (boss in GetAliveBossPlayers())
             {
                 local distanceToBoss = (boss.GetCenter() - your_center).Length()
                 if (distanceToBoss >= 180)
-                {
                     params.damage = 0.0;
-                    break;
-                }
+                break;
             }
+        }
+
+        // Delfite: Market Gardener damage calculation code.
+        if (params.weapon == MarketGardener && player.InCond(TF_COND_BLASTJUMPING) && !player.IsOnGround())
+        {
+            params.damage = vsh_vscript.CalcStabDamage(victim) / 2.5;
+            EmitSoundOn("vsh_sfx.gardened", player);
+            EmitPlayerVODelayed(player, "gardened", 0.3);
+        }
+
+        // Delfite: Half-Zatoichi heal-on-hit code.
+        if (params.weapon == Katana)
+        {
+            local newHealth = player.GetHealth() + player.GetMaxHealth() / 2.0;
+            local maxOverheal = player.GetMaxHealth() * 1.5
+            player.SetHealth(clampCeiling(newHealth, maxOverheal));
+			SetPropInt(params.weapon, "m_bIsBloody", 1);
+			AddPropInt(player, "m_Shared.m_iKillCountSinceLastDeploy", 1);
         }
     }
 
@@ -269,10 +294,24 @@ characterTraitsClasses.push(class extends CharacterTrait
 		}
     }
 
-	// Delfite: This function is responsible for fixing TF_COND_DEFENSEBUFF from not applying its damage resistance to Hale's abilities.
-    // Primarily intended as a fix for the Battalion's Backup, but fixes the condition as a whole.
     function OnDamageTaken(attacker, params)
     {
+        if (weapon_primary == RocketJumper && params.weapon == RocketJumper)
+        {
+            local your_center = player.GetCenter();
+            foreach (boss in GetAliveBossPlayers())
+            {
+                local distanceToBoss = (boss.GetCenter() - your_center).Length()
+                if (distanceToBoss < 180)
+                    RocketJumper.AddAttribute("self dmg push force increased", 1.40, -1)
+                else
+                    RocketJumper.RemoveAttribute("self dmg push force increased");
+                break;
+            }
+        }
+
+        // Delfite: This function is responsible for fixing TF_COND_DEFENSEBUFF from not applying its damage resistance to Hale's abilities.
+        // Primarily intended as a fix for the Battalion's Backup, but fixes the condition as a whole.
         if (IsValidBoss(attacker))
         {
             if (params.damage_type & DMG_CLUB) //Ignore Saxton's normal hits, the game already handles the resistance. - Senni

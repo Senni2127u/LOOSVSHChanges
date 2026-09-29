@@ -15,6 +15,9 @@ characterTraitsClasses.push(class extends CharacterTrait
 	weapon_secondary = null;
 	weapon_melee = null;
 
+	overheal_difference = 0;
+    overheal_limit = 0;
+
 	// Primary handles.
 	BrassBeast = null;
     Natascha = null;
@@ -44,7 +47,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
 	function CanApply()
 	{
-		return player.GetPlayerClass() == TF_CLASS_HEAVYWEAPONS
+		return player.GetPlayerClass() == TF_CLASS_HEAVY
 	}
 
 	function OnApply()
@@ -52,13 +55,14 @@ characterTraitsClasses.push(class extends CharacterTrait
 		weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
 		weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
 		weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+		overheal_difference = player.GetMaxHealth() * 0.5
 
 		// Primary definitions.
 		if (WeaponIs(weapon_primary, "minigun"))
         {
             // weapon_primary.AddAttribute("damage penalty", 0.8, -1);
-            weapon_primary.AddAttribute("spread penalty", 1.25, -1);
-            weapon_primary.AddAttribute("fire rate bonus", 0.85, -1);
+            // weapon_primary.AddAttribute("spread penalty", 1.25, -1);
+            // weapon_primary.AddAttribute("fire rate bonus", 0.85, -1);
             // weapon_primary.AddAttribute("bullets per shot bonus", 1.5, -1);
             // weapon_primary.AddAttribute("aiming movespeed increased", 1.2, -1);
         }
@@ -86,7 +90,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         else if (WeaponIs(weapon_primary, "natascha"))
         {
             Natascha = weapon_primary
-            Natascha.AddAttribute("damage penalty", 1.0, -1);
+            // Natascha.AddAttribute("damage penalty", 1.0, -1);
             Natascha.AddAttribute("spunup_damage_resistance", 1.0, -1);
             Natascha.AddAttribute("aiming movespeed decreased", 1.0, -1);
             Natascha.AddAttribute("slow enemy on hit", 0.15, -1);
@@ -175,8 +179,20 @@ characterTraitsClasses.push(class extends CharacterTrait
 			// It at least made sense on the Fists of Steel, but why this item?!
 			weapon_melee.AddAttribute("single wep holster time increased", 1.5, -1);
 		}
-		player.Regenerate(true)
+		RunWithDelay2(this, 0.1, OnApply1Delay);
 	}
+
+	function OnApply1Delay()
+    {
+        // Delfite: If you want to define the player's max overheal for a specific weapon/combination of weapons, do it here.
+        // The purpose of this is to reduce calls to C++ functions for performance reasons. That includes stuff like GetMaxHealth.
+		// Obviously, you should replace PYRO_PRIMARY_OVERHEAL_MULT with a different constant depending on the merc and weapon.
+        // if (weapon_primary == (Flamethrower || Backburner || Degreaser))
+        //     overheal_limit = overheal_difference * PYRO_PRIMARY_OVERHEAL_MULT + player.GetMaxHealth()
+        // else
+            overheal_limit = overheal_difference + player.GetMaxHealth()
+		player.Regenerate(true);
+    }
 
 	function OnFrameTickAlive()
     {
@@ -198,7 +214,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
         // Delfite: Fixes an issue with the "patient overheal penalty" attribute where Medic gets increased ubercharge rate
         // due to the patient's overheal not technically being "full."
-        if (BrassBeast != null)
+        if (weapon_primary == BrassBeast)
         {
             local patient_health = player.GetHealth()
             local overheal_limit = player.GetMaxHealth() * 1.5 * BRASS_BEAST_OVERHEAL_MULT
@@ -226,7 +242,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 	{
 		// local time = Time()
 
-		// Delfite: This block is a workaround for stopping the Dalokohs from giving its max health bonus when eaten.
+		// Delfite: Workaround for stopping the Dalokohs from giving its max health bonus when eaten.
 		if (weapon_secondary == DalokohsBar)
 			DalokohsNullifierThink()
 
@@ -234,6 +250,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 		if (weapon_secondary == SecondBanana)
 			BananaEatingBuffThink();
 
+		// Delfite: Eat the steak faster, remove the melee-only restriction, and more.
 		if (weapon_secondary == Steak)
 		{
 			SteakEatingBuffThink();

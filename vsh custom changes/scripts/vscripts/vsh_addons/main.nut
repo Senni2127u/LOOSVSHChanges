@@ -40,7 +40,8 @@ IncludeScript("map_addons/distillery/distillery_heavyblocker.nut")
 
 // Miscellaneous Scripts
 IncludeScript("vsh_addons/miscellaneous/vsh_boss_damage_top3_no_log.nut")
-IncludeScript("vsh_addons/miscellaneous/revealplayersat3left.nut")
+IncludeScript("vsh_addons/miscellaneous/vsh_healing_top3_no_log.nut")
+IncludeScript("vsh_addons/miscellaneous/reveal_players_at_3_left.nut")
 IncludeScript("vsh_addons/miscellaneous/developers.nut")
 IncludeScript("vsh_addons/miscellaneous/debug_print.nut")
 // IncludeScript("vsh_addons/miscellaneous/dps_tracker.nut")

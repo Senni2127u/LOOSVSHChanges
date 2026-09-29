@@ -1,4 +1,5 @@
-// Script by: LizardOfOz
+// Script by: LizardOfOz.
+// Modified by: Delfite.
 // Prints debug information to the whitelisted players' console via ClientPrint().
 // Useful in situations where specific errors can only be caught in a normal multiplayer setting, rather than standalone testing.
 

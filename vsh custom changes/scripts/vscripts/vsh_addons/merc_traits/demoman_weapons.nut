@@ -22,6 +22,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
 
     // Melee handles.
+    Katana = null;
     Eyelander = null;
     ClaidMor = null;
     Caber = null;
@@ -51,6 +52,9 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnApply()
     {
+        // BeginScriptDebug()
+        // ScriptDebugAddTrace()
+        // ScriptDebugAddWatch()
         weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
 		weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
         weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
@@ -139,22 +143,27 @@ characterTraitsClasses.push(class extends CharacterTrait
         {
 
         }
+        else if (WeaponIs(weapon_melee, "half_zatoichi"))
+        {
+            Katana = weapon_melee;
+            // printdev("Half-Zatoichi stats applied.")
+        }
         else if (WeaponIs(weapon_melee, "eyelander"))
         {
             Eyelander = weapon_melee;
             Eyelander.AddAttribute("max health additive penalty", 0, -1)
-            printdev("Eyelander stats applied.")
+            // printdev("Eyelander stats applied.")
         }
         else if (WeaponIs(weapon_melee, "claidheamh_mor"))
         {
             ClaidMor = weapon_melee;
             ClaidMor.AddAttribute("dmg taken increased" 1.0, -1);
-            printdev("Claidheamh Mor stats applied.")
+            // printdev("Claidheamh Mor stats applied.")
         }
         else if (WeaponIs(weapon_melee, "scotsman_skullcutter"))
         {
             weapon_melee.AddAttribute("move speed penalty" 1.0, -1);
-            printdev("Skullcutter stats applied.")
+            // printdev("Skullcutter stats applied.")
         }
         else if (WeaponIs(weapon_melee, "ullapool_caber"))
         {
@@ -163,7 +172,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             Caber.AddAttribute("item_meter_charge_type", 3, -1)
             Caber.AddAttribute("mult_item_meter_charge_rate", 3, -1)
             Caber.AddAttribute("item_meter_damage_for_full_charge", 300, -1)
-            printdev("Caber stats applied.")
+            // printdev("Caber stats applied.")
         }
 
         // Wearable definitions.
@@ -223,6 +232,8 @@ characterTraitsClasses.push(class extends CharacterTrait
                         shieldAttributesApplied = true;
                     }
                 }
+                else
+                    break;
                 // Delfite: Stop iterating through wearables if we've applied our stats to both.
                 if (bootsAttributesApplied && shieldAttributesApplied)
                     break;
@@ -232,6 +243,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     }
 
     // Delfite: (Arguably) Less efficient version of Senni's OnTickAlive method for the Caber's recharge.
+    // I couldn't notice a difference between the two in-game, so Senni's method stays.
     // function OnFrameTickAlive()
     // {
     //     if (weapon_melee == Caber)
@@ -310,6 +322,16 @@ characterTraitsClasses.push(class extends CharacterTrait
                 // printdev("Charge added via boots.")
             }
         }
+
+        // Delfite: Half-Zatoichi heal-on-hit code.
+        if (params.weapon == Katana)
+        {
+            local newHealth = player.GetHealth() + player.GetMaxHealth() / 2.0;
+            local maxOverheal = player.GetMaxHealth() * 1.5
+            player.SetHealth(clampCeiling(newHealth, maxOverheal));
+			SetPropInt(params.weapon, "m_bIsBloody", 1);
+			AddPropInt(player, "m_Shared.m_iKillCountSinceLastDeploy", 1);
+        }
     }
 
     function OnDamageTaken(attacker, params)
@@ -324,8 +346,9 @@ characterTraitsClasses.push(class extends CharacterTrait
         if ((params.damage_type == 1 || params.damage_type == DMG_BLAST) && params.damage < player.GetHealth())
             return;
 
-        //Note: Saxton Punch!'s collateral will NOT be resisted. Adding extra-extra resistance to make up for it.
-        params.damage *= params.inflictor == custom_dmg_saxton_punch ? 0.2 : 0.5;
+        // Delfite: Saxton Punch!'s collateral WILL be resisted. Removing Lizard's extra-extra resistance because we merged Saxton Punch
+        // into a single damage event instead of the usual 2 damage events it would normally do.
+        params.damage *= 0.5;
         destroyShield = true;
     }
 

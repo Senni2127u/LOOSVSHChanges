@@ -16,9 +16,10 @@ this.Include <- function(path)
 		case "__lizardlib/character_trait.nut":
 		case "_gamemode/boss_queue.nut":
 		case "_gamemode/forced_arena.nut":
+		case "/bosses/saxton_hale/saxton_hale.nut":
 		case "/bosses/saxton_hale/misc/colored_arms.nut":
-		case "/bosses/saxton_hale/abilities/saxton_punch.nut":
-		case "/bosses/saxton_hale/abilities/sweeping_charge.nut":
+		case "/bosses/saxton_hale/abilities/saxton_punch.nut": // Extender fix.
+		case "/bosses/saxton_hale/abilities/sweeping_charge.nut": // Extender fix.
 		case "/mercs/merc_traits/single_class/demo_boots.nut":
 		case "/mercs/merc_traits/single_class/demo_head_collecting.nut":
 		case "/mercs/merc_traits/single_class/demo_jumper_ammo.nut":
@@ -44,7 +45,7 @@ this.Include <- function(path)
 		case "/mercs/merc_traits/single_class/spy_backstab.nut":
 		case "/mercs/merc_traits/single_class/spy_invis_res.nut":
 		case "/mercs/merc_traits/all_class/airborne_minicrits.nut":
-		case "/mercs/merc_traits/all_class/melee_buffs.nut":
+		case "/mercs/merc_traits/all_class/melee_buffs.nut": // Wallclimb melee range buff.
 		case "/mercs/merc_traits/all_class/last_mann_standing.nut":
 		case "/mercs/voice_lines/single_class/demo_trap_cheer.nut":
 		case "/mercs/voice_lines/single_class/sniper_run.nut":

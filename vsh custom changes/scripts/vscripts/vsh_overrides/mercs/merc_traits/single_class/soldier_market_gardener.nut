@@ -12,23 +12,25 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-PrecacheArbitrarySound("soldier.gardened")
-PrecacheArbitrarySound("vsh_sfx.gardened");
+// Delfite: Code migrated to `soldier_weapons.nut`
 
-characterTraitsClasses.push(class extends CharacterTrait
-{
-    function CanApply()
-    {
-        return player.GetPlayerClass() == TF_CLASS_SOLDIER
-    }
+// PrecacheArbitrarySound("soldier.gardened")
+// PrecacheArbitrarySound("vsh_sfx.gardened");
 
-    function OnDamageDealt(victim, params)
-    {
-        if (player.InCond(TF_COND_BLASTJUMPING) && !player.IsOnGround() && WeaponIs(params.weapon, "market_gardener"))
-        {
-            params.damage = vsh_vscript.CalcStabDamage(victim) / 2.5;
-            EmitSoundOn("vsh_sfx.gardened", player);
-            EmitPlayerVODelayed(player, "gardened", 0.3);
-        }
-    }
-});
+// characterTraitsClasses.push(class extends CharacterTrait
+// {
+//     function CanApply()
+//     {
+//         return player.GetPlayerClass() == TF_CLASS_SOLDIER
+//     }
+
+//     function OnDamageDealt(victim, params)
+//     {
+//         if (player.InCond(TF_COND_BLASTJUMPING) && !player.IsOnGround() && WeaponIs(params.weapon, "market_gardener"))
+//         {
+//             params.damage = vsh_vscript.CalcStabDamage(victim) / 2.5;
+//             EmitSoundOn("vsh_sfx.gardened", player);
+//             EmitPlayerVODelayed(player, "gardened", 0.3);
+//         }
+//     }
+// });

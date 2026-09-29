@@ -62,6 +62,7 @@ AddListener("tick_only_valid", 1, function (timeDelta)
 characterTraitsClasses.push(class extends CharacterTrait
 {
 	launch = false;
+	boss_eye_angles = null;
 
 	isScout = false;
 	isSoldier = false;
@@ -76,6 +77,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 	function OnApply()
 	{
 		RunWithDelay2(this, 0, OnApply0Delay);
+		RunWithDelay2(this, 0.1, OnApply1Delay);
 	}
 
 	// Delfite: Not sure why, but I needed to copy over OnApply0Delay from `boss.nut` to get the player attributes working.
@@ -106,7 +108,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 				isDemoman = true;
 			break;
 
-			case TF_CLASS_HEAVYWEAPONS:
+			case TF_CLASS_HEAVY:
 				player.AddCustomAttribute("move speed bonus", 1.3045, -1);
 				isHeavy = true;
 				// printdev("Heavy attributes applied.")
@@ -147,14 +149,38 @@ characterTraitsClasses.push(class extends CharacterTrait
 			default:
 			break;
 		}
+	}
+
+	function OnApply1Delay()
+	{
 		player.Regenerate(true)
 	}
+
+	// function OnDamageDealt(victim, params)
+	// {
+	// 	foreach (boss in GetAliveBossPlayers())
+	// 	{
+	// 		printdev(boss.EyeAngles())
+	// 		break;
+	// 	}
+	// }
 
 	function OnDamageTaken(attacker, params)
     {
         launch = IsValidBoss(attacker);
-        if (launch)
+		// foreach (boss in GetAliveBossPlayers())
+		// {
+		// 	printdev(boss.EyeAngles())
+		// 	boss_eye_angles = boss.EyeAngles()
+		// 	break;
+		// }
+        if (launch && !isMedic)
             params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
+		else if (launch)
+		{
+			params.damage *= 0.7;
+        	params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
+		}
     }
 
 	function OnDamageTakenPost(attacker, params)
@@ -162,6 +188,8 @@ characterTraitsClasses.push(class extends CharacterTrait
         local active_weapon = player.GetActiveWeapon()
         if (!launch)
             return;
+
+
 
 		local deltaVector = player.GetOrigin() - attacker.GetOrigin();
 		if (player.IsInvulnerable())
@@ -196,7 +224,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 			// printdev("4")
 			deltaVector.z = 0;
 			deltaVector.Norm();
-			player.Yeet(deltaVector * 600 + Vector(0, 0, 450));
+			player.Yeet(deltaVector * 600);
 		}
     }
 })

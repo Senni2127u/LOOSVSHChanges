@@ -118,7 +118,7 @@ function BurningFlamesEffect(player, particleName)
         //         particle.SetAbsOrigin(player.EyePosition() + Vector(0, 0, 5))
         //             break;
 
-        //     case TF_CLASS_HEAVYWEAPONS:
+        //     case TF_CLASS_HEAVY:
         //         particle.SetAbsOrigin(player.EyePosition() + Vector(0, 0, 5))
         //             break;
 
@@ -209,7 +209,7 @@ function AddAttributes (player)
                             default:
                                 wearable.AddAttribute("voice pitch scale", 0.9505, -1)
                                 wearable.AddAttribute("force level display", 999, -1)
-                                printdev(wearable.GetAttribute("voice pitch scale", 1.0))
+                                // printdev(wearable.GetAttribute("voice pitch scale", 1.0))
                                 wearable.AddAttribute("attach particle effect", 2, -1)
                                 wearable.AddAttribute("killstreak tier", 1, -1)
                                 wearable.AddAttribute("killstreak idleeffect", 3, -1)

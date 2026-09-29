@@ -12,7 +12,10 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-AddListener("setup_start", 0, function()
+PrecacheScriptSound("Powerup.PickUpTemp.Crit")
+PrecacheScriptSound("Building_Sentry.Damage")
+
+AddListener("setup_start", 1, function()
 {
 	// Delfite: These cvars control everything to do with Sentry Guns. Their values are set every time setup starts.
 	// These cvars are also hidden in-game and considered dev commands, but can still be set by VScript nonetheless.
@@ -39,8 +42,23 @@ AddListener("setup_start", 0, function()
 	// printdev("tf_sentrygun_newtarget_dist = " + Convars.GetFloat("tf_sentrygun_newtarget_dist"))
 });
 
-PrecacheScriptSound("Powerup.PickUpTemp.Crit")
-PrecacheScriptSound("Building_Sentry.Damage")
+AddListener("object_hurt", 1, function(attacker, object, params)
+{
+    if (!IsValidBoss(attacker))
+        return;
+    local building_type = GetPropInt(object, "m_iObjectType")
+    if (building_type != 2)
+        return;
+    // printdev("Sentry took damage.")
+    local soundlevel = (40 + (20 * log10(radius / 36.0))).tointeger();
+    EmitSoundEx(
+        sound_name = "Building_Sentry.Damage"
+        volume = 1.0
+        sound_level = soundLevel
+        entity = object
+    )
+    EmitSoundOn("Building_Sentry.Damage", object)
+});
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
@@ -81,49 +99,10 @@ characterTraitsClasses.push(class extends CharacterTrait
 
         if (WeaponIs(weapon_primary, "frontier_justice"))
             primaryIsFrontierJustice = true;
-        if (WeaponIs(weapon_melee, "gunslinger"))
-            usingMiniSentry = true;
         if (WeaponIs(weapon_secondary, "pistol"))
             Pistol = weapon_secondary
-    }
-
-    function OnObjectBuilt(builder, building, params)
-    {
-        local building_type = GetPropInt(building, "m_iObjectType")
-        if (building_type == 2)
-            sentrygun = building
-        // printdev("building: " + sentrygun)
-    }
-
-    function OnObjectDestroyed(builder, building, params)
-    {
-        local building_type = GetPropInt(building, "m_iObjectType")
-        if (building_type == 2)
-            sentrygun = null;
-        // printdev("building: " + sentrygun)
-    }
-
-
-    function OnDamageTaken(attacker, params)
-    {
-        if (params.const_entity == sentrygun)
-        {
-            // for (local sentrygun; sentrygun = Entities.FindByClassname(sentrygun, "obj_sentrygun");)
-            // {
-            printdev("Sentry took damage.")
-            EmitSoundOn("Building_Sentry.Damage", sentrygun)
-            // foreach (building in PlayerBuildings[player])
-            // {
-            //     printdev("Scanning for sentry...")
-            //     local building_type = GetPropInt(building, "m_iObjectType")
-            //     if (building_type == 2)
-            //     {
-            //         printdev("Playing sound on sentry...")
-            //         EmitSoundOn("Building_Sentry.Damage", sentrygun)
-            //     }
-            // }
-            // }
-        }
+        if (WeaponIs(weapon_melee, "gunslinger"))
+            usingMiniSentry = true;
     }
 
     function OnDamageDealt(victim, params)
@@ -135,7 +114,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             // from Hale, making map traversal much more annoying for him and creating a not-so-fun-to-fight-against situation for him. This, combined with
             // multiple sentries often being in play, necessitated a solution. Sentries now inflict SUBSTANTIALLY less knockback on Hale, but sentries will
             // be easier to build in order to compensate. Hopefully this rework makes Engineer more fun to play as and against.
-            
+
             if (player.IsAlive())
             {
                 params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
@@ -209,7 +188,6 @@ characterTraitsClasses.push(class extends CharacterTrait
                             break;
                     default:
                         printdev("Unknown ObjectType found: " + building_type + " | " + building)
-                        printdev("If you see this message, screenshot your console and send it to me on Discord: @delfite.")
                             break;
                 }
             }
@@ -319,13 +297,13 @@ characterTraitsClasses.push(class extends CharacterTrait
             {
                 SetPropInt(exit, "m_iUpgradeMetal", 0)
                 SetPropInt(exit, "m_iUpgradeLevel", entrance_level)
-                printdev("Trying upgrade on Exit.")
+                // printdev("Trying upgrade on Exit.")
             }
             if (entrance_level < exit_level)
             {
                 SetPropInt(entrance, "m_iUpgradeMetal", 0)
                 SetPropInt(entrance, "m_iUpgradeLevel", exit_level)
-                printdev("Trying upgrade on Entrance.")
+                // printdev("Trying upgrade on Entrance.")
             }
         }
     }

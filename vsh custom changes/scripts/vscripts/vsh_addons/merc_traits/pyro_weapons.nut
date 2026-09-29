@@ -188,11 +188,10 @@ characterTraitsClasses.push(class extends CharacterTrait
         {
             Axtinguisher = weapon_melee
         }
-        player.Regenerate(true);
-        RunWithDelay2(this, 0.1, OnApply01Delay)
+        RunWithDelay2(this, 0.1, OnApply1Delay);
     }
 
-    function OnApply01Delay()
+    function OnApply1Delay()
     {
         // Delfite: If you want to define the player's max overheal for a specific weapon/combination of weapons, do it here.
         // The purpose of this is to reduce calls to C++ functions for performance reasons. That includes stuff like GetMaxHealth.
@@ -200,6 +199,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             overheal_limit = overheal_difference * PYRO_PRIMARY_OVERHEAL_MULT + player.GetMaxHealth()
         else
             overheal_limit = overheal_difference + player.GetMaxHealth()
+        player.Regenerate(true);
     }
 
 	function OnFrameTickAlive()
@@ -238,8 +238,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnDamageDealt(victim, params)
 	{
-		if (weapon_secondary == Shotgun)
-			lastHitWasShotgun = params.weapon == Shotgun;
+        lastHitWasShotgun = params.weapon == Shotgun;
 
         // Delfite: Restore half of the player's max health if they land a burning hit with the Axtinguisher.
         if (params.weapon == Axtinguisher)
@@ -291,7 +290,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             player.AddCondEx(TF_COND_BLASTJUMPING, -1, params.attacker)
             // printdev("Vector applied.")
         }
-        else if (Jetpack != null || Detonator != null)
+        else if (weapon_secondary == (Jetpack || Detonator))
         {
             // Delfite: Normally, we could just add the `cancel falling damage` attribute to a weapon if we wanted to remove fall damage from the player.
             // However, that ended up removing the ability to stomp Hale while in flight.

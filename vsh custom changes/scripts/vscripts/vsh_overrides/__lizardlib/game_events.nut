@@ -266,16 +266,32 @@ function OnGameEvent_object_destroyed(params)
     FireListeners("object_destroyed", builder, building, params);
 }
 
+function OnGameEvent_npc_hurt(params)
+{
+    local object = EntIndexToHScript(params.entindex);
+    if (!object.IsValid())
+        return;
+    local attacker = GetPlayerFromParams(params, "attacker_player");
+    if (!IsValidPlayer(attacker))
+        return;
+    FireListeners("object_hurt", attacker, object, params);
+}
+
 function OnGameEvent_player_healed(params)
 {
-    local healer = GetPlayerFromUserID(params.healer);
+    if (IsNotValidRound())
+        return;
+    local patient = PlayerInstanceFromIndex(params.patient);
+    if (!IsValidPlayer(patient))
+        return;
+    local healer = PlayerInstanceFromIndex(params.healer);
     if (!IsValidPlayer(healer))
         return;
-    FireListeners("patient_healed", healer, params)
+    FireListeners("player_healed", healer, patient, params);
 }
 
 // TODO: Use OnGameEvent_player_stealsandvich to turn Heavy's lunchbox items into small landmines.
-// Delfite: Of course. Of course this GameEvent "isn't implemented". Thanks Valve!
+// Delfite: Of course. Of course this GameEvent is "not implemented." Thanks Valve!
 function OnGameEvent_player_shoot(params)
 {
     printdev("OnGameEvent_player_shoot triggered.")

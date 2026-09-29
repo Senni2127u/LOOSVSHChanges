@@ -34,7 +34,7 @@ function MeleeWallClimb_Check(params)
 
     else if (params.const_entity == null)
     {
-        printdev("No entity");
+        // printdev("No entity");
         return false;
     }
 

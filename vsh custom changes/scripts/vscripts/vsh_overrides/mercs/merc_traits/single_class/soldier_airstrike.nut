@@ -12,7 +12,7 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-// Delfite: Migrated code to `soldier_primaries.nut`.
+// Delfite: Migrated code to `soldier_weapons.nut`.
 
 // characterTraitsClasses.push(class extends CharacterTrait
 // {

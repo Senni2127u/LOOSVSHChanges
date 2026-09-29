@@ -12,23 +12,25 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-characterTraitsClasses.push(class extends CharacterTrait
-{
-    function CanApply()
-    {
-        local playerClass = player.GetPlayerClass();
-        return playerClass == TF_CLASS_SOLDIER || playerClass == TF_CLASS_DEMOMAN;
-    }
+// Delfite: Code migrated to `demoman_weapons.nut` and `soldier_weapons.nut`
 
-    function OnDamageDealt(victim, params)
-    {
-        if (WeaponIs(params.weapon, "half_zatoichi"))
-        {
-            local newHealth = player.GetHealth() + player.GetMaxHealth() / 2.0;
-            local maxOverheal = player.GetMaxHealth() * 1.5
-            player.SetHealth(clampCeiling(newHealth, maxOverheal));
-			SetPropInt(params.weapon, "m_bIsBloody", 1);
-			AddPropInt(player, "m_Shared.m_iKillCountSinceLastDeploy", 1);
-        }
-    }
-});
+// characterTraitsClasses.push(class extends CharacterTrait
+// {
+//     function CanApply()
+//     {
+//         local playerClass = player.GetPlayerClass();
+//         return playerClass == TF_CLASS_SOLDIER || playerClass == TF_CLASS_DEMOMAN;
+//     }
+
+//     function OnDamageDealt(victim, params)
+//     {
+//         if (WeaponIs(params.weapon, "half_zatoichi"))
+//         {
+//             local newHealth = player.GetHealth() + player.GetMaxHealth() / 2.0;
+//             local maxOverheal = player.GetMaxHealth() * 1.5
+//             player.SetHealth(clampCeiling(newHealth, maxOverheal));
+// 			SetPropInt(params.weapon, "m_bIsBloody", 1);
+// 			AddPropInt(player, "m_Shared.m_iKillCountSinceLastDeploy", 1);
+//         }
+//     }
+// });

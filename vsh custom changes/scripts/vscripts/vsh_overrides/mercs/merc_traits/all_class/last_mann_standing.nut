@@ -17,6 +17,9 @@ characterTraitsClasses.push(class extends CharacterTrait
     function OnTickAlive(timeDelta)
     {
         local mercsAlive = GetAliveMercCount();
+        // Delfite: Only give mini-crits to non-stealthed players, otherwise Spy's cloak will be rendered useless during LMS.
+        // I get the point of the glow outlines is to stop people from hiding, but Spy should be an exception considering what
+        // his whole identity and style of gameplay is about, that being subterfuge and being sneaky.
         if (mercsAlive <= 3 && !player.IsStealthed())
             player.AddCondEx(TF_COND_OFFENSEBUFF, 0.2, player);
         if (mercsAlive == 1)    //No, it's not "else if", because engie + sentry combo benefits from both crits and minicrits

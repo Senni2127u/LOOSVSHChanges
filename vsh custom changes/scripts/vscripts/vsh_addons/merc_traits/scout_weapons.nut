@@ -142,14 +142,20 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnDamageDealt(victim, params)
     {
-        if (params.weapon == ForceANature || Time() - lastTimeApplied < 0.1 || !IsBoss(victim))
-            return;
-        local deltaVector = victim.GetOrigin() - player.GetOrigin();
-        deltaVector.z = 100;
-        local distance = deltaVector.Norm();
-        if (distance < 600)
-            victim.Yeet(deltaVector * (300 - distance / 2));
+        // Delfite: This code controls the Force-a-Nature's enhanced knockback.
+        if (params.weapon == ForceANature || IsValidBoss(victim))
+        {
+            if (Time() - lastTimeApplied < 0.1)
+                return;
 
+            local deltaVector = victim.GetOrigin() - player.GetOrigin();
+            deltaVector.z = 100;
+            local distance = deltaVector.Norm();
+            if (distance < 600)
+                victim.Yeet(deltaVector * (300 - distance / 2));
+        }
+
+        // Delfite: This code has dominion over the Candy Cane's spawn-medkit-on-hit property.
         if (params.weapon == CandyCane)
         {
             if (!(params.damage_type & 128) || vsh_vscript.totalHealthKits > 30)
@@ -169,6 +175,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             }, healthKit);
         }
 
+        // Delfite: This code controls the Boston Basher's air-boost behavior.
         if (params.weapon == BostonBasher && victim == player)
         {
             player.RemoveCond(TF_COND_BLEEDING)

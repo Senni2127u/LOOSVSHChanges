@@ -8,6 +8,9 @@ characterTraitsClasses.push(class extends CharacterTrait
 	weapon_secondary = null;
 	weapon_melee = null;
 
+	overheal_difference = 0;
+    overheal_limit = 0;
+
 	// Primary handles.
 	Shotgun = null;
 	Pomson = null;
@@ -112,9 +115,22 @@ characterTraitsClasses.push(class extends CharacterTrait
 			pda.AddAttribute("mult_player_movespeed_active", 1.25, -1);
 			pda2.AddAttribute("mult_player_movespeed_active", 1.25, -1);
 		}
+		RunWithDelay2(this, 0.1, OnApply1Delay);
 	}
 
-	function OnTickAlive()
+	function OnApply1Delay()
+    {
+        // Delfite: If you want to define the player's max overheal for a specific weapon/combination of weapons, do it here.
+        // The purpose of this is to reduce calls to C++ functions for performance reasons. That includes stuff like GetMaxHealth.
+		// Obviously, you should replace PYRO_PRIMARY_OVERHEAL_MULT with a different constant, depending on the merc and weapon.
+        // if (weapon_primary == (Flamethrower || Backburner || Degreaser))
+        //     overheal_limit = overheal_difference * PYRO_PRIMARY_OVERHEAL_MULT + player.GetMaxHealth()
+        // else
+            overheal_limit = overheal_difference + player.GetMaxHealth()
+		player.Regenerate(true);
+    }
+
+	function OnTickAlive(timeDelta)
 	{
 		local active_weapon = player.GetActiveWeapon()
         if (Wrangler)
@@ -163,7 +179,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
 	function OnDamageDealt(victim, params)
 	{
-		if (Shotgun != null)
+		if (weapon_primary == Shotgun)
 			lastHitWasShotgun = params.weapon == Shotgun
 	}
 

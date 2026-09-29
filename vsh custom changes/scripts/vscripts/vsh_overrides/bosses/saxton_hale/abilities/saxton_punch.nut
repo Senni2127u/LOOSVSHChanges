@@ -10,6 +10,8 @@
 //  James McGuinn - Mercenaries voice acting for custom lines.
 //  Yakibomb - give_tf_weapon script bundle (used for Hale's first-person hands model).
 //  Phe - game design assistance.
+//  Senni - Crit Punch sfx warning code.
+//  Bradasparky - Extender fixes, consolidated Crit Punch damage into one instance fix.
 //=========================================================================
 
 PrecacheArbitrarySound("vsh_sfx.saxton_punch");
@@ -19,11 +21,6 @@ PrecacheArbitrarySound("Weapon_Capper.SingleCrit")
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "vsh_megapunch_shockwave" })
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "vsh_mighty_slam" })
 PrecacheEntityFromTable({ classname = "info_particle_system", effect_name = "stomp_text" })
-
-::SaxtonPunchTrigger <- function ()
-{
-    BossTrait.SaxtonPunchTrait.meter = -3
-}
 
 class SaxtonPunchTrait extends BossTrait
 {
@@ -49,7 +46,7 @@ class SaxtonPunchTrait extends BossTrait
         // Delfite: Play a sound to everyone on the server to notify them Saxton Punch is charged.
         // Previously, the sound would just play on Hale, but this method works regardless of distance.
         EmitSoundOnClient("Weapon_Capper.SingleCrit", boss) //sfx warning when it's fully charged.
-        foreach (player in GetAliveMercs())
+        foreach (player in GetValidClients())
         {
             EmitSoundOnClient("Weapon_Capper.SingleCrit", player) //sfx warning when it's fully charged.
         }

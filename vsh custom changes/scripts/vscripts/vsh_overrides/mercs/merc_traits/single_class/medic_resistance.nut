@@ -12,33 +12,35 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-characterTraitsClasses.push(class extends CharacterTrait
-{
-    launch = false;
+// Delfite: Code migrated to `medic_weapons.nut`
 
-    function CanApply()
-    {
-        return player.GetPlayerClass() == TF_CLASS_MEDIC;
-    }
+// characterTraitsClasses.push(class extends CharacterTrait
+// {
+//     launch = false;
 
-    function OnDamageTaken(attacker, params)
-    {
-        launch = IsValidBoss(attacker);
-        if (!launch)
-            return;
+//     function CanApply()
+//     {
+//         return player.GetPlayerClass() == TF_CLASS_MEDIC;
+//     }
 
-        params.damage *= 0.7;
-        params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
-    }
+//     function OnDamageTaken(attacker, params)
+//     {
+//         launch = IsValidBoss(attacker);
+//         if (!launch)
+//             return;
 
-    function OnDamageTakenPost(attacker, params)
-    {
-        if (!launch)
-            return;
+//         params.damage *= 0.7;
+//         params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
+//     }
 
-        local deltaVector = player.GetOrigin() - attacker.GetOrigin();
-        deltaVector.z = 0;
-        deltaVector.Norm();
-        player.Yeet(deltaVector * 600 + Vector(0, 0, 450));
-    }
-});
+//     function OnDamageTakenPost(attacker, params)
+//     {
+//         if (!launch)
+//             return;
+
+//         local deltaVector = player.GetOrigin() - attacker.GetOrigin();
+//         deltaVector.z = 0;
+//         deltaVector.Norm();
+//         player.Yeet(deltaVector * 600 + Vector(0, 0, 450));
+//     }
+// });

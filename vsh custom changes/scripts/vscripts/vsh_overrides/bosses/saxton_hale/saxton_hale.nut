@@ -37,7 +37,7 @@ class SaxtonHale extends Boss
 
     function OnApply0Delay()
     {
-        player.SetPlayerClass(TF_CLASS_SOLDIER);
+        player.SetPlayerClass(TF_CLASS_HEAVY);
         player.Regenerate(true);
         SetPropInt(player, "m_bForcedSkin", 1);
         SetPropInt(player, "m_nForcedSkin", 0);
