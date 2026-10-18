@@ -25,7 +25,7 @@ AddListener("spawn", 0, function(player, params)
 
     if (steamid == SENNI || steamid == LIZARDOFOZ || steamid == LANKO)
     {
-        if (player.GetTeam() == TEAM_SPECTATOR) //This is to hopefully fix an issue where these select players may have joined spectator first before being put on a team.
+        if (player.GetTeam() == TEAM_SPECTATOR || !player.IsAlive()) //This is to hopefully fix an issue where these select players may have joined spectator first before being put on a team.
             {
                 return;
             }
