@@ -575,9 +575,11 @@ void BuildChangeEntries()
     AddEntry(TFClass_Engineer, "");
     AddLine("Teleporters work in both directions.");
     AddLine("Teleporter build speed increased by 300%.");
+    AddLine("25 Metal regenerates every 5 seconds.");
 
     AddEntry(TFClass_Engineer, "Rescue Ranger");
     AddLine("No longer applies Marked-For-Death.");
+    AddLine("Cost to teleport buildings is 50 metal.");
 
     AddEntry(TFClass_Engineer, "Pomson 6000");
     AddLine("Fire rate increased by 20%.");
