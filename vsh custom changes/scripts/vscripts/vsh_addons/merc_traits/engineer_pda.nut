@@ -15,6 +15,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 			{
 				weapon_pda.AddAttribute("engineer teleporter build rate multiplier", 3.0, -1)
 				weapon_pda.AddAttribute("bidirectional teleport", 1, -1);
+				weapon_pda.AddAttribute("metal regen", 1, -1);
 			}
 		}
 	}
