@@ -28,6 +28,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 		if (WeaponIs(weapon_primary, "rescue_ranger"))
 		{
 			weapon_primary.AddAttribute("mark for death on building pickup", 0, -1)
+			weapon_primary.AddAttribute("engineer building teleporting pickup", 50, -1)
 		}
 		if (WeaponIs(weapon_primary, "pomson_6000"))
 		{
@@ -47,6 +48,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_primary.RemoveAttribute("reload time decreased");
             weapon_primary.RemoveAttribute("fire rate bonus");
             weapon_primary.RemoveAttribute("mark for death on building pickup");
+			weapon_primary.RemoveAttribute("engineer building teleporting pickup");
             weapon_primary.RemoveAttribute("damage penalty");
         }
     }
