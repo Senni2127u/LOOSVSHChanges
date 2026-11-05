@@ -77,7 +77,8 @@
         // Example: The Quick-Fix                       -> quick_fix
         // Example: The Force-a-Nature                  -> force_a_nature
 
-    // Some weapon names will have abbreviated/less verbose versions for the sake of faster navigation, but will still have their regular versions available for use.
+    // Some weapon names will have abbreviated/less verbose versions for the sake of faster navigation,
+    // but will still have their regular versions available for use.
         // Example: The Gloves of Running Urgently      -> gru        ||  gloves_of_running_urgently
         // Example: The Killing Gloves of Boxing        -> kgb        ||  killing_gloves_of_boxing
         // Example: The Baby Face's Blaster             -> bfb        ||  baby_faces_blaster
@@ -86,6 +87,7 @@
 
     // Of course, it should go without saying to NEVER include special characters in a weapon's name, and to always keep the names in lowercase.
     // If you wish to add entries to this file, use this list as a reference point: https://wiki.alliedmods.net/Team_fortress_2_item_definition_indexes
+    // Just keep in mind that the alliedmods list isn't up-to-date, as of October 31st, 2026.
 
 
     //Multi-Class Weapons [0]

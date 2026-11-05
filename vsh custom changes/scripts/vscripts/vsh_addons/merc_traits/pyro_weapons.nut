@@ -41,7 +41,6 @@ characterTraitsClasses.push(class extends CharacterTrait
     weapon_secondary = null;
     weapon_melee = null;
 
-    overheal_difference = 0;
     overheal_limit = 0;
     primary_damage_accumulated = 0;
 
@@ -82,7 +81,6 @@ characterTraitsClasses.push(class extends CharacterTrait
         weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
         weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
         weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
-        overheal_difference = player.GetMaxHealth() * 0.5
 
         // Primary definitions.
         if (WeaponIs(weapon_primary, "flamethrower"))
@@ -91,23 +89,23 @@ characterTraitsClasses.push(class extends CharacterTrait
 			Flamethrower.AddAttribute("patient overheal penalty", PYRO_PRIMARY_OVERHEAL_MULT, -1);
 			Flamethrower.AddAttribute("no primary ammo from dispensers while active", 1, -1);
         }
-        else if (WeaponIs(weapon_primary, "backburner"))
+        if (WeaponIs(weapon_primary, "backburner"))
         {
             Backburner = weapon_primary;
-			weapon_primary.AddAttribute("patient overheal penalty", PYRO_PRIMARY_OVERHEAL_MULT, -1);
-			weapon_primary.AddAttribute("no primary ammo from dispensers while active", 1, -1);
+			Backburner.AddAttribute("patient overheal penalty", PYRO_PRIMARY_OVERHEAL_MULT, -1);
+			Backburner.AddAttribute("no primary ammo from dispensers while active", 1, -1);
         }
-        else if (WeaponIs(weapon_primary, "degreaser"))
+        if (WeaponIs(weapon_primary, "degreaser"))
         {
             Degreaser = weapon_primary;
-			weapon_primary.AddAttribute("patient overheal penalty", PYRO_PRIMARY_OVERHEAL_MULT, -1);
-			weapon_primary.AddAttribute("no primary ammo from dispensers while active", 1, -1);
+			Degreaser.AddAttribute("patient overheal penalty", PYRO_PRIMARY_OVERHEAL_MULT, -1);
+			Degreaser.AddAttribute("no primary ammo from dispensers while active", 1, -1);
         }
-        else if (WeaponIs(weapon_primary, "phlog"))
+        if (WeaponIs(weapon_primary, "phlog"))
         {
             Phlog = weapon_primary
         }
-        else if (WeaponIs(weapon_primary, "dragons_fury"))
+        if (WeaponIs(weapon_primary, "dragons_fury"))
         {
             DragonsFury = weapon_primary
         }
@@ -116,47 +114,52 @@ characterTraitsClasses.push(class extends CharacterTrait
         if (WeaponIs(weapon_secondary, "shotgun"))
         {
             Shotgun = weapon_secondary;
-            // Shotgun.AddAttribute("damage bonus" 1.40, -1);
+            Shotgun.AddAttribute("damage bonus" 1.10, -1);
             Shotgun.AddAttribute("weapon spread bonus", 0.70, -1);
             Shotgun.AddAttribute("reload time decreased", 0.85, -1);
+            Shotgun.AddAttribute("single wep deploy time decreased", 0.8, -1);
         }
-        else if (WeaponIs(weapon_secondary, "reserve_shooter"))
+        if (WeaponIs(weapon_secondary, "reserve_shooter"))
         {
             // weapon_secondary.AddAttribute("weapon spread bonus" 0.70, -1);
         }
-        else if (WeaponIs(weapon_secondary, "panic_attack"))
-        {
-            weapon_secondary.AddAttribute("weapon spread bonus" 0.6, -1);
-            weapon_secondary.AddAttribute("damage penalty", 1.0, -1);
-        }
-        else if (WeaponIs(weapon_secondary, "flaregun"))
+        if (WeaponIs(weapon_secondary, "panic_attack"))
+		{
+			weapon_secondary.AddAttribute("damage bonus", 1.25, -1);
+			// weapon_secondary.AddAttribute("bullets per shot bonus", 1.5, -1);
+			weapon_secondary.AddAttribute("weapon spread bonus", 0.6, -1);
+			weapon_secondary.AddAttribute("reload time decreased", 0.6, -1);
+			weapon_secondary.AddAttribute("fire rate bonus", 0.7, -1);
+			weapon_secondary.AddAttribute("damage penalty", 1.0, -1);
+		}
+        if (WeaponIs(weapon_secondary, "flaregun"))
         {
             Flaregun = weapon_secondary
             Flaregun.AddAttribute("damage bonus", 2.0, -1);
             Flaregun.AddAttribute("single wep deploy time decreased", 0.7, -1);
             // Flaregun.AddAttribute("Projectile speed increased", 2.0, -1);
         }
-        else if (WeaponIs(weapon_secondary, "detonator"))
+        if (WeaponIs(weapon_secondary, "detonator"))
         {
             Detonator = weapon_secondary
             Detonator.AddAttribute("maxammo primary reduced" 0.5, -1);
             Detonator.AddAttribute("blast dmg to self increased" 0.0, -1);
             // Detonator.AddAttribute("damage penalty" 1.0, -1);
             Detonator.AddAttribute("Blast radius increased", 1.35, -1);
-            Detonator.AddAttribute("fire rate bonus", 0.30, -1);
+            Detonator.AddAttribute("fire rate bonus", 0.20, -1);
             // Detonator.AddAttribute("increased air control", 3, -1);
             Detonator.AddAttribute("boots falling stomp", 1, -1);
         }
-        else if (WeaponIs(weapon_secondary, "gas_passer"))
+        if (WeaponIs(weapon_secondary, "gas_passer"))
         {
             weapon_secondary.AddAttribute("explode_on_ignite", 1, -1);
             weapon_secondary.AddAttribute("item_meter_charge_rate", 50, -1);
             weapon_secondary.AddAttribute("single wep deploy time decreased", 0.7, -1);
             weapon_secondary.AddAttribute("switch from wep deploy time decreased", 0.7, -1);
-            weapon_secondary.AddAttribute("dmg penalty vs players", 0.7, -1);
-            weapon_secondary.AddAttribute("item_meter_damage_for_full_charge", 600, -1);
+            // weapon_secondary.AddAttribute("dmg penalty vs players", 0.7, -1);
+            weapon_secondary.AddAttribute("item_meter_damage_for_full_charge", 800, -1);
         }
-        else if (WeaponIs(weapon_secondary, "thermal_thruster"))
+        if (WeaponIs(weapon_secondary, "thermal_thruster"))
         {
             Jetpack = weapon_secondary
             // weapon_primary.AddAttribute("damage bonus", 1.1, -1);
@@ -174,7 +177,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         {
             weapon_melee.AddAttribute("heal on kill", 0, -1)
         }
-        else if (WeaponIs(weapon_melee, "powerjack"))
+        if (WeaponIs(weapon_melee, "powerjack"))
         {
             weapon_melee.AddAttribute("heal on kill", 0, -1)
             weapon_melee.AddAttribute("dmg taken increased", 1, -1)
@@ -184,22 +187,29 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_melee.AddAttribute("move speed bonus", 1.3, -1)
             weapon_melee.AddAttribute("provide on active", 1, -1)
         }
-        else if (WeaponIs(weapon_melee, "axtinguisher"))
+        if (WeaponIs(weapon_melee, "axtinguisher"))
         {
             Axtinguisher = weapon_melee
         }
-        RunWithDelay2(this, 0.1, OnApply1Delay);
+        RunWithDelay2(this, 0.05, OnApply05Delay);
     }
 
-    function OnApply1Delay()
+    function OnApply05Delay()
     {
         // Delfite: If you want to define the player's max overheal for a specific weapon/combination of weapons, do it here.
         // The purpose of this is to reduce calls to C++ functions for performance reasons. That includes stuff like GetMaxHealth.
-        if (weapon_primary == (Flamethrower || Backburner || Degreaser))
-            overheal_limit = overheal_difference * PYRO_PRIMARY_OVERHEAL_MULT + player.GetMaxHealth()
-        else
-            overheal_limit = overheal_difference + player.GetMaxHealth()
-        player.Regenerate(true);
+        switch (weapon_primary)
+        {
+            case Flamethrower:
+            case Backburner:
+            case Degreaser:
+                overheal_limit = player.GetMaxOverheal(PYRO_PRIMARY_OVERHEAL_MULT)
+            break;
+
+            default:
+                overheal_limit = player.GetMaxOverheal()
+            break;
+        }
     }
 
 	function OnFrameTickAlive()
@@ -212,7 +222,8 @@ characterTraitsClasses.push(class extends CharacterTrait
                 if (uberPenaltyApplied)
                     return;
 
-                player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
+                weapon_primary.AddAttribute("ubercharge rate bonus for healer", 0.5, -1)
+                player.AddCustomAttribute("custom desc attr", 1, 0.01)
                 uberPenaltyApplied = true
             }
             else if (patient_health <= overheal_limit - 2)
@@ -220,7 +231,8 @@ characterTraitsClasses.push(class extends CharacterTrait
                 if (!uberPenaltyApplied)
                     return;
 
-                player.RemoveCustomAttribute("ubercharge rate bonus for healer")
+                weapon_primary.RemoveAttribute("ubercharge rate bonus for healer")
+                player.AddCustomAttribute("custom desc attr", 1, 0.01)
                 uberPenaltyApplied = false
             }
         }
@@ -250,8 +262,17 @@ characterTraitsClasses.push(class extends CharacterTrait
             }
         }
 
+        if (params.weapon == Flaregun)
+            if (params.damage_type & DMG_ACID)
+                params.damage *= 1.66
+
+        // if (params.weapon == Jetpack)
+        //     params.damage_type = params.damage_type | DMG_ACID;
+
         if (params.weapon == weapon_primary)
             lastHitWasPrimary = true;
+
+        // printdev(params.inflictor)
 	}
 
 	function OnHurtDealtEvent(victim, params)
@@ -261,7 +282,18 @@ characterTraitsClasses.push(class extends CharacterTrait
 		if (lastHitWasShotgun)
 		{
 			local damage_dealt = params.damageamount
-            player.SetHealth(clampCeiling(overheal_limit, player.GetHealth() + (damage_dealt / 2)))
+            switch (weapon_primary)
+            {
+                case Flamethrower:
+                case Backburner:
+                case Degreaser:
+                    player.SetHealth(clampCeiling(player.GetMaxOverheal(PYRO_PRIMARY_OVERHEAL_MULT), player.GetHealth() + (damage_dealt / 2)))
+                break;
+
+                default:
+                    player.SetHealth(clampCeiling(player.GetMaxOverheal(), player.GetHealth() + (damage_dealt / 2)))
+                break;
+            }
 		}
 
         if (lastHitWasPrimary)

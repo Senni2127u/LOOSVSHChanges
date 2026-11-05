@@ -1,8 +1,16 @@
 // This script handles directory information for custom VSH scripts that are different from the base scripts.
 
+// Delfite: Due to unforeseen consequences, attempting to run the gamemode with
+// our scripts on a Listen Server will cause it to crash. This check will stop the crash,
+// but it will also stop you from testing your changes outside of a Dedicated Server.
+// If anyone can figure out why the crashes happen, make an Issue on the Github about it.
+if (!IsDedicatedServer())
+	return;
+
 // Saxton Hale Scripts
 IncludeScript("vsh_addons/boss_traits/airblast_stun.nut")
 IncludeScript("vsh_addons/boss_traits/damage_scaling_rewrite.nut")
+IncludeScript("vsh_addons/boss_traits/hale_weapon_overrides.nut")
 
 // Scout Scripts
 IncludeScript("vsh_addons/merc_traits/scout_weapons.nut")
@@ -39,6 +47,7 @@ IncludeScript("vsh_addons/merc_traits/__player_traits.nut")
 IncludeScript("map_addons/distillery/distillery_heavyblocker.nut")
 
 // Miscellaneous Scripts
+IncludeScript("vsh_addons/miscellaneous/constants_new.nut")
 IncludeScript("vsh_addons/miscellaneous/vsh_boss_damage_top3_no_log.nut")
 IncludeScript("vsh_addons/miscellaneous/vsh_healing_top3_no_log.nut")
 IncludeScript("vsh_addons/miscellaneous/reveal_players_at_3_left.nut")

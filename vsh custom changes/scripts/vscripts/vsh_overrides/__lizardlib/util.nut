@@ -84,28 +84,63 @@ Include("__lizardlib/game_events.nut");
     }
 }
 
-::clampCeiling <- function(valueA, valueB)
+::clampCeiling <- function(ceiling, formula)
 {
-    if (valueA < valueB)
-        return valueA;
-    return valueB;
+    if (formula > ceiling)
+        return ceiling;
+    return formula;
 }
 
-::clampFloor <- function(valueA, valueB)
+::clampFloor <- function(floor, formula)
 {
-    if (valueA > valueB)
-        return valueA;
-    return valueB;
+    if (formula < floor)
+        return floor;
+    return formula;
 }
 
-::clamp <- function(value, min, max)
+::clamp <- function(formula, floor, ceiling)
 {
-    if (value < min)
-        return min;
-    if (value > max)
-        return max;
-    return value;
+    if (formula < floor)
+        return floor;
+    if (formula > ceiling)
+        return ceiling;
+    return formula;
 }
+
+// ::clampCeiling <- function(ceiling, math)
+// {
+//     local result = 0;
+//     if (math > ceiling)
+//         result = ceiling;
+//     else
+//         result = math;
+
+//     return result;
+// }
+
+// ::clampFloor <- function(floor, math)
+// {
+//     local result = 0;
+//     if (math < floor)
+//         result = floor;
+//     else
+//         result = math;
+
+//     return result;
+// }
+
+// ::clamp <- function(math, floor, ceiling)
+// {
+//     local result = 0;
+//     if (math < floor)
+//         result = floor;
+//     else if (math > ceiling)
+//         result = ceiling;
+//     else
+//         result = math;
+
+//     return result;
+// }
 
 ::SetPersistentVar <- function(name, value)
 {
@@ -134,4 +169,46 @@ Include("__lizardlib/game_events.nut");
         delete vsh_vscript[name];
     }
     RunWithDelay(name + "()", null, delay);
+}
+
+::CTFPlayer.GetPlayerName <- function ()
+{
+    return GetPropString(this, "m_szNetname");
+}
+::CTFBot.GetPlayerName <- CTFPlayer.GetPlayerName;
+
+::CTFPlayer.GetPlayerSteamID <- function ()
+{
+    return GetPropString(this, "m_szNetworkIDString");
+}
+::CTFBot.GetPlayerSteamID <- CTFPlayer.GetPlayerSteamID;
+
+// Delfite: Alternative version of GetPlayerName. Useful in scenarios where handles are less convenient.
+::GetPlayerNameFromParams <- function(player)
+{
+    return GetPropString(player, "m_szNetname");
+}
+
+// Delfite: Alternative version of GetPlayerSteamID. Useful in scenarios where handles are less convenient.
+::GetPlayerSteamIDFromParams <- function(player)
+{
+    return GetPropString(player, "m_szNetworkIDString");
+}
+
+// Delfite: Custom function used to get an entity's max overheal.
+// If supplied with a multiplier (mult), it will calculate the new max overheal based on that multiplier.
+// Useful in scenarios where an entity's max health can change at a moment's notice.
+
+// TODO: Implement a better way of calculating the player's max overheal. The current method only accounts for one weapon
+// in the player's loadout having an overheal penalty/bonus, when there could be multiple of them. A possible solution would
+// be to build an array of active overheal mults on the player, then iterate through and add each entry to an equation that
+// calculates the final multiplier. Another idea is to refactor all of the weapon scripts (again), but instead of having each
+// weapon be defined in their respective scripts, we define them in __player_traits.nut and store them as per-player variables
+// that can be retrieved from anywhere. Then when it comes time to calculate the final overheal mult, we just use GetAttribute
+// on the weapons and punch their floats into the final calculation. Not that important to do right now though.
+::CTFPlayer.GetMaxOverheal <- function (mult = 1.0)
+{
+    local overheal_quotient = this.GetMaxHealth() / 2
+    local overheal_limit = overheal_quotient * mult + this.GetMaxHealth()
+    return overheal_limit.tointeger();
 }

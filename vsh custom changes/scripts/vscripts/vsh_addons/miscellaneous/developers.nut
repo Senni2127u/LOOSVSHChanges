@@ -1,47 +1,49 @@
 //"This is a mousekatool thing that will help us later."
 
-::CTFPlayer.GetPlayerName <- function ()
-{
-    return GetPropString(this, "m_szNetname");
-}
-::CTFBot.GetPlayerName <- CTFPlayer.GetPlayerName;
-
-::CTFPlayer.GetPlayerSteamID <- function ()
-{
-    return GetPropString(this, "m_szNetworkIDString");
-}
-::CTFBot.GetPlayerSteamID <- CTFPlayer.GetPlayerSteamID;
-
-// Delfite: Alternative version of GetPlayerName. Useful in scenarios where handles are less convenient.
-::GetPlayerNameFromParams <- function(player)
-{
-    return GetPropString(player, "m_szNetname");
-}
-
-// Delfite: Alternative version of GetPlayerSteamID. Useful in scenarios where handles are less convenient.
-::GetPlayerSteamIDFromParams <- function(player)
-{
-    return GetPropString(player, "m_szNetworkIDString");
-}
-
 // ::CTFWeaponBase.GetSlot <- function ()
 // {
 //     return
 // }
 
-local weapon_primary = null;
-local weapon_secondary = null;
-local weapon_melee = null;
-local steamid = null;
-local wearable = null;
+PrecacheScriptSound("Ambient.Siren")
+PrecacheScriptSound("MVM.Siren")
 
-local validCosmeticFound = false;
 
 const SENNI = "[U:1:381254366]";
 const LIZARDOFOZ = "[U:1:61845546]";
 const LANKO = "[U:1:1144504997]";
 const DELFITE = "[U:1:346103890]";
+
+
+local weapon_primary = null;
+local weapon_secondary = null;
+local weapon_melee = null;
+local wearable = null;
+
+local validCosmeticFound = false;
+
 local playerParticles = {};
+
+
+// Delfite: Play a special sound on round start if you're the boss.
+AddListener("setup_end", 1, function ()
+{
+	local boss = GetBossPlayers()[0];
+    switch (boss.GetPlayerSteamID())
+    {
+        case SENNI:
+        case DELFITE:
+            foreach (player in GetValidClients())
+            {
+                StopSoundOn("Ambient.Siren", player)
+                EmitSoundOnClient("MVM.Siren", player)
+            }
+        break;
+
+        default:
+        break;
+    }
+});
 
 AddListener("death", 0, function(attacker, victim, params)
 {
@@ -61,7 +63,6 @@ AddListener("spawn", 0, function(player, params)
     weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
     weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
     weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
-    steamid = NetProps.GetPropString(player, "m_szNetworkIDString");
     validCosmeticFound = false;
     GiveTargetParticleEffects(player);
     AddAttributes(player);
@@ -86,7 +87,7 @@ function CommunitySparkleEffect(player, particleName)
     return particle;
 }
 
-function BurningFlamesEffect(player, particleName)
+function FlyingBitsEffect(player, particleName)
 {
     local particle = SpawnEntityFromTable("info_particle_system",
     {
@@ -154,7 +155,7 @@ function BurningFlamesEffect(player, particleName)
 
 function AddAttributes (player)
 {
-    switch (steamid)
+    switch (GetPlayerSteamIDFromParams(player))
     {
         case SENNI:
         case LANKO:
@@ -189,25 +190,26 @@ function AddAttributes (player)
                 if (wearable.GetOwner() == player)
                 {
                     wearable.ValidateScriptScope()
-                    local wearableScope = wearable.GetScriptScope();
-                    if (!("CHECKED" in wearableScope))
+                    local wearable_scope = wearable.GetScriptScope();
+                    if (!("CHECKED" in wearable_scope))
                     {
-                        wearableScope["CHECKED"] <- null;
+                        wearable_scope["CHECKED"] <- null;
                         switch (GetItemDefIndex(wearable))
                         {
-                            // Delfite: Don't attach the particles to the Gunboats, Mantreads, etc.
+                            // Delfite: Don't attach particles to the Gunboats, Mantreads, etc.
                             // Not sure why the Medigun backpacks have the DefIndex they do, but hey, it works.
                             case 133:   // Gunboats
                             case 444:   // Mantreads
                             case 405:   // Ali-Babas Wee Booties
                             case 608:   // Bootlegger
                             case 65535:   // Medigun Backpack
+                            case 57:    // Razorback
                             case 231:   // Darwin's Danger Shield
                             case 642:   // Cozy Camper
                             break;
 
                             default:
-                                wearable.AddAttribute("voice pitch scale", 0.9505, -1)
+                                // wearable.AddAttribute("voice pitch scale", 0.9505, -1)
                                 wearable.AddAttribute("force level display", 999, -1)
                                 // printdev(wearable.GetAttribute("voice pitch scale", 1.0))
                                 wearable.AddAttribute("attach particle effect", 2, -1)
@@ -241,8 +243,6 @@ function AddAttributes (player)
 
 function GiveTargetParticleEffects(player)
 {
-    local steamid = player.GetPlayerSteamID()
-
     // Remove any old particle first.
     local idx = player.entindex();
     if (idx in playerParticles)
@@ -258,57 +258,23 @@ function GiveTargetParticleEffects(player)
         return;
 
     // Attach a new particle.
-    switch (steamid)
+    switch (GetPlayerSteamIDFromParams(player))
     {
         case SENNI:
         case LANKO:
         case LIZARDOFOZ:
             playerParticles[idx] <- CommunitySparkleEffect(player, "community_sparkle");
-                break;
+        break;
 
-        case DELFITE:
-            if (player.GetTeam() == TF_TEAM_BOSS)
-            {
-                playerParticles[idx] <- BurningFlamesEffect(player, "burningplayer_flyingbits");
-                // printdev("Particle attached.")
-            }
-                break;
-
-        default:
-                break;
-    }
-}
-
-// Delfite: This function allows you to add any attribute to Hale, be it player attributes or weapon attributes.
-::OldHaleWeaponFunc <- ::TF_CUSTOM_WEAPONS_REGISTRY["Hale's Own Fists"].func;
-function HaleWeaponFunc(weapon, player)
-{
-    local steamid = NetProps.GetPropString(player, "m_szNetworkIDString");
-
-    OldHaleWeaponFunc(weapon, player);
-    switch (steamid)
-    {
-        case SENNI:
-        case LANKO:
-        case LIZARDOFOZ:
-            player.AddCustomAttribute("turn to gold", 1, -1)
-                break;
-
-        case DELFITE:
-            player.AddCustomAttribute("ragdolls become ash", 1, -1)
-                break;
+        // case DELFITE:
+        //     if (player.GetTeam() == TF_TEAM_BOSS)
+        //     {
+        //         playerParticles[idx] <- FlyingBitsEffect(player, "burningplayer_flyingbits");
+        //         // printdev("Particle attached.")
+        //     }
+        // break;
 
         default:
-                break;
+        break;
     }
-    // if (steamid == DELFITE)
-    //     player.AddCustomAttribute("ragdolls become ash", 1, -1)
-    // else if (steamid == LIZARDOFOZ || steamid == LANKO || steamid == SENNI)
-    //     player.AddCustomAttribute("turn to gold", 1, -1)
-
-    // Add custom weapon attributes here
-    //weapon.AddAttribute("ragdolls plasma effect", 1, -1)
-    //printdev("Called Override");
 }
-
-::TF_CUSTOM_WEAPONS_REGISTRY["Hale's Own Fists"].func = HaleWeaponFunc;

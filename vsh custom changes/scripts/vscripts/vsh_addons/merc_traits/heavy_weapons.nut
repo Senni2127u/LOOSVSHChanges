@@ -3,10 +3,24 @@
 // Requires modification of `weapons.nut` in order to function.
 
 
+::heavy_steak_vo_array <- [
+	"vo/taunts/heavy_taunts04.mp3",
+	"vo/taunts/heavy_taunts06.mp3",
+	"vo/taunts/heavy_taunts07.mp3",
+	"vo/taunts/heavy_taunts08.mp3",
+	"vo/taunts/heavy_taunts09.mp3",
+	"vo/taunts/heavy_taunts11.mp3",
+	"vo/taunts/heavy_taunts12.mp3",
+	"vo/taunts/heavy_taunts15.mp3",
+	"vo/taunts/heavy_taunts16.mp3",
+	"vo/taunts/heavy_taunts18.mp3"
+]
+
 const BRASS_BEAST_OVERHEAL_MULT = 0.5
 
 PrecacheScriptSound("Player.ResistanceMedium")
 PrecacheScriptSound("Player.ResistanceHeavy")
+PrecacheSound("weapons/boxing_gloves_crit_enabled.wav")
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
@@ -14,9 +28,6 @@ characterTraitsClasses.push(class extends CharacterTrait
 	weapon_primary = null;
 	weapon_secondary = null;
 	weapon_melee = null;
-
-	overheal_difference = 0;
-    overheal_limit = 0;
 
 	// Primary handles.
 	BrassBeast = null;
@@ -26,15 +37,19 @@ characterTraitsClasses.push(class extends CharacterTrait
 	Shotgun = null;
 	Steak = null;
 	DalokohsBar = null;
-	SecondBanana = null;
+	Banana = null;
 
 	// Melee handles.
+	Kgb = null;
+	Warrior = null;
 
-
+	scene = null;
+	active_scene = null;
 	// medkit_new = null;
 	// dalokohs_despawn_timer = Time();
 	// dalokohsDespawnTimerActive = false;
 
+	move_speed_bonus = 1;
 	accuracy_bonus = 1;
 	weapon_melee_fire_rate = 1;
 
@@ -55,7 +70,6 @@ characterTraitsClasses.push(class extends CharacterTrait
 		weapon_primary = player.GetWeaponBySlot(TF_WEAPONSLOTS.PRIMARY);
 		weapon_secondary = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
 		weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
-		overheal_difference = player.GetMaxHealth() * 0.5
 
 		// Primary definitions.
 		if (WeaponIs(weapon_primary, "minigun"))
@@ -66,33 +80,32 @@ characterTraitsClasses.push(class extends CharacterTrait
             // weapon_primary.AddAttribute("bullets per shot bonus", 1.5, -1);
             // weapon_primary.AddAttribute("aiming movespeed increased", 1.2, -1);
         }
-        else if (WeaponIs(weapon_primary, "tomislav"))
+        if (WeaponIs(weapon_primary, "tomislav"))
         {
             // weapon_primary.AddAttribute("fire rate penalty", 1.1, -1);
             // weapon_primary.AddAttribute("weapon spread bonus", 0.6, -1);
         }
-        else if (WeaponIs(weapon_primary, "huo_long_heater"))
+        if (WeaponIs(weapon_primary, "huo_long_heater"))
         {
             // weapon_primary.AddAttribute("damage penalty", 1.0, -1);
             // weapon_primary.AddAttribute("damage bonus vs burning", 1.0, -1);
             weapon_primary.AddAttribute("uses ammo while aiming", 0, -1);
         }
-        else if (WeaponIs(weapon_primary, "brass_beast"))
+        if (WeaponIs(weapon_primary, "brass_beast"))
         {
             // Delfite: Rework of the Brass Beast that trades its damage bonus for more consistent and better damage resistance.
             // Also reduces max overheal to make pocketing less effective.
-            BrassBeast = weapon_primary
+            BrassBeast = weapon_primary;
             BrassBeast.AddAttribute("damage bonus", 1.0, -1);
             BrassBeast.AddAttribute("patient overheal penalty", BRASS_BEAST_OVERHEAL_MULT, -1);
             BrassBeast.AddAttribute("spunup_damage_resistance", 1.0, -1);
             BrassBeast.AddAttribute("aiming movespeed decreased", 0.8, -1);
         }
-        else if (WeaponIs(weapon_primary, "natascha"))
+        if (WeaponIs(weapon_primary, "natascha"))
         {
-            Natascha = weapon_primary
+            Natascha = weapon_primary;
             // Natascha.AddAttribute("damage penalty", 1.0, -1);
             Natascha.AddAttribute("spunup_damage_resistance", 1.0, -1);
-            Natascha.AddAttribute("aiming movespeed decreased", 1.0, -1);
             Natascha.AddAttribute("slow enemy on hit", 0.15, -1);
         }
 
@@ -100,46 +113,56 @@ characterTraitsClasses.push(class extends CharacterTrait
 		if (WeaponIs(weapon_secondary, "shotgun"))
 		{
 			Shotgun = weapon_secondary;
-			// Shotgun.AddAttribute("damage bonus", 1.40, -1);
-			Shotgun.AddAttribute("weapon spread bonus", 0.7, -1);
-			Shotgun.AddAttribute("reload time decreased", 0.85, -1);
+			Shotgun.AddAttribute("damage bonus" 1.10, -1);
+            Shotgun.AddAttribute("weapon spread bonus", 0.70, -1);
+            Shotgun.AddAttribute("reload time decreased", 0.85, -1);
+            Shotgun.AddAttribute("single wep deploy time decreased", 0.8, -1);
 		}
-		else if (WeaponIs(weapon_secondary, "family_business"))
+		if (WeaponIs(weapon_secondary, "family_business"))
 		{
+			weapon_secondary.AddAttribute("bullets per shot bonus", 1.5, -1);
+			weapon_secondary.AddAttribute("fire rate bonus", 0.5, -1);
+			weapon_secondary.AddAttribute("reload time decreased", 0.5, -1);
 			weapon_secondary.AddAttribute("weapon spread bonus", 0.7, -1);
 			weapon_secondary.AddAttribute("damage penalty", 1.0, -1);
 		}
-		else if (WeaponIs(weapon_secondary, "panic_attack"))
+		if (WeaponIs(weapon_secondary, "panic_attack"))
 		{
+			weapon_secondary.AddAttribute("damage bonus", 1.25, -1);
+			// weapon_secondary.AddAttribute("bullets per shot bonus", 1.5, -1);
 			weapon_secondary.AddAttribute("weapon spread bonus", 0.6, -1);
+			weapon_secondary.AddAttribute("reload time decreased", 0.6, -1);
+			weapon_secondary.AddAttribute("fire rate bonus", 0.7, -1);
 			weapon_secondary.AddAttribute("damage penalty", 1.0, -1);
 		}
-		else if (WeaponIs(weapon_secondary, "sandvich"))
+		if (WeaponIs(weapon_secondary, "sandvich"))
 		{
 			// Delfite: Small Medkits: 60 health -> 90 health
 			// Delfite: Medium Medkits: 150 health -> 225 health
 			weapon_secondary.AddAttribute("health from packs increased", 1.50, -1);
 		}
-		else if (WeaponIs(weapon_secondary, "dalokohs_bar"))
+		if (WeaponIs(weapon_secondary, "dalokohs_bar"))
 		{
 			// Delfite: This attribute, "lunchbox adds maxhealth bonus", controls more than just the Dalokohs' behavior as an item,
 			// but also what model it uses and what size medkit it drops (small, medium, or large?)
 			// Due to this, a workaround was needed in order to maintain the last two features, but still remove the first. Said
 			// workaround is further down in this script.
-			DalokohsBar = weapon_secondary
+			DalokohsBar = weapon_secondary;
 			DalokohsBar.AddAttribute("lunchbox adds maxhealth bonus", 1, -1);
 			DalokohsBar.AddAttribute("lunchbox healing decreased", 0.44, -1);
-			DalokohsBar.AddAttribute("charge recharge rate increased", 2, -1);
+			// Delfite: Uh, okay. Apparently the "charge recharge rate increased" attribute stopped working. Why???
+			DalokohsBar.AddAttribute("charge recharge rate increased", 5, -1);
 			DalokohsBar.AddAttribute("max health additive bonus", 50, -1);
 		}
-		else if (WeaponIs(weapon_secondary, "buffalo_steak_sandvich"))
+		if (WeaponIs(weapon_secondary, "buffalo_steak_sandvich"))
 		{
-			Steak = weapon_secondary
+			Steak = weapon_secondary;
 			Steak.AddAttribute("energy buff dmg taken multiplier", 1.0, -1);
 		}
-		else if (WeaponIs(weapon_secondary, "second_banana"))
+		if (WeaponIs(weapon_secondary, "second_banana"))
 		{
-			SecondBanana = weapon_secondary
+			Banana = weapon_secondary;
+			weapon_secondary.AddAttribute("lunchbox healing decreased", 0.8, -1)
 		}
 
 		// Melee definitions.
@@ -147,13 +170,18 @@ characterTraitsClasses.push(class extends CharacterTrait
 		{
 			weapon_melee.AddAttribute("fire rate bonus", 0.8, -1);
 		}
-		else if (WeaponIs(weapon_melee, "gru"))
+		if (WeaponIs(weapon_melee, "kgb"))
 		{
+			Kgb = weapon_melee;
+		}
+		if (WeaponIs(weapon_melee, "gru"))
+		{
+			// printdev("GRU stats applied.")
 			weapon_melee.AddAttribute("damage penalty", 0.7, -1);
 			weapon_melee.AddAttribute("mult_player_movespeed_active", 1.3, -1);
 			weapon_melee.AddAttribute("mod_maxhealth_drain_rate", 0, -1);
 		}
-		else if (WeaponIs(weapon_melee, "eviction_notice"))
+		if (WeaponIs(weapon_melee, "eviction_notice"))
 		{
 			weapon_melee.AddAttribute("mult_player_movespeed_active", 1.15, -1);
 			// weapon_melee.AddAttribute("move speed bonus", 1.15, -1);
@@ -166,33 +194,21 @@ characterTraitsClasses.push(class extends CharacterTrait
 			weapon_melee.AddAttribute("damage penalty", 0.5, -1);
 			// Delfite: Damage penalty: 60% -> 50%
 		}
-		else if (WeaponIs(weapon_melee, "fists_of_steel"))
+		if (WeaponIs(weapon_melee, "fists_of_steel"))
 		{
 			weapon_melee.AddAttribute("dmg from melee increased", 1, -1);
 			// Delfite: No, Hale should not be able to 1-shot a Heavy while he has this item out.
 			weapon_melee.AddAttribute("single wep holster time increased", 1.5, -1);
 		}
-		else if (WeaponIs(weapon_melee, "warriors_spirit"))
+		if (WeaponIs(weapon_melee, "warriors_spirit"))
 		{
-			weapon_melee.AddAttribute("dmg taken increased", 1, -1);
+			Warrior = weapon_melee;
 			// Delfite: Again with the damage vulns on melees Valve...
 			// It at least made sense on the Fists of Steel, but why this item?!
-			weapon_melee.AddAttribute("single wep holster time increased", 1.5, -1);
+			Warrior.AddAttribute("dmg taken increased", 1, -1);
+			Warrior.AddAttribute("single wep holster time increased", 1.5, -1);
 		}
-		RunWithDelay2(this, 0.1, OnApply1Delay);
 	}
-
-	function OnApply1Delay()
-    {
-        // Delfite: If you want to define the player's max overheal for a specific weapon/combination of weapons, do it here.
-        // The purpose of this is to reduce calls to C++ functions for performance reasons. That includes stuff like GetMaxHealth.
-		// Obviously, you should replace PYRO_PRIMARY_OVERHEAL_MULT with a different constant depending on the merc and weapon.
-        // if (weapon_primary == (Flamethrower || Backburner || Degreaser))
-        //     overheal_limit = overheal_difference * PYRO_PRIMARY_OVERHEAL_MULT + player.GetMaxHealth()
-        // else
-            overheal_limit = overheal_difference + player.GetMaxHealth()
-		player.Regenerate(true);
-    }
 
 	function OnFrameTickAlive()
     {
@@ -217,7 +233,6 @@ characterTraitsClasses.push(class extends CharacterTrait
         if (weapon_primary == BrassBeast)
         {
             local patient_health = player.GetHealth()
-            local overheal_limit = player.GetMaxHealth() * 1.5 * BRASS_BEAST_OVERHEAL_MULT
             if (patient_health == overheal_limit)
             {
                 if (uberPenaltyApplied)
@@ -225,7 +240,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
                 player.AddCustomAttribute("ubercharge rate bonus for healer", 0.5, -1)
                 uberPenaltyApplied = true
-                printdev(overheal_limit)
+                // printdev(overheal_limit)
             }
             else if (patient_health <= overheal_limit - 2)
             {
@@ -242,19 +257,32 @@ characterTraitsClasses.push(class extends CharacterTrait
 	{
 		// local time = Time()
 
+		// Delfite: Find the player's current taunt and store it for later.
+		if (player.IsTaunting())
+		{
+			for (scene; scene = Entities.FindByClassname(scene, "instanced_scripted_scene");)
+			{
+				local owner = GetPropEntity(scene, "m_hOwner")
+				if (owner != player)
+					continue;
+
+				active_scene = GetPropString(scene, "m_szInstanceFilename")
+			}
+		}
+
 		// Delfite: Workaround for stopping the Dalokohs from giving its max health bonus when eaten.
 		if (weapon_secondary == DalokohsBar)
 			DalokohsNullifierThink()
 
 		// Delfite: Eat the banan faster. Yup, that's it.
-		if (weapon_secondary == SecondBanana)
-			BananaEatingBuffThink();
+		if (weapon_secondary == Banana)
+			BananaEatingSpeedControl();
 
 		// Delfite: Eat the steak faster, remove the melee-only restriction, and more.
 		if (weapon_secondary == Steak)
 		{
-			SteakEatingBuffThink();
-			SteakEnergyBuffThink();
+			SteakEatingSpeedControl();
+			SteakBuffControl();
 		}
 
 		// if (Dalokohs_Bar)
@@ -354,19 +382,31 @@ characterTraitsClasses.push(class extends CharacterTrait
 
 	function OnDamageDealt(victim, params)
     {
-		if (weapon_primary != null)
+		lastHitWasShotgun = params.weapon == Shotgun
+
+		if (params.weapon == weapon_primary)
 			if (player.IsCritBoosted())
             	params.damage *= 0.7;
 
-		if (weapon_secondary == Shotgun)
-			lastHitWasShotgun = params.weapon == Shotgun
-
-		local health = player.GetHealth()
-		local max_health = player.GetMaxHealth()
-        if (params.damage_type & 128 && health < max_health && WeaponIs(params.weapon, "warriors_spirit"))
-            player.SetHealth(clampCeiling(player.GetHealth() + 50, max_health));
-		else if ((params.damage_type & 128) && WeaponIs(params.weapon, "kgb"))
-            player.AddCondEx(TF_COND_CRITBOOSTED_ON_KILL, 5, null);
+        if (params.damage_type & DMG_CLUB && params.weapon == Warrior)
+		{
+			if (BrassBeast)
+            	player.SetHealth(clampCeiling(player.GetMaxOverheal(BRASS_BEAST_OVERHEAL_MULT), player.GetHealth() + 100));
+			else
+				player.SetHealth(clampCeiling(player.GetMaxOverheal(), player.GetHealth() + 100));
+		}
+		else if (params.damage_type & DMG_CLUB && params.weapon == Kgb)
+		{
+			player.AddCondEx(TF_COND_CRITBOOSTED_ON_KILL, 8, null);
+			EmitSoundEx(
+			{
+				sound_name = "weapons/boxing_gloves_crit_enabled.wav"
+				entity = player
+				filter_type = RECIPIENT_FILTER_SINGLE_PLAYER
+				volume = 1.0
+				channel = 6
+			})
+		}
     }
 
 	function OnHurtDealtEvent(victim, params)
@@ -374,8 +414,17 @@ characterTraitsClasses.push(class extends CharacterTrait
 		if (lastHitWasShotgun)
 		{
 			local damage_dealt = params.damageamount
-			local overheal_limit = player.GetMaxHealth() * 1.5
-			player.SetHealth(clampCeiling(overheal_limit, player.GetHealth() + (damage_dealt / 2)))
+			// Delfite: Account for different cases manually, at least until a better solution becomes necessary.
+			switch (weapon_primary)
+			{
+				case BrassBeast:
+					player.SetHealth(clampCeiling(player.GetMaxOverheal(BRASS_BEAST_OVERHEAL_MULT), player.GetHealth() + (damage_dealt / 2)))
+				break;
+
+				default:
+					player.SetHealth(clampCeiling(player.GetMaxOverheal(), player.GetHealth() + (damage_dealt / 2)))
+				break;
+			}
 		}
 	}
 
@@ -393,7 +442,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     function OnDamageTaken(attacker, params)
     {
         // printdev("m_iWeaponState: " + GetPropInt(weapon_primary, "m_iWeaponState") + " | " + "primaryIsSpunUp: " + primaryIsSpunUp)
-        if (BrassBeast)
+        if (weapon_primary == BrassBeast)
         {
             if (primaryIsSpunUp)
             {
@@ -403,18 +452,20 @@ characterTraitsClasses.push(class extends CharacterTrait
                     EmitSoundOnClient("Player.ResistanceHeavy", player)
             }
         }
-        else if (Natascha)
+        else if (weapon_primary == Natascha)
         {
             if (primaryIsSpunUp)
             {
                 params.damage *= 0.7
 
                 if (!player.InCond(TF_COND_DEFENSEBUFF))
-                    EmitSoundOnClient("Player.ResistanceMedium", player)
+                    EmitSoundOnClient("Player.ResistanceHeavy", player)
             }
         }
     }
 
+	// Delfite: This function gets around an issue where removing the "lunchbox adds maxhealth bonus" attribute
+	// causes the Dalokohs to start acting like a regular Sandvich, both when dropped and eaten.
 	function DalokohsNullifierThink()
 	{
 		if (DalokohsBar == active_weapon && player.InCond(TF_COND_TAUNTING))
@@ -448,99 +499,166 @@ characterTraitsClasses.push(class extends CharacterTrait
 		// player.RemoveCustomAttribute("hidden maxhealth non buffed")
 	}
 
-	function SteakEatingBuffThink()
+	// Delfite: This function controls the Buffalo Steak's eating speed buff.
+	function SteakEatingSpeedControl()
 	{
+		// TODO: Fix looping taunts ending automatically while the Steak is your active weapon.
 		if (Steak == active_weapon && player.InCond(TF_COND_TAUNTING))
 		{
+			if (active_scene != "scenes/player/heavy/low/taunt04.vcd")
+				return;
+
 			if (eatingSpeedBuffed)
 				return;
 
-			player.AddCustomAttribute("gesture speed increase", 1.375, -1);
-			player.AddCustomAttribute("voice pitch scale", 1.375, -1);
 			eatingSpeedBuffed = true;
+
+			player.AddCustomAttribute("gesture speed increase", 1.375, -1);
+			// player.AddCustomAttribute("voice pitch scale", 1.375, -1);
+			RunWithDelay2(this, 3.0, function ()
+			{
+				player.RemoveCond(TF_COND_TAUNTING)
+			})
 		}
 		else
 		{
 			if (!eatingSpeedBuffed)
 				return;
 
+			eatingSpeedBuffed = false;
+			player.RemoveCustomAttribute("gesture speed increase")
+			// player.RemoveCustomAttribute("voice pitch scale")
+
 			RunWithDelay2(this, 1.5, function ()
 			{
-				player.RemoveCustomAttribute("gesture speed increase")
-				player.RemoveCustomAttribute("voice pitch scale")
+				EmitSoundEx(
+				{
+					sound_name = heavy_steak_vo_array[RandomInt(0, 9)]
+					entity = player
+					filter_type = RECIPIENT_FILTER_GLOBAL
+					volume = 1.0
+					sound_level = 80
+					channel = 2
+				})
 			})
-			eatingSpeedBuffed = false;
 		}
 	}
 
-	function SteakEnergyBuffThink()
+	// Delfite: This function controls the buffs gained after eating the Buffalo Steak.
+	function SteakBuffControl()
 	{
-		if (player.InCond(TF_COND_ENERGY_BUFF))
+		if (player.InCond(TF_COND_TAUNTING))
 		{
-			// Delfite: Valve seems to have hard-coded Heavy's movement speed while TF_COND_ENERGY_BUFF is applied to him.
-			// Removing the condition seems to fix this. And yes, I mean "fix", because it's ridiculous that the Steak
-			// even does that in the first place.
-			player.RemoveCond(TF_COND_ENERGY_BUFF)
-			player.RemoveCond(TF_COND_CANNOT_SWITCH_FROM_MELEE)
+			if (active_scene != "scenes/player/heavy/low/taunt04.vcd")
+				return;
+
+			if (!player.InCond(TF_COND_CANNOT_SWITCH_FROM_MELEE))
+				return;
+
+			// printdev("Buff control is working.")
 			// Delfite: I'm adding Sniper's rage buff as a way of tracking when the Steak's effects should be active.
 			// It's better than tracking the status of TF_COND_OFFENSEBUFF since it can be active on the Heavy
 			// under different circumstances. The rage condition, however, will never be active outside of scenarios like this one.
-			player.AddCondEx(TF_COND_SNIPERCHARGE_RAGE_BUFF, 12, null)
-		}
-		else if (player.InCond(TF_COND_SNIPERCHARGE_RAGE_BUFF))
-		{
+			player.AddCondEx(TF_COND_SNIPERCHARGE_RAGE_BUFF, 15, null)
+			player.AddCondEx(TF_COND_OFFENSEBUFF, 15, null)
+
 			if (steakBuffsActive)
 				return;
 
 			steakBuffsActive = true;
-			player.AddCondEx(TF_COND_OFFENSEBUFF, 15, null)
 
-			accuracy_bonus = player.GetCustomAttribute("weapon spread bonus", 1.0)
-			player.AddCustomAttribute("weapon spread bonus", accuracy_bonus - 0.2, -1)
-			weapon_melee_fire_rate = weapon_melee.GetAttribute("fire rate bonus", 1.0)
+			// printdev("Steak attributes applied.")
+			move_speed_bonus = player.GetCustomAttribute("move speed bonus", 1.0)
+			accuracy_bonus = weapon_primary.GetAttribute("weapon spread bonus", 1.0);
+			weapon_melee_fire_rate = weapon_melee.GetAttribute("fire rate bonus", 1.0);
+
+			player.AddCustomAttribute("move speed bonus", move_speed_bonus + 0.2, -1)
+			weapon_primary.AddAttribute("weapon spread bonus", accuracy_bonus - 0.2, -1);
 			weapon_melee.AddAttribute("fire rate bonus", weapon_melee_fire_rate - 0.15, -1);
+
+			player.AddCustomAttribute("custom desc attr", 1, 0.05);
 		}
-		else
+		else if (!player.InCond(TF_COND_SNIPERCHARGE_RAGE_BUFF))
 		{
 			if (!steakBuffsActive)
 				return;
 
 			steakBuffsActive = false;
 
-			player.RemoveCustomAttribute("weapon spread bonus")
+			// printdev("Steak attributes reverted.")
+			player.AddCustomAttribute("move speed bonus", move_speed_bonus, -1)
+			weapon_primary.AddAttribute("weapon spread bonus", accuracy_bonus, -1);
 			weapon_melee.AddAttribute("fire rate bonus", weapon_melee_fire_rate, -1);
+			player.AddCustomAttribute("custom desc attr", 1, 0.05);
+		}
+		else if (player.InCond(TF_COND_CANNOT_SWITCH_FROM_MELEE))
+		{
+			// printdev("Removing melee-only cond.")
+			// Delfite: Valve seems to have hard-coded Heavy's movement speed while TF_COND_ENERGY_BUFF is applied to him.
+			// This is stupid and it displeases me, so I have removed it.
+			// The game seems to apply TF_COND_CANNOT_SWITCH_FROM_MELEE at the start and end of the eating taunt,
+			// hence why we're removing it last in the `else if` chain.
+			player.RemoveCond(TF_COND_ENERGY_BUFF)
+			player.RemoveCond(TF_COND_CANNOT_SWITCH_FROM_MELEE)
+			player.Weapon_Switch(weapon_primary)
 		}
 	}
 
-	function BananaEatingBuffThink()
+	function BananaEatingSpeedControl()
 	{
-		if (SecondBanana == active_weapon && player.InCond(TF_COND_TAUNTING))
+		if (Banana == active_weapon && player.InCond(TF_COND_TAUNTING))
 		{
+			if (active_scene != "scenes/player/heavy/low/taunt04.vcd")
+				return;
+
 			if (eatingSpeedBuffed)
 				return;
 
-			weapon_secondary.AddAttribute("gesture speed increase", 1.5, -1);
 			eatingSpeedBuffed = true;
+
+			weapon_secondary.AddAttribute("gesture speed increase", 1.375, -1);
+			RunWithDelay2(this, 3, function ()
+			{
+				player.RemoveCond(TF_COND_TAUNTING)
+			})
 		}
-		else
+		else if (!player.InCond(TF_COND_TAUNTING))
 		{
 			if (!eatingSpeedBuffed)
 				return;
 
-			RunWithDelay2(this, 1.5, function ()
-			{
-				weapon_secondary.RemoveAttribute("gesture speed increase")
-			})
 			eatingSpeedBuffed = false;
+
+			weapon_secondary.RemoveAttribute("gesture speed increase")
+			if (GetPropFloat(player, "m_Shared.tfsharedlocaldata.m_flItemChargeMeter.001") < 100)
+				player.Weapon_Switch(weapon_primary)
+
+			RunWithDelay2(this, 1.15, function ()
+			{
+				player.AcceptInput("SpeakResponseConcept", "TLK_ATE_FOOD", null, null)
+				// EmitSoundEx(
+				// {
+				// 	sound_name = heavy_steak_vo_array[RandomInt(0, 9)]
+				// 	entity = player
+				// 	filter_type = RECIPIENT_FILTER_GLOBAL
+				// 	volume = 1.0
+				// 	sound_level = 80
+				// })
+			})
 		}
 	}
 
 	function OnDiscard()
 	{
+		if (weapon_primary && weapon_primary.IsValid())
+        {
+            weapon_primary.RemoveAttribute("weapon spread bonus");
+        }
+
 		if (weapon_secondary && weapon_secondary.IsValid())
         {
-            weapon_melee.RemoveAttribute("gesture speed increase");
-            weapon_melee.RemoveAttribute("voice pitch scale");
+            weapon_secondary.RemoveAttribute("gesture speed increase");
+            // weapon_secondary.RemoveAttribute("voice pitch scale");
         }
 
 		if (weapon_melee && weapon_melee.IsValid())

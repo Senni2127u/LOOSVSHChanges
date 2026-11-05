@@ -41,7 +41,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             }
             else if (WeaponIs(params.weapon, "big_earner"))
             {
-                player.AddCondEx(TF_COND_SPEED_BOOST, 8, player);
+                player.AddCondEx(TF_COND_SPEED_BOOST, 10, player);
                 player.SetSpyCloakMeter(clampFloor(100, player.GetSpyCloakMeter() + 30));
             }
             else if (WeaponIs(params.weapon, "your_eternal_reward") || WeaponIs(params.weapon, "wanga_prick"))

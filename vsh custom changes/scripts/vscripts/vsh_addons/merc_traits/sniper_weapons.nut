@@ -23,6 +23,8 @@ characterTraitsClasses.push(class extends CharacterTrait
     wearable = null;
 
     // Primary handles
+    Huntsman = null;
+    SniperRifle = null;
 
     // Secondary handles
     Razorback = null;
@@ -30,6 +32,11 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     // Melee handles
     Bushwacka = null;
+
+    // Wearable handles
+    Razorback = null;
+
+    lastHitWasBushwacka = false;
 
     destroyRazorback = false;
     razorbackBroken = false;
@@ -48,6 +55,7 @@ characterTraitsClasses.push(class extends CharacterTrait
         // Primary definitions.
         if (WeaponIs(weapon_primary, "any_bow"))
         {
+            Huntsman = weapon_primary;
 			// Delfite: 175 HP feels more satisfying than 150. Probably because no other class has 175 HP at this point.
 			weapon_primary.AddAttribute("max health additive bonus", 25, -1)
 			weapon_primary.AddAttribute("Projectile speed increased", 1.25, -1)
@@ -56,7 +64,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 			weapon_primary.AddAttribute("fire rate bonus", 0.65, -1)
 			weapon_primary.AddAttribute("maxammo primary increased", 2.0, -1)
         }
-        else if (WeaponIs(weapon_primary, "any_sniper_rifle"))
+        if (WeaponIs(weapon_primary, "any_sniper_rifle"))
         {
             // Delfite: Enabling the tracers on the Sydney causes it to do normal headshot damage, which we don't want.
             if (!WeaponIs(weapon_primary, "machina") && !WeaponIs(weapon_primary, "sydney_sleeper"))
@@ -67,36 +75,37 @@ characterTraitsClasses.push(class extends CharacterTrait
                 // A value of 3 enables the tracer rounds used by the Classic.
             }
         }
-        else if (WeaponIs(weapon_primary, "sniper_rifle"))
+        if (WeaponIs(weapon_primary, "sniper_rifle"))
         {
+            SniperRifle = weapon_primary;
             weapon_primary.AddAttribute("SRifle charge rate increased", 1.15, -1)
-            weapon_primary.AddAttribute("move speed bonus", 1.25, -1)
+            weapon_primary.AddAttribute("move speed bonus", 1.16, -1)
             weapon_primary.AddAttribute("minicrits become crits", 1, -1)
         }
-        else if (WeaponIs(weapon_primary, "machina"))
+        if (WeaponIs(weapon_primary, "machina"))
         {
             weapon_primary.AddAttribute("dmg pierces resists absorbs", 1, -1)
             weapon_primary.AddAttribute("sniper only fire zoomed", 0, -1)
             weapon_primary.AddAttribute("sniper full charge damage bonus", 1.25, -1)
         }
-        else if (WeaponIs(weapon_primary, "hitmans_heatmaker"))
+        if (WeaponIs(weapon_primary, "hitmans_heatmaker"))
         {
             weapon_primary.AddAttribute("SRifle charge rate increased", 1.15, -1)
-            weapon_primary.AddAttribute("reload time decreased", 0.75, -1)
             weapon_primary.AddAttribute("fire rate bonus", 0.75, -1)
+            weapon_primary.AddAttribute("reload time decreased", 0.75, -1)
             weapon_primary.AddAttribute("minicrits become crits", 1, -1)
         }
-        else if (WeaponIs(weapon_primary, "classic"))
+        if (WeaponIs(weapon_primary, "classic"))
         {
             weapon_primary.AddAttribute("SRifle charge rate increased", 1.30, -1)
             weapon_primary.AddAttribute("aiming movespeed increased", 2.8, -1)
             weapon_primary.AddAttribute("sniper no headshot without full charge", 0, -1)
         }
-        else if (WeaponIs(weapon_primary, "sydney_sleeper"))
+        if (WeaponIs(weapon_primary, "sydney_sleeper"))
         {
             weapon_primary.AddAttribute("SRifle charge rate increased", 1.35, -1)
         }
-        else if (WeaponIs(weapon_primary, "bazaar_bargain"))
+        if (WeaponIs(weapon_primary, "bazaar_bargain"))
         {
 
         }
@@ -118,7 +127,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 		}
 		// Delfite: This rebalance of the Cleaner's Carbine is intended to make it better at mid-range combat.
 		// The damage is still worse than the SMG's, but on-demand mini-crits combined with the accuracy bonus turn it into quite the long-range support tool.
-		else if (WeaponIs(weapon_secondary, "cleaners_carbine"))
+		if (WeaponIs(weapon_secondary, "cleaners_carbine"))
 		{
 			weapon_secondary.AddAttribute("fire rate penalty", 1.0, -1)
 			// No fire rate penalty. This is an SMG, not a lever-action rifle.
@@ -130,7 +139,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 			// Perfectly accurate.
 			// printdev("Cleaner's Carbine stats applied.")
 		}
-		else if (WeaponIs(weapon_secondary, "jarate"))
+		if (WeaponIs(weapon_secondary, "jarate"))
 		{
 			Jarate = weapon_secondary
 		}
@@ -138,45 +147,31 @@ characterTraitsClasses.push(class extends CharacterTrait
         // Melee definitions.
         if (WeaponIs(weapon_melee, "kukri"))
         {
-			weapon_melee.AddAttribute("speed boost when active", 1.2, -1)
-        }
-        else if (WeaponIs(weapon_melee, "tribalmans_shiv"))
-        {
-			weapon_melee.AddAttribute("fire rate bonus", 0.7, -1)
-        }
-        else if (WeaponIs(weapon_melee, "shahanshah"))
-        {
-			weapon_melee.AddAttribute("dmg bonus while half dead", 1.5, -1)
-			weapon_melee.AddAttribute("dmg penalty while half alive", 0.5, -1)
-        }
-        else if (WeaponIs(weapon_melee, "bushwacka"))
-        {
-			Bushwacka = weapon_melee
-            Bushwacka.AddAttribute("dmg taken increased", 1.0, -1)
-        }
+            if (weapon_primary != SniperRifle)
+			    weapon_melee.AddAttribute("mult_player_movespeed_active", 1.20, -1)
+            else
+                weapon_melee.AddAttribute("mult_player_movespeed_active", 1.10, -1)
 
-        // Melee definitions.
-        if (WeaponIs(weapon_melee, "kukri"))
-        {
-			weapon_melee.AddAttribute("speed boost when active", 1.2, -1)
         }
-        else if (WeaponIs(weapon_melee, "tribalmans_shiv"))
+        if (WeaponIs(weapon_melee, "tribalmans_shiv"))
         {
 			weapon_melee.AddAttribute("fire rate bonus", 0.7, -1)
         }
-        else if (WeaponIs(weapon_melee, "shahanshah"))
+        if (WeaponIs(weapon_melee, "shahanshah"))
         {
 			weapon_melee.AddAttribute("dmg bonus while half dead", 1.5, -1)
 			weapon_melee.AddAttribute("dmg penalty while half alive", 0.5, -1)
         }
-        else if (WeaponIs(weapon_melee, "bushwacka"))
+        if (WeaponIs(weapon_melee, "bushwacka"))
         {
 			Bushwacka = weapon_melee
             Bushwacka.AddAttribute("dmg taken increased", 1.0, -1)
+            // Bushwacka.AddAttribute("damage bonus", 2.0, -1)
+            // Bushwacka.AddAttribute("minicrits become crits", 0, -1)
         }
 
         // Wearable definitions.
-        RunWithDelay2(this, 0.1, function() // Delfite: Adding a delay here to apply the attributes, otherwise there's a chance they just won't.
+        RunWithDelay2(this, 0.0, function() // Delfite: Adding a delay here to apply the attributes, otherwise there's a chance they just won't.
         {
             while (wearable = FindByClassname(wearable, "tf_wear*"))
 			{
@@ -185,48 +180,74 @@ characterTraitsClasses.push(class extends CharacterTrait
 					if (WeaponIs(wearable, "razorback"))
 					{
 						// printdev("Razorback found.")
-						wearable.AddAttribute("item_meter_charge_type", 3, -1)
-						wearable.AddAttribute("item_meter_charge_rate", 12, -1)
-						wearable.AddAttribute("patient overheal penalty", 1.0, -1)
-						wearable.AddAttribute("cancel falling damage", 1, -1)
-						wearable.AddAttribute("item_meter_damage_for_full_charge", 450, -1);
+						Razorback = wearable;
+						Razorback.AddAttribute("item_meter_charge_type", 3, -1)
+						Razorback.AddAttribute("item_meter_charge_rate", 15, -1)
+						Razorback.AddAttribute("patient overheal penalty", 1.0, -1)
+						Razorback.AddAttribute("cancel falling damage", 1, -1)
+						Razorback.AddAttribute("item_meter_damage_for_full_charge", 550, -1);
 						// Delfite: As much as I wanted this attribute to work, it unfortunately only works on weapons that use the
 						// classname "tf_weapon_shovel". And yes, I did try putting it on Sniper's other weapons just to make sure.
 						// wearable.AddAttribute("mod shovel speed boost", 1, -1)
-						Razorback = wearable
-						player.Regenerate(true)
 					}
-                	else if (WeaponIs(wearable, "darwins_danger_shield"))
+                	if (WeaponIs(wearable, "darwins_danger_shield"))
 					{
 						// printdev("Darwin's Danger Shield found.")
 						wearable.AddAttribute("dmg taken from blast reduced", 0.5, -1)
-						player.Regenerate(true)
 					}
-                	else if (WeaponIs(wearable, "cozy_camper"))
+                	if (WeaponIs(wearable, "cozy_camper"))
 					{
 						// printdev("Cozy Camper found.")
 						wearable.AddAttribute("health regen", 10.0, -1)
 						wearable.AddAttribute("max health additive bonus", 50, -1)
 						wearable.AddAttribute("patient overheal penalty", 0.4, -1)
-						player.Regenerate(true)
 					}
                 }
 			}
         })
-        player.Regenerate(true)
     }
 
     function OnTickAlive(timeDelta)
     {
         if ((GetPropInt(Razorback, "m_fEffects") & 32))
-			razorbackBroken = false;
+        {
+            razorbackBroken = false;
+        }
     }
 
     function OnDamageTaken(attacker, params)
     {
+        // At first, I thought giving the Darwin's Danger Shield this resistance would make sense, since it's a "shield".
+        // However, I decided to give it to the Huntsman instead, for the following reasons:
+
+        // 1. Unlike sniper rifles, the Huntsman forces you to get close to Hale in order to hit your shots more consistently.
+        // 2. Having the resistance be on the primary instead of the secondary enables other close-quarter playstyles (SMG sniper, anyone?)
+        // 3. It enforces more courageous gameplay that makes the sniper easy to spot and relatively easy to chase down,
+        // but still takes effort to kill on Hale's part.
+        if (weapon_primary == Huntsman)
+        {
+            // printdev("The player has a bow equipped.")
+            if (IsValidBoss(attacker) || params.attacker == worldspawn)
+            {
+                // printdev("The attacker is either Hale or Worldspawn.")
+                if (params.damage_type & (DMG_CLUB | DMG_FALL))
+                {
+                    // printdev("The player received either melee damage or fall damage.")
+                    params.damage *= params.inflictor == custom_dmg_saxton_punch ? 1.0 : HUNTSMAN_RESISTANCE_FACTOR;
+
+                    local deltaVector = player.GetOrigin() - attacker.GetOrigin();
+                    deltaVector.z = 0;
+                    deltaVector.Norm();
+                    // player.Yeet(deltaVector * 800 + Vector(0, 0, 450));
+                    // params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
+                }
+            }
+        }
+
         destroyRazorback = false;
 
-		// Delfite: Since we're backstabbing ourselves as a means to trigger the Razorback's break mechanic, we need to stop the knife from dealing damage to us.
+		// Delfite: Since we're backstabbing ourselves as a means to trigger the Razorback's break mechanic,
+        // we need to stop the knife from dealing damage to us.
 		if (params.weapon == knife)
 			return;
 
@@ -236,8 +257,6 @@ characterTraitsClasses.push(class extends CharacterTrait
         if ((params.damage_type == 1 || params.damage_type == DMG_BLAST) && params.damage < player.GetHealth())
             return;
 
-        //Note: Saxton Punch!'s collateral will NOT be resisted. Adding extra-extra resistance to make up for it.
-        // params.damage *= params.inflictor == custom_dmg_saxton_punch ? 0.2 : 0.5;
         destroyRazorback = true;
     }
 
@@ -260,12 +279,12 @@ characterTraitsClasses.push(class extends CharacterTrait
 			SetPropFloat(params.weapon, "m_flNextPrimaryAttack", Time());
             SetPropFloat(player, "m_flNextAttack", Time());
 
-			params.damage *= params.inflictor == custom_dmg_saxton_punch ? 0.3 : 0.3;
+			params.damage *= 0.4;
 
-			// local deltaVector = player.GetCenter() - attacker.GetCenter();
-			// deltaVector.z = 0;
-			// deltaVector.Norm();
-			// player.Yeet(deltaVector * 300 + Vector(0, 0, 450));
+			local deltaVector = player.GetCenter() - attacker.GetCenter();
+			deltaVector.z = 0;
+			deltaVector.Norm();
+			player.Yeet(deltaVector * 800 + Vector(0, 0, 450));
 			player.AddCondEx(TF_COND_PREVENT_DEATH, 0, null);
 			// Delfite: Of course, should the Razorback ever break, we don't want the player to die unless it's already broken.
 			// Unfortunately, there IS a bug with this method of death prevention, where if you get hit within the HP threshold
@@ -297,10 +316,14 @@ characterTraitsClasses.push(class extends CharacterTrait
             AddPropInt(player, "m_Shared.m_iDecapitations", 1);
         }
 
-        // Delfite: Double the Bushwacka's damage if it lands a crit.
+        // Delfite: +40% damage for the Bushwacka if it deals a crit. 1.2x mult accounts for Hale's crit resistance.
+        // Normally, this would be an instance where I would try to check for DMG_ACID, but that method doesn't work
+        // for mini-crits that are converted to crits.
         if (params.weapon == Bushwacka)
-            if (params.damage_type & DMG_ACID)
-                printdev(params.damage)
+        {
+            if (victim.InCond(TF_COND_MARKEDFORDEATH || TF_COND_URINE) || player.InCond(TF_COND_ENERGY_BUFF) || player.IsCritBoosted())
+                params.damage *= 1.2 * 1.4
+        }
     }
 
     function OnHurtDealtEvent(victim, params)
@@ -308,44 +331,10 @@ characterTraitsClasses.push(class extends CharacterTrait
         player.SetRageMeter(clampCeiling(100, player.GetRageMeter() + params.damageamount / 7));
     }
 
-	//At first, I thought giving the Darwin's Danger Shield this resistance would make sense, since it's a "shield".
-	//However, I decided to give it to the Huntsman instead, for the following reasons:
-
-    // 1. Unlike sniper rifles, the Huntsman forces you to get close to Hale in order to hit your shots more consistently.
-	// 2. Having the resistance be on the primary instead of the secondary enables other close-quarter playstyles (SMG sniper, anyone?)
-	// 3. It enforces more courageous gameplay that makes the sniper easy to spot and relatively easy to chase down, but still takes effort to kill on Hale's part.
-	function OnDamageTaken(attacker, params)
-    {
-        if (WeaponIs(weapon_primary, "any_bow"))
-        {
-            // printdev("The player has a bow equipped.")
-            if (IsValidBoss(attacker) || params.attacker == worldspawn)
-            {
-                // printdev("The attacker is either Hale or Worldspawn.")
-                if (params.damage_type & (DMG_CLUB | DMG_FALL))
-                {
-                    // printdev("The player received either melee damage or fall damage.")
-                    params.damage *= params.inflictor == custom_dmg_saxton_punch ? 1.0 : HUNTSMAN_RESISTANCE_FACTOR;
-
-                    local deltaVector = player.GetOrigin() - attacker.GetOrigin();
-                    deltaVector.z = 0;
-                    deltaVector.Norm();
-                    player.Yeet(deltaVector * 600 + Vector(0, 0, 450));
-                    params.damage_type = params.damage_type | DMG_PREVENT_PHYSICS_FORCE;
-                }
-            }
-        }
-    }
-
     function OnDiscard()
     {
         if (weapon_primary && weapon_primary.IsValid())
         {
-            weapon_primary.RemoveAttribute("move speed bonus");
-            weapon_primary.RemoveAttribute("aiming movespeed increased");
-            weapon_primary.RemoveAttribute("sniper no headshot without full charge");
-            weapon_primary.RemoveAttribute("minicrits become crits");
-            weapon_primary.RemoveAttribute("damage bonus");
             weapon_primary.RemoveAttribute("fire rate bonus");
         }
     }

@@ -290,7 +290,7 @@ function OnGameEvent_player_healed(params)
     FireListeners("player_healed", healer, patient, params);
 }
 
-// TODO: Use OnGameEvent_player_stealsandvich to turn Heavy's lunchbox items into small landmines.
+// Idea: Use OnGameEvent_player_stealsandvich to turn Heavy's lunchbox items into small landmines.
 // Delfite: Of course. Of course this GameEvent is "not implemented." Thanks Valve!
 function OnGameEvent_player_shoot(params)
 {
@@ -299,4 +299,38 @@ function OnGameEvent_player_shoot(params)
     if (!IsValidPlayer(player))
         return;
     FireListeners("player_shoot", player, params)
+}
+
+// Delfite: Triggers whenever any medic, with any medigun, causes an uber on another player.
+// This means flashing ubers across other players will trigger this GameEvent every time.
+function OnGameEvent_player_invulned(params)
+{
+    // printdev("Player invulned.")
+}
+
+// Delfite: This GameEvent can fire multiple times in the same tick. player.Regenerate(true) will also trigger this GameEvent.
+// `ammo_index` returns an enum found in `Constants.TF_AMMO`.
+// Homework for you: Metal returned does not display in `params.amount`. You'll need a workaround to get the metal returned to the player.
+function OnGameEvent_ammo_pickup(params)
+{
+    if (IsNotValidRound())
+        return;
+    local index = params.ammo_index;
+    // printdev("Ammo index: " + index)
+
+    // local amount = params.amount;
+    // printdev("Ammo received: " + amount)
+
+    // local total = params.total;
+    // printdev("Current ammo: " + total)
+
+    FireListeners("ammo_pickup", index, params)
+}
+
+function OnGameEvent_player_say(params)
+{
+    local player = GetPlayerFromUserID(params.userid)
+    local text = params.text
+
+    FireListeners("player_say", player, text, params)
 }

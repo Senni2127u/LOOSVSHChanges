@@ -22,6 +22,14 @@
 ::custom_dmg_saxton_punch_aoe <- SpawnEntityFromTable("info_target", { classname = "hale_megapunch_collateral" });
 ::custom_dmg_charge <- SpawnEntityFromTable("info_target", { classname = "hale_charge" });
 
+// Delfite: Hale's model path for vsh_maul.
+// ::saxton_model_path <- "models/vsh/player/santa_hale.mdl";
+
+// Delfite: Hale's model paths for vsh_facility.
+// ::saxton_model_path <- "models/vsh/player/mecha_hale.mdl";
+// ::saxton_aura_model_path <- "models/vsh/player/items/vsh_effect_body_aura_mecha_hale.mdl"
+// ::saxton_viewmodel_path <- "models/vsh/weapons/c_models/c_mecha_hale_arms.mdl"
+
 ::saxton_model_path <- "models/vsh/player/saxton_hale.mdl";
 ::saxton_aura_model_path <- "models/vsh/player/items/vsh_effect_body_aura.mdl"
 ::saxton_viewmodel_path <- "models/vsh/weapons/c_models/c_saxton_hale_arms.mdl"
@@ -30,6 +38,9 @@
 PrecacheModel(saxton_model_path);
 PrecacheModel(saxton_aura_model_path);
 PrecacheModel(saxton_viewmodel_path);
+// printdev(saxton_model_path);
+// printdev(saxton_aura_model_path);
+// printdev(saxton_viewmodel_path);
 
 class SaxtonHale extends Boss
 {
@@ -37,6 +48,8 @@ class SaxtonHale extends Boss
 
     function OnApply0Delay()
     {
+        // Delfite: Changing Hale to any merc that's not Heavy will result in his viewmodel turning into a giant ERROR.
+        // In the event you *do* decide to change Hale from a Heavy, remember to change lines 131 and 149 in `game_events.nut`
         player.SetPlayerClass(TF_CLASS_HEAVY);
         player.Regenerate(true);
         SetPropInt(player, "m_bForcedSkin", 1);

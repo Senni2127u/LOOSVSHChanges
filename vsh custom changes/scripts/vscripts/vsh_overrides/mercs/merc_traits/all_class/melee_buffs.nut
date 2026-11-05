@@ -16,6 +16,7 @@
 characterTraitsClasses.push(class extends CharacterTrait
 {
     weapon_melee = null;
+    player_scope = null;
 
     function CanApply()
     {
@@ -25,6 +26,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     function OnApply()
     {
         weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
+        player_scope = player.GetScriptScope()
         if (!weapon_melee)
             return;
 
@@ -38,17 +40,28 @@ characterTraitsClasses.push(class extends CharacterTrait
     }
 
 
-    function OnFrameTickAlive()
+    function OnTickAlive(timeDelta)
     {
         local active_weapon = player.GetActiveWeapon();
         if (active_weapon != weapon_melee)
             //printdev(active_weapon + " | " + weapon)
             return;
 
+        // if (WeaponIs(active_weapon, "eyelander"))
+        // {
+        //     local heads = GetPropInt(player, "m_Shared.m_iDecapitations")
+        //     if (!player_scope.eyelanderCritsEnabled)
+        //         return;
+        // }
+
         if (!WeaponIs(active_weapon, "market_gardener") && !WeaponIs(active_weapon, "holiday_punch") && !WeaponIs(active_weapon, "bushwacka"))
-            player.AddCondEx(TF_COND_CRITBOOSTED_ON_KILL, 0.13, null);
+            GiveCrits()
     }
 
+    function GiveCrits()
+    {
+        player.AddCondEx(TF_COND_CRITBOOSTED_ON_KILL, 0.11, null);
+    }
 
     function OnDamageDealt(victim, params)
     {
@@ -64,12 +77,22 @@ characterTraitsClasses.push(class extends CharacterTrait
                 if (deltaVector.Norm() < 180)
                 {
                     local force = 0;
-                    if (WeaponIs(params.weapon, "any_sword"))
+                    if (WeaponIs(params.weapon, "eyelander"))
+                        if (player.IsCritBoosted())
+                            force = 100
+                        else
+                            force = 300
+                    else if (WeaponIs(params.weapon, "any_sword") && player.IsCritBoosted())
                         force = 100
                     else if (WeaponIs(params.weapon, "tideturner"))
                         force = 180
                     else if (WeaponIs(params.weapon, "eviction_notice"))
-                        force = 130
+                        force = 150
+                    else if (WeaponIs(params.weapon, "holiday_punch"))
+                        if (player.InCond(TF_COND_CRITBOOSTED_ON_KILL) || !player.IsCritBoosted())
+                            force = 0
+                        else
+                            force = 300
                     else if (WeaponIs(params.weapon, "market_gardener"))
                     {
                         if (player.InCond(TF_COND_BLASTJUMPING) && !player.IsOnGround())

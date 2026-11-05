@@ -43,7 +43,7 @@ class SaxtonPunchTrait extends BossTrait
         BossPlayViewModelAnim(boss, "vsh_megapunch_ready");
         boss.AddCond(TF_COND_CRITBOOSTED);
 
-        // Delfite: Play a sound to everyone on the server to notify them Saxton Punch is charged.
+        // Delfite: Play a sound to everyone on the server to notify them Saxton Punch! is charged.
         // Previously, the sound would just play on Hale, but this method works regardless of distance.
         EmitSoundOnClient("Weapon_Capper.SingleCrit", boss) //sfx warning when it's fully charged.
         foreach (player in GetValidClients())

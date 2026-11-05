@@ -33,14 +33,20 @@ PrecacheSound("vo/medic_hat_taunts04.mp3")
     "vo/medic_hat_taunts04.mp3"
 ]
 
+AddListener("setup_start", 1, function ()
+{
+    killer = null;
+    assister = null;
+})
+
 characterTraitsClasses.push(class extends CharacterTrait
 {
     function OnKill(victim, params)
     {
         if (IsValidBoss(victim))
         {
-            ::killer <- player
-            ::assister <- GetPlayerFromUserID(params.assister)
+            killer = player
+            assister = GetPlayerFromUserID(params.assister)
             // printdev("Killer: " + killer + " | Assister: " + assister)
         }
     }

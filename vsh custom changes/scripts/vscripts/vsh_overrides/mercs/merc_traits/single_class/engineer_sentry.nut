@@ -14,6 +14,23 @@
 
 PrecacheScriptSound("Powerup.PickUpTemp.Crit")
 PrecacheScriptSound("Building_Sentry.Damage")
+PrecacheSound(")weapons/sentry_damage1.wav")
+PrecacheSound(")weapons/sentry_damage2.wav")
+PrecacheSound(")weapons/sentry_damage3.wav")
+PrecacheSound(")weapons/sentry_damage4.wav")
+PrecacheSound(")weapons/sentry_scan.wav")
+PrecacheSound(")weapons/sentry_scan2.wav")
+PrecacheSound(")weapons/sentry_scan3.wav")
+PrecacheSound(")weapons/medi_shield_deploy.wav")
+PrecacheSound(")weapons/medi_shield_retract.wav")
+PrecacheSound(")weapons/sentry_shaft_laser_pass.wav")
+
+// ::sentry_damage_sound_array <- [
+//     "weapons/sentry_damage1.wav",
+//     "weapons/sentry_damage2.wav",
+//     "weapons/sentry_damage3.wav",
+//     "weapons/sentry_damage4.wav"
+// ]
 
 AddListener("setup_start", 1, function()
 {
@@ -42,23 +59,193 @@ AddListener("setup_start", 1, function()
 	// printdev("tf_sentrygun_newtarget_dist = " + Convars.GetFloat("tf_sentrygun_newtarget_dist"))
 });
 
+
+local next_hurt_time = 0;
+
+// Delfite: This listener implements the unused sound effects for when a sentry takes damage, because why not.
+// Presentation matters, people!
 AddListener("object_hurt", 1, function(attacker, object, params)
+{
+    SentryHurtSFX(attacker, object, params)
+});
+
+function SentryHurtSFX(attacker, object, params)
 {
     if (!IsValidBoss(attacker))
         return;
+
+    // Delfite: Only play the SFX if the sentry is still alive.
+    if (!object.IsAlive())
+        return;
+
+    // Delfite: Stop the damage SFX from getting spammed by Sweeping Charge.
+    local hurt_time = Time()
+    if (next_hurt_time > hurt_time)
+        return;
+    next_hurt_time = hurt_time + 0.15
+
     local building_type = GetPropInt(object, "m_iObjectType")
     if (building_type != 2)
         return;
     // printdev("Sentry took damage.")
-    local soundlevel = (40 + (20 * log10(radius / 36.0))).tointeger();
-    EmitSoundEx(
-        sound_name = "Building_Sentry.Damage"
-        volume = 1.0
-        sound_level = soundLevel
-        entity = object
-    )
-    EmitSoundOn("Building_Sentry.Damage", object)
-});
+
+    local sfx_pitch = 30;
+    local isMiniSentry = GetPropBool(object, "m_bMiniBuilding")
+    // Delfite: Change the pitch of the damage SFX if the sentry is a mini.
+    if (!isMiniSentry)
+        sfx_pitch = 100
+    else
+        sfx_pitch = 120
+
+    // Delfite: Don't delete these copies of EmitSoundEx! The sounds themselves are really quiet by default, so we play it
+    // multiple times in the same tick to make it louder. Probably the dumbest solution to a problem I've had to use so far,
+    // but it works.
+    switch (RandomInt(0, 3))
+    {
+        case 0:
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage1.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage1.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage1.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage1.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+        break;
+
+        case 1:
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage2.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage2.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage2.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage2.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+        break;
+
+        case 2:
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage3.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage3.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage3.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage3.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+        break;
+
+        case 3:
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage4.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage4.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage4.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/sentry_damage4.wav"
+                entity = object
+                volume = 1.0
+                sound_level = 80
+                pitch = sfx_pitch
+            })
+        break;
+
+        default:
+        break;
+    }
+}
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
@@ -67,7 +254,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 	weapon_melee = null;
 	Pistol = null;
     sentrygun = null;
-	sentryDamageAccumulated = 0;
+	damageAccumulatedForRevenge = 0;
 
     sentry_level_limit = 2
     dispenser_level_limit = 2
@@ -76,6 +263,7 @@ characterTraitsClasses.push(class extends CharacterTrait
     teleporter_entrance = null;
     teleporter_exit = null;
 
+    lastHitWasSecondary = null;
 	lastHitSentry = null;
     sentryCritsActive = false;
 	primaryIsFrontierJustice = false;
@@ -83,13 +271,19 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     you = null;
 
+    engineerIsKritzd = false;
+
+    shieldSFXPlayed = false;
+
+    next_scan_time = 0;
+    next_shaft_laser_pass_time = 0;
+
 
 	function CanApply()
 	{
 		return player.GetPlayerClass() == TF_CLASS_ENGINEER
 	}
 
-    // TODO: Implement "Building_Sentrygun.ShaftLaserPass" as a ScriptSound that plays when Hale gets spotted by a wrangled sentry.
     function OnApply()
     {
         you = player;
@@ -105,39 +299,61 @@ characterTraitsClasses.push(class extends CharacterTrait
             usingMiniSentry = true;
     }
 
+    function OnObjectBuilt(builder, building, params)
+    {
+        local building_type = GetPropInt(building, "m_iObjectType")
+        if (building_type != 2)
+            return;
+
+        sentrygun = building;
+    }
+
     function OnDamageDealt(victim, params)
     {
+        lastHitWasSecondary = params.weapon == weapon_secondary;
+
+        if (params.inflictor != null && params.inflictor.GetClassname() == "obj_sentrygun" && player == victim)
+            params.damage *= 0.1
+
         if (params.inflictor != null && params.inflictor.GetClassname() == "obj_sentrygun" && player != victim)
         {
             // Delfite: As it would turn out, sentries (without a damage nerf), do a LOT of damage, and even more while the Engie is under Mini-crits.
-            // They also do a lot of knockback. So much knockback that even with a 50% damage penalty, a single Level 2 Sentry can easily stuff a Brave Jump
-            // from Hale, making map traversal much more annoying for him and creating a not-so-fun-to-fight-against situation for him. This, combined with
-            // multiple sentries often being in play, necessitated a solution. Sentries now inflict SUBSTANTIALLY less knockback on Hale, but sentries will
-            // be easier to build in order to compensate. Hopefully this rework makes Engineer more fun to play as and against.
-
-            if (player.IsAlive())
-            {
-                params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
-                foreach (player in GetAliveMercs())
-                {
-                    if (player.GetPlayerClass() == TF_CLASS_MEDIC && player.GetHealTarget() == you)
-                    {
-                        local chargeReleased = GetPropBool(weapon_secondary, "m_bChargeRelease")
-                        if (player.chargeReleased)
-                            params.damage_type = DMG_PREVENT_PHYSICS_FORCE | Constants.FDmgType.DMG_ACID;
-                    }
-                }
-            }
-            else
-                params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
+            // They also do a lot of knockback. So much knockback that even with a 50% damage penalty, a single Level 2 Sentry can easily stuff a
+            // Brave Jump from Hale, making map traversal much more annoying for him and creating a not-so-fun-to-fight-against situation for him.
+            // This, combined with multiple sentries often being in play, necessitated a solution. Sentries now inflict SUBSTANTIALLY less
+            // knockback on Hale, but sentries will be easier to build in order to compensate. Hopefully this rework makes Engineer more
+            // fun to play as and against.
 
             params.damage *= usingMiniSentry ? 0.8 : 0.5;
             lastHitSentry = params.inflictor;
+            local deltaVector = victim.GetCenter() - lastHitSentry.GetOrigin();
+            deltaVector.Norm();
+            victim.Yeet(deltaVector * 8);
+            // printdev("OnePlayerRemaining: " + OnePlayerRemaining)
+            if (OnePlayerRemaining || player.InCond(TF_COND_CRITBOOSTED_BONUS_TIME))
+            {
+                params.damage_type = DMG_PREVENT_PHYSICS_FORCE | DMG_ACID;
+                // Delfite: You may think that giving sentries the ability to ignore Hale's crit resistance would be OP, but
+                // there's a lot of factors working against sentries. They're relatively easy to destroy, only deal 192 DPS
+                // - by comparison, Heavy's Minigun (even with a 30% damage penalty) - still deals ~300 DPS at mid-range with crits,
+                // and sentries still have limited range and a slow turning speed. Overall, still very easy to counter as Hale.
+                params.damage *= 1.2;
+            }
+            else if (!OnePlayerRemaining)
+            {
+                params.damage_type = DMG_PREVENT_PHYSICS_FORCE;
+                if (engineerIsKritzd)
+                {
+                    params.damage_type = DMG_PREVENT_PHYSICS_FORCE | DMG_ACID;
+                    params.damage *= 1.2;
+                }
+            }
+
+
+
             // printdev("Sentrygun dealt damage!")
             // printdev(params.damage_type + " | " + params.inflictor)
-            local deltaVector = victim.GetCenter() - params.inflictor.GetOrigin();
-            deltaVector.Norm();
-            victim.Yeet(deltaVector * 5);
+
             // printdev(lastHitSentry)
 
 
@@ -169,14 +385,42 @@ characterTraitsClasses.push(class extends CharacterTrait
                         local dispenser_metal = GetPropInt(building, "m_iUpgradeMetal")
                         local dispenser_metal_required = GetPropInt(building, "m_iUpgradeMetalRequired")
                         local dispenser_level = GetPropInt(building, "m_iUpgradeLevel")
-                        SetPropInt(building, "m_iUpgradeMetal", clampCeiling(dispenser_metal_required, dispenser_metal + 2))
-                            break;
+                        local Building = GetPropBool(building, "m_bBuilding")
+                        local Carrying = GetPropBool(building, "m_bCarried")
+                        local Deploying = GetPropBool(building, "m_bCarryDeploy")
+                        if (!(params.damage_type & DMG_ACID))
+                            SetPropInt(building, "m_iUpgradeMetal", clampCeiling(dispenser_metal_required, dispenser_metal + 2))
+                        else
+                        {
+                            if (dispenser_metal == dispenser_metal_required && dispenser_level < 3 && !Building && !Carrying && !Deploying)
+                            {
+                                SetPropInt(building, "m_iHighestUpgradeLevel", clampCeiling(3, dispenser_level + 1))
+                                SetPropInt(building, "m_iUpgradeMetal", 0)
+                            }
+                            else
+                                SetPropInt(building, "m_iUpgradeMetal", clampCeiling(dispenser_metal_required, dispenser_metal + 6))
+                        }
+                    break;
                     case 1:
                         local teleporter_metal = GetPropInt(building, "m_iUpgradeMetal")
                         local teleporter_metal_required = GetPropInt(building, "m_iUpgradeMetalRequired")
                         local teleporter_level = GetPropInt(building, "m_iUpgradeLevel")
-                        SetPropInt(building, "m_iUpgradeMetal", clampCeiling(teleporter_metal_required, teleporter_metal + 2))
-                            break;
+                        local Building = GetPropBool(building, "m_bBuilding")
+                        local Carrying = GetPropBool(building, "m_bCarried")
+                        local Deploying = GetPropBool(building, "m_bCarryDeploy")
+                        if (!(params.damage_type & DMG_ACID))
+                            SetPropInt(building, "m_iUpgradeMetal", clampCeiling(teleporter_metal_required, teleporter_metal + 2))
+                        else
+                        {
+                            if (teleporter_metal == teleporter_metal_required && teleporter_level < 3 && !Building && !Carrying && !Deploying)
+                            {
+                                SetPropInt(building, "m_iHighestUpgradeLevel", clampCeiling(3, teleporter_level + 1))
+                                SetPropInt(building, "m_iUpgradeMetal", 0)
+                            }
+                            else
+                                SetPropInt(building, "m_iUpgradeMetal", clampCeiling(teleporter_metal_required, teleporter_metal + 6))
+                        }
+                    break;
                     case 2:
                         if (usingMiniSentry)
                             break;
@@ -184,11 +428,26 @@ characterTraitsClasses.push(class extends CharacterTrait
                         local sentry_metal = GetPropInt(building, "m_iUpgradeMetal")
                         local sentry_metal_required = GetPropInt(building, "m_iUpgradeMetalRequired")
                         local sentry_level = GetPropInt(building, "m_iUpgradeLevel")
-                        SetPropInt(building, "m_iUpgradeMetal", clampCeiling(sentry_metal_required, sentry_metal + 2))
-                            break;
+                        local Building = GetPropBool(building, "m_bBuilding")
+                        local Carrying = GetPropBool(building, "m_bCarried")
+                        local Deploying = GetPropBool(building, "m_bCarryDeploy")
+                        if (!(params.damage_type & DMG_ACID))
+                            SetPropInt(building, "m_iUpgradeMetal", clampCeiling(sentry_metal_required, sentry_metal + 2))
+                        else
+                        {
+                            if (sentry_metal == sentry_metal_required && sentry_level < 3 && !Building && !Carrying && !Deploying)
+                            {
+                                SetPropInt(building, "m_iHighestUpgradeLevel", clampCeiling(3, sentry_level + 1))
+                                SetPropInt(building, "m_iUpgradeMetal", 0)
+                            }
+                            else
+                                SetPropInt(building, "m_iUpgradeMetal", clampCeiling(sentry_metal_required, sentry_metal + 6))
+                        }
+                    break;
+
                     default:
                         printdev("Unknown ObjectType found: " + building_type + " | " + building)
-                            break;
+                    break;
                 }
             }
 
@@ -216,16 +475,18 @@ characterTraitsClasses.push(class extends CharacterTrait
         local active_weapon = player.GetActiveWeapon()
         if (primaryIsFrontierJustice)
         {
-            if (lastHitSentry != null)
+            if (lastHitSentry != null || lastHitWasSecondary)
             {
                 // printdev(GetPropInt(player, "m_Shared.m_iRevengeCrits"));
                 //Frontier Justice crits.
-                sentryDamageAccumulated += params.damageamount;
-                while (sentryDamageAccumulated >= 120)
+                damageAccumulatedForRevenge += params.damageamount;
+                while (damageAccumulatedForRevenge >= 150)
                 {
                     // AddPropInt(lastHitSentry, "SentrygunLocalData.m_iAssists", 1);
-                    AddPropInt(player, "m_Shared.m_iRevengeCrits", 1);
-                    sentryDamageAccumulated -= 120;
+                    // Delfite: Attempting to add crits beyond 35 just results in the counter setting itself to 35 - 1 every time.
+                    if (GetPropInt(player, "m_Shared.m_iRevengeCrits") < 35)
+                        AddPropInt(player, "m_Shared.m_iRevengeCrits", 1);
+                    damageAccumulatedForRevenge -= 150;
 
                     if (GetPropInt(player, "m_Shared.m_iRevengeCrits") == 1)
                         EmitSoundOnClient("Powerup.PickUpTemp.Crit", player)
@@ -245,7 +506,258 @@ characterTraitsClasses.push(class extends CharacterTrait
         }
     }
 
-    function OnFrameTickAliveOrDead()
+    function OnTickAlive(timeDelta)
+    {
+        EngineerKritzThink()
+
+        SentryShieldSFX()
+        SentryControlSFX()
+        // SentryTargetSFX()
+    }
+
+    function EngineerKritzThink()
+    {
+        if (GetPropInt(player, "m_Shared.m_nNumHealers") > 0)
+        {
+            // Delfite: Only run this `foreach` if the Engineer has at least 1 Medic healing them.
+            foreach (player in GetAliveMercs())
+            {
+                if (player.GetPlayerClass() == TF_CLASS_MEDIC && player.GetHealTarget() == you)
+                {
+                    local your_healer = player
+                    local healer_weapon_secondary = your_healer.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY)
+                    if (!WeaponIs(healer_weapon_secondary, "kritzkrieg"))
+                        continue;
+
+                    local chargeReleased = GetPropBool(healer_weapon_secondary, "m_bChargeRelease")
+                    if (chargeReleased)
+                        engineerIsKritzd = true;
+                    else
+                        engineerIsKritzd = false;
+                }
+            }
+        }
+        else
+        {
+            if (!engineerIsKritzd)
+                return;
+
+            engineerIsKritzd = false;
+        }
+    }
+
+    function SentryShieldSFX()
+    {
+        if (GetPropBool(sentrygun, "m_bPlayerControlled"))
+        {
+            if (shieldSFXPlayed)
+                return;
+
+            shieldSFXPlayed = true;
+            EmitSoundEx(
+            {
+                sound_name = ")weapons/medi_shield_deploy.wav"
+                entity = sentrygun
+                filter_type = RECIPIENT_FILTER_GLOBAL
+                volume = 1.0
+                sound_level = 140
+            })
+        }
+        else
+        {
+            if (!shieldSFXPlayed)
+                return;
+
+            shieldSFXPlayed = false;
+            // EmitSoundEx(
+            // {
+            //     sound_name = ")weapons/medi_shield_retract.wav"
+            //     sound_level = 86
+            //     volume = 1.0
+            //     filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+            //     entity = sentrygun
+            // })
+        }
+    }
+
+    function SentryControlSFX()
+    {
+        local sfx_pitch = 30;
+        local isMiniSentry = GetPropBool(sentrygun, "m_bMiniBuilding")
+        local sentry_target = GetPropEntity(sentrygun, "m_hAutoAimTarget")
+        local boss = GetBossPlayers()[0]
+        // Delfite: Change the pitch of the damage SFX if the sentry is a mini.
+        if (!isMiniSentry)
+            sfx_pitch = 107
+        else
+            sfx_pitch = 127
+
+        if (GetPropBool(sentrygun, "m_bPlayerControlled"))
+        {
+            // printdev("Sentry Target: " + sentry_target)
+            local scan_time = Time()
+            if (!(next_scan_time > scan_time))
+            {
+                next_scan_time = isMiniSentry ? scan_time + 1.5 : scan_time + 2.0
+                if (sentry_target == boss)
+                    EmitSoundOnClient("Building_Sentrygun.ShaftLaserPass", boss)
+                else
+                    StopSoundOn("Building_Sentrygun.ShaftLaserPass", boss)
+
+                local sentrygun_level = GetPropInt(sentrygun, "m_iUpgradeLevel")
+                // printdev("Sentry level: " + sentrygun_level)
+                switch (sentrygun_level)
+                {
+                    case 1:
+                        StopSoundOn(")weapons/sentry_scan.wav", sentrygun)
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 1.0
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 1.0
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                    break;
+
+                    case 2:
+                        StopSoundOn(")weapons/sentry_scan2.wav", sentrygun)
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan2.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 1.0
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan2.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 1.0
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan2.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 0.3
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                    break;
+
+                    case 3:
+                        StopSoundOn(")weapons/sentry_scan3.wav", sentrygun)
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan3.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 1.0
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan3.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 1.0
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                        EmitSoundEx(
+                        {
+                            sound_name = ")weapons/sentry_scan3.wav"
+                            entity = sentrygun
+                            filter_type = RECIPIENT_FILTER_GLOBAL
+                            volume = 0.6
+                            sound_level = 84
+                            pitch = sfx_pitch
+                        })
+                    break;
+
+                    default:
+                    break;
+                }
+            }
+
+        }
+        else
+        {
+            if (!(next_scan_time == 0))
+            {
+                StopSoundOn("Building_Sentrygun.ShaftLaserPass", boss)
+                next_scan_time = 0;
+            }
+        }
+    }
+
+    function SentryTargetSFX()
+    {
+        local isMiniSentry = GetPropBool(sentrygun, "m_bMiniBuilding")
+        local sentry_target = GetPropEntity(sentrygun, "m_hAutoAimTarget")
+        local boss = GetBossPlayers()[0]
+        if (GetPropBool(sentrygun, "m_bPlayerControlled"))
+        {
+            // printdev("Sentry Target: " + sentry_target)
+            if (sentry_target == boss)
+            {
+                local shaft_laser_pass_time = Time()
+                if (!(next_shaft_laser_pass_time > shaft_laser_pass_time))
+                {
+                    next_shaft_laser_pass_time = isMiniSentry ? shaft_laser_pass_time + 1.5 : shaft_laser_pass_time + 2.0
+                    EmitSoundOn("Building_Sentrygun.ShaftLaserPass", boss)
+                }
+
+                // Delfite: Not sure why, but using the filename of this sound causes it to not obey StopSound and StopSoundOn.
+                // Use the keyvalue instead.
+                // EmitSoundOn(")weapons/sentry_shaft_laser_pass.wav", boss)
+                // EmitSoundEx(
+                // {
+                //     sound_name = ")weapons/sentry_shaft_laser_pass.wav"
+                //     entity = boss
+                //     // filter_type = RECIPIENT_FILTER_GLOBAL
+                //     volume = 1.0
+                // })
+            }
+            else
+            {
+                if (!(next_shaft_laser_pass_time == 0))
+                {
+                    // StopSoundOn(")weapons/sentry_shaft_laser_pass.wav", boss)
+                    StopSoundOn("Building_Sentrygun.ShaftLaserPass", boss)
+                    next_shaft_laser_pass_time = 0;
+                }
+            }
+        }
+        else
+        {
+            if (!(next_shaft_laser_pass_time == 0))
+            {
+                // StopSoundOn(")weapons/sentry_shaft_laser_pass.wav", boss)
+                StopSoundOn("Building_Sentrygun.ShaftLaserPass", boss)
+                next_shaft_laser_pass_time = 0;
+            }
+        }
+    }
+
+    function OnTickAliveOrDead(timeDelta)
     {
         if (!(player in PlayerBuildings))
             return;
@@ -257,12 +769,17 @@ characterTraitsClasses.push(class extends CharacterTrait
             if (projectile.GetOwner() == sentrygun) // projectile is a class object, aka an "instance".
             {
                 projectile.ValidateScriptScope()
-                local projectileScope = projectile.GetScriptScope();
-                if (!("CHECKED" in projectileScope))
+                local projectile_scope = projectile.GetScriptScope();
+                // printdev(projectile_scope)
+                if (!("CHECKED" in projectile_scope))
                 {
+                    projectile_scope["CHECKED"] <- null;
+
                     projectile.SetAbsVelocity(projectile.GetAbsVelocity() * 2)
                     // printdev(projectile + " | " + projectile.GetAbsVelocity())
-                    projectileScope["CHECKED"] <- null;
+
+                    if (engineerIsKritzd || OnePlayerRemaining || player.InCond(TF_COND_CRITBOOSTED_BONUS_TIME))
+                        SetPropBool(projectile, "m_bCritical", true)
                 }
             }
         }
@@ -313,5 +830,11 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         SetPropInt(tf_gamerules, "m_iRoundState", 0);
         RunWithDelay("SetPropInt(tf_gamerules, `m_iRoundState`, 7)", null, 0);
+    }
+
+    function OnDiscard()
+    {
+        local boss = GetBossPlayers()[0]
+        StopSoundOn("Building_Sentrygun.ShaftLaserPass", boss)
     }
 });

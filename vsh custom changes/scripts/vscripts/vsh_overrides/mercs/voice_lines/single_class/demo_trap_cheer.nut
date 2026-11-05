@@ -19,7 +19,7 @@ characterTraitsClasses.push(class extends CustomVoiceLine
 {
     playInterval = 0.5;
     damageDoneRecently = 0;
-    isCrit = false;
+    lastHitWasCritical = false;
 
     function CanApply()
     {
@@ -33,7 +33,7 @@ characterTraitsClasses.push(class extends CustomVoiceLine
 
     function OnDamageDealt(victim, params)
     {
-        isCrit = params.damage_type & DMG_ACID
+        lastHitWasCritical = params.damage_type & DMG_ACID
     }
 
     function OnHurtDealtEvent(victim, params)
@@ -41,11 +41,11 @@ characterTraitsClasses.push(class extends CustomVoiceLine
         if (!IsBoss(victim) || Time() - lastPlay < playInterval)
             return;
         damageDoneRecently += params.damageamount;
-        if (damageDoneRecently > 500)
+        if (damageDoneRecently >= 500)
         {
             lastPlay = Time();
             EmitPlayerVO(player, "trap_cheer");
-            if (isCrit)
+            if (lastHitWasCritical)
                 EmitSoundOn("vsh_sfx.gardened", player);
         }
     }

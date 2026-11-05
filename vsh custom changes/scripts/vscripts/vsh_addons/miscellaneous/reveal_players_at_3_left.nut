@@ -2,7 +2,8 @@
 // The script handles outlining all remaining players during Last Mann Standing.
 // No required modifications to base gamemode files.
 
-local LastMannStandingTriggered = false;
+::LastMannStandingActive <- false;
+::OnePlayerRemaining <- false;
 
 AddListener("setup_end", 999, function()
 {
@@ -33,7 +34,8 @@ AddListener("setup_start", 999, function()
 {
     foreach (player in GetValidClients())
         SetPropBool(player, "m_bGlowEnabled", false);
-    LastMannStandingTriggered = false;
+    LastMannStandingActive = false;
+    OnePlayerRemaining = false;
 });
 
 function OutlineRemainingPlayers(death)
@@ -44,9 +46,16 @@ function OutlineRemainingPlayers(death)
         local aliveCount = alive.len();
         local bossalive = GetAliveBossPlayers();
 
-        if (aliveCount <= 3 && !LastMannStandingTriggered && !IsRoundOver())
+        if (aliveCount <= 3 && !LastMannStandingActive && !IsRoundOver())
         {
-            LastMannStandingTriggered = true;
+            LastMannStandingActive = true;
+
+            // Delfite: Tried revealing buildings during Last Mann Standing, but for some reason the NetProp doesn't seem to do
+            // anything for buildings, despite it existing in each of their respective network tables. May need to ask Brad about this.
+            // foreach (building in PlayerBuildings)
+            // {
+            //     SetPropBool(building, "m_bGlowEnabled", true);
+            // }
 
             foreach (merc in alive)
             {
@@ -60,6 +69,9 @@ function OutlineRemainingPlayers(death)
 
             ClientPrint(null, 3, "\x07C9C5B1[VSH] \x07DE3163Last Mann Standing activated! All remaining players have been outlined!");
         }
+
+        if (aliveCount <= 1 && !OnePlayerRemaining && !IsRoundOver())
+            OnePlayerRemaining = true;
     });
 }
             // Debug stuff, only uncomment if there is issue with alive player tracking.

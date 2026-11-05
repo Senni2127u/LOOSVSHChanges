@@ -68,6 +68,8 @@ class CharacterTrait
     function OnObjectBuilt(builder, building, params) { }
     function OnObjectDestroyed(builder, building, params) { }
     function OnPlayerShoot(params) { }
+    function OnAmmoPickup(index, params) { }
+    function OnRoundEnd(winnerTeam) { }
 
     function DoTick(timeDelta)
     {
@@ -257,4 +259,18 @@ AddListener("player_shoot", 0, function (player, params)
         foreach (characterTrait in characterTraits[player])
             try { characterTrait.OnPlayerShoot.call(characterTrait, player, params); }
             catch(e) { throw e; }
+})
+
+AddListener("ammo_pickup", 0, function (index, params)
+{
+    foreach (characterTrait in characterTraitsClasses)
+        try { characterTrait.OnAmmoPickup.call(characterTrait, index, params); }
+        catch(e) { throw e; }
+})
+
+AddListener("round_end", 0, function (winnerTeam)
+{
+    foreach (characterTrait in characterTraitsClasses)
+        try { characterTrait.OnRoundEnd.call(characterTrait, winnerTeam); }
+        catch(e) { throw e; }
 })

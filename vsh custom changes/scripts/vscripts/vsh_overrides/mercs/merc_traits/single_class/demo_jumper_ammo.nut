@@ -12,21 +12,23 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-characterTraitsClasses.push(class extends CharacterTrait
-{
-    function CanApply()
-    {
-        return player.GetPlayerClass() == TF_CLASS_DEMOMAN;
-    }
+// Delfite: Code migrated to `demoman_weapons.nut`.
 
-    function OnApply()
-    {
-        local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
-        if (WeaponIs(weapon, "sticky_jumper"))
-        {
-            weapon.AddAttribute("maxammo secondary increased", 0.5, -1);
-            weapon.AddAttribute("max pipebombs decreased", -7, -1);
-            NetProps.SetPropInt(player, "m_iAmmo.002", 12)
-        }
-    }
-});
+// characterTraitsClasses.push(class extends CharacterTrait
+// {
+//     function CanApply()
+//     {
+//         return player.GetPlayerClass() == TF_CLASS_DEMOMAN;
+//     }
+
+//     function OnApply()
+//     {
+//         local weapon = player.GetWeaponBySlot(TF_WEAPONSLOTS.SECONDARY);
+//         if (WeaponIs(weapon, "sticky_jumper"))
+//         {
+//             weapon.AddAttribute("maxammo secondary increased", 0.5, -1);
+//             weapon.AddAttribute("max pipebombs decreased", -7, -1);
+//             NetProps.SetPropInt(player, "m_iAmmo.002", 12)
+//         }
+//     }
+// });

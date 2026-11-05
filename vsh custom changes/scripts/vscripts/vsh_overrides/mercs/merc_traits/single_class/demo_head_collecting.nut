@@ -12,38 +12,40 @@
 //  Phe - game design assistance.
 //=========================================================================
 
-PrecacheArbitrarySound("demo.special_01")
+// Delfite: Code migrated to `demoman_weapons.nut`
 
-characterTraitsClasses.push(class extends CharacterTrait
-{
-    lastTimeSoundPlayed = 0;
+// PrecacheArbitrarySound("demo.special_01")
 
-    function CanApply()
-    {
-        return player.GetPlayerClass() == TF_CLASS_DEMOMAN;
-    }
+// characterTraitsClasses.push(class extends CharacterTrait
+// {
+//     lastTimeSoundPlayed = 0;
 
-    function OnDamageDealt(victim, params)
-    {
-        // Delfite: Since we switched from the model system to item indeces, we only need to look for the Eyelander.
-        local weapon = params.weapon;
-        if (WeaponIs(weapon, "eyelander"))
-            AddHead();
-    }
+//     function CanApply()
+//     {
+//         return player.GetPlayerClass() == TF_CLASS_DEMOMAN;
+//     }
 
-    function AddHead()
-    {
-        local heads = GetPropInt(player, "m_Shared.m_iDecapitations");
-        SetPropInt(player, "m_Shared.m_iDecapitations", heads + 1);
-        player.AddCond(TF_COND_DEMO_BUFF);
-        player.AddCondEx(TF_COND_SPEED_BOOST, 0.01, 0.01);
-        if (player.GetHealth() <= 300)
-            player.SetHealth(player.GetHealth() + 15);
+//     function OnDamageDealt(victim, params)
+//     {
+//         // Delfite: Since we switched from the model system to item indeces, we only need to look for the Eyelander.
+//         local weapon = params.weapon;
+//         if (WeaponIs(weapon, "eyelander"))
+//             AddHead();
+//     }
 
-        if (heads > 1 && Time() > lastTimeSoundPlayed + 20 && RandomInt(0, 2) == 0)
-        {
-            lastTimeSoundPlayed = Time();
-            EmitPlayerVODelayed(player, "special_01", 0.2);
-        }
-    }
-});
+//     function AddHead()
+//     {
+//         local heads = GetPropInt(player, "m_Shared.m_iDecapitations");
+//         SetPropInt(player, "m_Shared.m_iDecapitations", heads + 1);
+//         player.AddCond(TF_COND_DEMO_BUFF);
+//         player.AddCondEx(TF_COND_SPEED_BOOST, 0.01, 0.01);
+//         if (player.GetHealth() <= 300)
+//             player.SetHealth(player.GetHealth() + 15);
+
+//         if (heads > 1 && Time() > lastTimeSoundPlayed + 20 && RandomInt(0, 2) == 0)
+//         {
+//             lastTimeSoundPlayed = Time();
+//             EmitPlayerVODelayed(player, "special_01", 0.2);
+//         }
+//     }
+// });

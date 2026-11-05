@@ -3,19 +3,53 @@
 // This script handles everything to do with Medic's melees.
 // Requires modification of `weapons.nut` in order to function.
 
+
+const QUICKFIX_OVERHEAL_FACTOR = 0.5
+
 PrecacheScriptSound("HealthKit.Touch")
 PrecacheScriptSound("WeaponMedigun.Charged")
 PrecacheScriptSound("Medic.AutoChargeReady01")
 PrecacheScriptSound("Medic.AutoChargeReady02")
 PrecacheScriptSound("Medic.AutoChargeReady03")
-PrecacheScriptSound("DemoCharge.ChargeCritOn")
-PrecacheScriptSound("DemoCharge.ChargeCritOff")
+// PrecacheScriptSound("TFPlayer.InvulnerableOn");
+PrecacheSound(")player/invulnerable_on.wav");
+PrecacheSound(")player/invulnerable_off.wav");
+PrecacheSound(")player/quickfix_invulnerable_on.wav");
+PrecacheSound(")weapons/weapon_crit_charged_on.wav");
+PrecacheSound(")weapons/weapon_crit_charged_off.wav");
+
+// PrecacheScriptSound("TFPlayer.InvulnerableOn")
+// PrecacheScriptSound("TFPlayer.InvulnerableOff")
+// PrecacheScriptSound("TFPlayer.QuickFixInvulnerableOn")
+// PrecacheScriptSound("TFPlayer.MegaHealOn")  // Delfite: The names of these two sounds are deceiving. These are what the Kritzkrieg use for the kritz charge.
+// PrecacheScriptSound("TFPlayer.MegaHealOff")
 
 ::auto_charge_ready_array <- [
     "Medic.AutoChargeReady01",
     "Medic.AutoChargeReady02",
     "Medic.AutoChargeReady03"
 ]
+
+AddListener("setup_end", 1, function ()
+{
+    foreach (player in GetValidClients())
+    {
+        EmitSoundEx(
+        {
+            sound_name = ")player/invulnerable_on.wav"
+            filter_type = RECIPIENT_FILTER_GLOBAL
+            entity = player
+            volume = 0.0
+        })
+        EmitSoundEx(
+        {
+            sound_name = ")player/invulnerable_off.wav"
+            filter_type = RECIPIENT_FILTER_GLOBAL
+            entity = player
+            volume = 0.0
+        })
+    }
+})
 
 characterTraitsClasses.push(class extends CharacterTrait
 {
@@ -36,9 +70,18 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     // Melee handles.
     Amputator = null;
-    Solemn_Vow = null;
+    SolemnVow = null;
     Ubersaw = null;
     Vitasaw = null;
+
+    charge_level = 0;
+    overheal_quotient = 0;
+    overheal_limit = 0;
+
+    invulnSoundPlayed = false;
+
+    QUICKFIX_OVERHEAL_FACTOR = 0;
+    extraOverhealApplied = false;
 
     medic_mag = 0;
     medic_reserve = 0;
@@ -48,7 +91,6 @@ characterTraitsClasses.push(class extends CharacterTrait
     patient_secondary_reserve = 0;
     patient_primary_mag = 0;
     patient_secondary_mag = 0;
-    overheal_penalty = 0;
 
     chargedHealingActive = false;
     healerDebuffApplied = false;
@@ -63,7 +105,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     crossbowPenaltyApplied = false;
     // Delfite: Set chargedSFXPlayed to true on round start so hitting Hale doesn't immediately play the sequence.
-    chargedSFXPlaybackRunning = true;
+    chargedSFXPlaybackRunning = false;
     chargedSFXPlayed = true;
     chargeReleased = false;
 
@@ -79,62 +121,66 @@ characterTraitsClasses.push(class extends CharacterTrait
         weapon_melee = player.GetWeaponBySlot(TF_WEAPONSLOTS.MELEE);
 
         // Primary definitions.
-        if (!WeaponIs(weapon_primary, "crusaders_crossbow"))
+        // weapon_primary.AddAttribute("weapon spread bonus", 0.0, -1)
+        // weapon_primary.AddAttribute("Projectile speed increased", 3.0, -1)
+        if (WeaponIs(weapon_primary, "syringe_gun"))
         {
-            // Delfite: Only god knows why, but the "Projectile speed increased" attribute doesn't work on Syringe Guns. Damn you Valve!
+            SyringeGun = weapon_primary;
             weapon_primary.AddAttribute("fire rate bonus", 0.70, -1)
             weapon_primary.AddAttribute("reload time decreased", 0.60, -1)
             weapon_primary.AddAttribute("maxammo primary increased", 2.0, -1)
-            // weapon_primary.AddAttribute("weapon spread bonus", 0.0, -1)
-            // weapon_primary.AddAttribute("Projectile speed increased", 3.0, -1)
-            if (WeaponIs(weapon_primary, "syringe_gun"))
-            {
-                SyringeGun = weapon_primary;
-                SyringeGun.AddAttribute("add uber charge on hit", 0.008, -1)
-                SyringeGun.AddAttribute("damage bonus", 1.50, -1)
-            }
-            else if (WeaponIs(weapon_primary, "overdose"))
-            {
-                // Delfite: Removing the old active movement speed bonus and replacing it with the passive version.
-                weapon_primary.AddAttribute("move speed bonus resource level", 1.0, -1)
-                weapon_primary.AddAttribute("damage penalty", 0.8, -1)
-                if (WeaponIs(weapon_melee, "vitasaw"))
-                    weapon_primary.AddAttribute("move speed bonus", 1.10, -1)
-                else
-                    weapon_primary.AddAttribute("move speed bonus", 1.20, -1)
-            }
-            else if (WeaponIs(weapon_primary, "blutsauger"))
-            {
-                weapon_primary.AddAttribute("heal on hit for rapidfire", 5, -1)
-                // weapon_primary.AddAttribute("clip size penalty", 0.75, -1)
-            }
+            SyringeGun.AddAttribute("add uber charge on hit", 0.008, -1)
+            SyringeGun.AddAttribute("damage bonus", 1.50, -1)
         }
-        else if (WeaponIs(weapon_primary, "crusaders_crossbow"))
+        if (WeaponIs(weapon_primary, "overdose"))
+        {
+            weapon_primary.AddAttribute("fire rate bonus", 0.70, -1)
+            weapon_primary.AddAttribute("reload time decreased", 0.60, -1)
+            weapon_primary.AddAttribute("maxammo primary increased", 2.0, -1)
+            // Delfite: Removing the old active movement speed bonus and replacing it with the passive version.
+            weapon_primary.AddAttribute("move speed bonus resource level", 1.0, -1)
+            weapon_primary.AddAttribute("damage penalty", 0.8, -1)
+            if (WeaponIs(weapon_melee, "vitasaw"))
+                weapon_primary.AddAttribute("move speed bonus", 1.10, -1)
+            else
+                weapon_primary.AddAttribute("move speed bonus", 1.20, -1)
+        }
+        if (WeaponIs(weapon_primary, "blutsauger"))
+        {
+            weapon_primary.AddAttribute("fire rate bonus", 0.70, -1)
+            weapon_primary.AddAttribute("reload time decreased", 0.60, -1)
+            weapon_primary.AddAttribute("maxammo primary increased", 2.0, -1)
+            weapon_primary.AddAttribute("heal on hit for rapidfire", 5, -1)
+            // weapon_primary.AddAttribute("clip size penalty", 0.75, -1)
+        }
+        if (WeaponIs(weapon_primary, "crusaders_crossbow"))
         {
             Crossbow = weapon_primary
         }
 
+
         // Secondary definitions.
-        weapon_secondary.AddAttribute("ubercharge rate bonus", weapon_secondary.GetAttribute("ubercharge rate bonus", 1.0) + 2, -1);
+        weapon_secondary.AddAttribute("ubercharge rate bonus", weapon_secondary.GetAttribute("ubercharge rate bonus", 1.0) + 1, -1);
         if (WeaponIs(weapon_secondary, "medigun"))
         {
             Medigun = weapon_secondary
         }
-        else if (WeaponIs(weapon_secondary, "kritzkrieg"))
+        if (WeaponIs(weapon_secondary, "kritzkrieg"))
         {
-            weapon_secondary.AddAttribute("uber duration bonus", 2, -1)
             Kritzkrieg = weapon_secondary
+            Kritzkrieg.AddAttribute("uber duration bonus", 2, -1)
         }
-        else if (WeaponIs(weapon_secondary, "quick_fix"))
+        if (WeaponIs(weapon_secondary, "quick_fix"))
         {
-            weapon_secondary.AddAttribute("uber duration bonus", 4, -1)
             QuickFix = weapon_secondary
+            QuickFix.AddAttribute("uber duration bonus", 4, -1)
+            QuickFix.AddAttribute("overheal penalty", 1.0, -1)
+            player.AddCustomAttribute("overheal penalty", QUICKFIX_OVERHEAL_FACTOR, -1)
         }
-        else if (WeaponIs(weapon_secondary, "vaccinator"))
+        if (WeaponIs(weapon_secondary, "vaccinator"))
         {
             Vaccinator = weapon_secondary
         }
-        overheal_penalty = weapon_secondary.GetAttribute("overheal penalty", 1.0)
 
         // Melee definitions.
 		if (WeaponIs(weapon_melee, "bonesaw"))
@@ -142,7 +188,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             weapon_melee.AddAttribute("mult_player_movespeed_active", 1.25, -1)
 			// SetPropBool(player, "m_bInPowerPlay", true)
 		}
-		else if (WeaponIs(weapon_melee, "amputator"))
+		if (WeaponIs(weapon_melee, "amputator"))
 		{
 			// Delfite: Regen: 3 -> 8
             weapon_melee.AddAttribute("health regen", 8, -1)
@@ -152,18 +198,18 @@ characterTraitsClasses.push(class extends CharacterTrait
 			// Delfite: Unused attribute that overheals with no limit.
 			// Not recommended for use in VSH, or anywhere really.
 		}
-		else if (WeaponIs(weapon_melee, "solemn_vow"))
+		if (WeaponIs(weapon_melee, "solemn_vow"))
 		{
             weapon_melee.AddAttribute("fire rate penalty", 1.0, -1)
-            Solemn_Vow = weapon_melee
+            SolemnVow = weapon_melee
 		}
-		else if (WeaponIs(weapon_melee, "ubersaw"))
+		if (WeaponIs(weapon_melee, "ubersaw"))
 		{
             weapon_melee.AddAttribute("fire rate penalty", 1.0, -1)
             weapon_melee.AddAttribute("add uber charge on hit", 0.20, -1)
             Ubersaw = weapon_melee
 		}
-		else if (WeaponIs(weapon_melee, "vitasaw"))
+		if (WeaponIs(weapon_melee, "vitasaw"))
 		{
             Vitasaw = weapon_melee
             // Delfite: "lunchbox adds minicrits" controls the organ spawning mechanic on the Vita-Saw when you hit someone.
@@ -171,7 +217,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             // weapon_melee.AddAttribute("lunchbox adds minicrits", 2, -1)
 		}
         RunWithDelay2(this, 0.0, OnApply0Delay)
-        player.Regenerate(true)
+        RunWithDelay2(this, 0.1, OnApply1Delay)
     }
 
     function OnApply0Delay()
@@ -179,24 +225,16 @@ characterTraitsClasses.push(class extends CharacterTrait
         SetPropFloat(weapon_secondary, "m_flChargeLevel", 1.0)
     }
 
-    function OnFrameTickAlive()
+    function OnApply1Delay()
     {
-        active_weapon = player.GetActiveWeapon()
-
-        ChargedSFXPlaybackThink()
-        ChargedHealing()
-
-        if (QuickFix == weapon_secondary)
-            QuickFixThink()
-        if (Kritzkrieg == weapon_secondary)
-            KritzkriegThink()
-
-        if (chargedSFXPlayed && GetPropFloat(weapon_secondary, "m_flChargeLevel") < 1.0)
-            chargedSFXPlayed = false;
+        overheal_quotient = player.GetMaxHealth() * 0.5
+        overheal_limit = overheal_quotient + player.GetMaxHealth()
     }
 
     function OnTickAlive(timeDelta)
     {
+        active_weapon = player.GetActiveWeapon()
+        charge_level = GetPropFloat(weapon_secondary, "m_flChargeLevel")
         chargeReleased = GetPropBool(weapon_secondary, "m_bChargeRelease")
 
         if (weapon_primary == Crossbow)
@@ -206,8 +244,24 @@ characterTraitsClasses.push(class extends CharacterTrait
             UbersawTauntSlowThink()
     }
 
+    function OnFrameTickAlive()
+    {
+        ChargedSFXPlaybackThink()
+        ChargedHealing()
+        InvulnSFXThink()
+
+        if (QuickFix == weapon_secondary)
+            QuickFixThink()
+        if (Kritzkrieg == weapon_secondary)
+            KritzkriegThink()
+
+        if (chargedSFXPlayed && charge_level < 1.0)
+            chargedSFXPlayed = false;
+    }
+
     function OnDamageDealt(victim, params)
     {
+        // Delfite: Play the "Ubercharge Ready" audio sequence if you manage to get Uber without your secondary.
         if ((weapon_melee == Ubersaw || weapon_primary == SyringeGun) && IsValidBoss(victim))
         {
             RunWithDelay2(this, 0.1, function ()
@@ -216,14 +270,18 @@ characterTraitsClasses.push(class extends CharacterTrait
                 if (player.IsAlive() && active_weapon == (Ubersaw || SyringeGun) && !chargedSFXPlaybackRunning && !chargedSFXPlayed)
                 {
                     // printdev("Second succeeded.")
-                    if (!WeaponIs(weapon_secondary, "vaccinator") && GetPropFloat(weapon_secondary, "m_flChargeLevel") == 1.0)
+                    if (chargeReleased)
+                        return;
+
+                    if (weapon_secondary != Vaccinator && charge_level == 1.0)
                         MedigunChargeSFX()
-                    else if (WeaponIs(weapon_secondary, "vaccinator") && GetPropFloat(weapon_secondary, "m_flChargeLevel") >= 0.25)
+                    else if (weapon_secondary == Vaccinator && charge_level >= 0.25)
                         MedigunChargeSFX()
                 }
             })
         }
 
+        // Delfite: Vita-Saw organ code.
         if (params.weapon == Vitasaw)
         {
             local organs = GetPropInt(player, "m_Shared.m_iDecapitations");
@@ -236,6 +294,9 @@ characterTraitsClasses.push(class extends CharacterTrait
                 {
                     player.AddCustomAttribute("move speed bonus", move_speed_bonus + 0.075, -1)
                     player.AddCustomAttribute("max health additive bonus", max_health_bonus + 15, -1)
+                    // Delfite: Update the player's max overheal for ChargedHealing.
+                    overheal_quotient = player.GetMaxHealth() * 0.5
+                    overheal_limit = overheal_quotient + player.GetMaxHealth()
                 }
 
                 if (player.GetHealth() > player.GetMaxHealth())
@@ -248,9 +309,10 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function OnDamageTaken(attacker, params)
     {
-        if (weapon_melee == Solemn_Vow && !player.IsInvulnerable() && IsValidBoss(attacker))
+        // Delfite: Solemn Vow self-heal code.
+        if (weapon_melee == SolemnVow && !player.IsInvulnerable() && IsValidBoss(attacker))
         {
-            player.AddCondEx(TF_COND_SPEED_BOOST, 8, null)
+            player.AddCondEx(TF_COND_SPEED_BOOST, 10, null)
             RunWithDelay2(this, 1.5, function ()
             {
                 if (!player.IsAlive())
@@ -285,7 +347,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
     function CrossbowSlowThink()
     {
-        if (player.IsCritBoosted())
+        if (player.InCond(TF_COND_CRITBOOSTED))
         {
             if (crossbowPenaltyApplied)
                 return;
@@ -318,12 +380,113 @@ characterTraitsClasses.push(class extends CharacterTrait
     {
         if (chargedSFXPlaybackRunning)
         {
-            if (WeaponIs(active_weapon, "any_medigun"))
+            if (active_weapon == (Medigun || Kritzkrieg || QuickFix || Vaccinator))
             {
                 // Delfite: This sound effect loops forever. Stop it manually when we switch to our secondary so the sounds don't stack.
                 StopSoundOn("WeaponMedigun.Charged", player)
                 chargedSFXPlaybackRunning = false;
             }
+        }
+    }
+
+    function InvulnSFXThink()
+    {
+        if (chargeReleased)
+        {
+            if (invulnSoundPlayed)
+                return;
+
+            local medic = player
+            local medic_center = medic.GetCenter()
+            switch (active_weapon)
+            {
+                case Medigun:
+                    // Delfite: Stop the client-sided sound and play it again, but so that other players can hear it.
+                    // Rhetorical question: Why does it always come back to porting TF2C changes?
+                    // foreach (player in GetValidClients())
+                    // {
+                        //     if (player == medic)
+                        //         continue;
+                        //     // EmitSoundOnClient("TFPlayer.InvulnerableOn", player)
+                    //     printall("Emitting invuln...")
+                    // }
+                    StopSoundOn(")player/invulnerable_on.wav", player)
+                    EmitSoundEx(
+                    {
+                        sound_name = ")player/invulnerable_on.wav"
+                        sound_level = 86
+                        volume = 1.0
+                        filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+                        entity = player
+                    })
+                break;
+                // case Kritzkrieg:
+                //     StopSoundOn(")weapons/weapon_crit_charged_on.wav", player)
+                //     EmitSoundEx(
+                //     {
+                //         sound_name = ")weapons/weapon_crit_charged_on.wav"
+                //         sound_level = 86
+                //         volume = 1.0
+                //         filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+                //         entity = player
+                //     })
+                // break;
+                // case QuickFix:
+                //     StopSoundOn(")player/quickfix_invulnerable_on.wav", player)
+                //     EmitSoundEx(
+                //     {
+                //         sound_name = ")player/quickfix_invulnerable_on.wav"
+                //         sound_level = 86
+                //         volume = 1.0
+                //         filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+                //         entity = player
+                //     })
+                // break;
+            }
+            invulnSoundPlayed = true;
+        }
+        else
+        {
+            if (!invulnSoundPlayed)
+                return;
+
+            switch (weapon_secondary)
+            {
+                case Medigun:
+                    StopSoundOn(")player/invulnerable_off.wav", player)
+                    EmitSoundEx(
+                    {
+                        sound_name = ")player/invulnerable_off.wav"
+                        sound_level = 86
+                        volume = 1.0
+                        filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+                        entity = player
+                    })
+                break;
+                // case Kritzkrieg:
+                //     StopSoundOn(")weapons/weapon_crit_charged_on.wav", player)
+                //     EmitSoundEx(
+                //     {
+                //         sound_name = ")weapons/weapon_crit_charged_off.wav"
+                //         sound_level = 86
+                //         volume = 1.0
+                //         filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+                //         entity = player
+                //     })
+                // break;
+                // case QuickFix:
+                //     StopSoundOn(")player/quickfix_invulnerable_on.wav", player)
+                //     EmitSoundEx(
+                //     {
+                //         sound_name = ")player/invulnerable_off.wav"
+                //         sound_level = 86
+                //         volume = 1.0
+                //         filter_type = Constants.EScriptRecipientFilter.RECIPIENT_FILTER_GLOBAL
+                //         entity = player
+                //     })
+                // break;
+            }
+            invulnSoundPlayed = false;
         }
     }
 
@@ -334,7 +497,7 @@ characterTraitsClasses.push(class extends CharacterTrait
             // printdev("Healing active.")
             if (chargeReleased && (active_weapon == Medigun && player.IsInvulnerable()) || (Kritzkrieg && player.InCond(TF_COND_CRITBOOSTED)))
             {
-                player.SetHealth(clampCeiling(player.GetMaxHealth() * 1.5, player.GetHealth() + 1))
+                player.SetHealth(clampCeiling(overheal_limit, player.GetHealth() + 1))
                 chargedHealingActive = true;
             }
             // Delfite: Disabling the Vaccinator changes for now until I can figure out how to stop other medics from triggering the heal with their ubers.
@@ -374,29 +537,30 @@ characterTraitsClasses.push(class extends CharacterTrait
         }
     }
 
-    // Delfite: This function is responsible for the Quick-Fix's overheal cap adjustment.
+    // Delfite: This function is responsible for the Quick-Fix's overheal cap adjustment while invulned.
     function QuickFixThink()
     {
-        if (QuickFix)
+        if (chargeReleased)
         {
-            if (chargeReleased)
-            {
-                if (extraOverhealApplied)
-                    return;
+            if (extraOverhealApplied)
+                return;
 
-                QuickFix.AddAttribute("overheal penalty", 1.0, -1)
-                QuickFix.AddAttribute("overheal bonus", 2.0, -1)
-                extraOverhealApplied = true;
-            }
-            else
-            {
-                if (!extraOverhealApplied)
-                    return;
+            extraOverhealApplied = true;
+            QuickFix.AddAttribute("overheal penalty", 1.0, -1)
+            QuickFix.AddAttribute("overheal bonus", QUICKFIX_OVERHEAL_FACTOR + 1.0, -1)
+            // player.RemoveCustomAttribute("overheal penalty")
+            // player.AddCustomAttribute("overheal bonus", 1.5, -1)
+        }
+        else
+        {
+            if (!extraOverhealApplied)
+                return;
 
-                QuickFix.AddAttribute("overheal penalty", overheal_penalty, -1)
-                QuickFix.RemoveAttribute("overheal bonus")
-                extraOverhealApplied = false;
-            }
+            extraOverhealApplied = false;
+            QuickFix.RemoveAttribute("overheal bonus")
+            QuickFix.AddAttribute("overheal penalty", QUICKFIX_OVERHEAL_FACTOR, -1)
+            // player.RemoveCustomAttribute("overheal bonus")
+            // player.AddCustomAttribute("overheal penalty", QUICKFIX_OVERHEAL_FACTOR, -1)
         }
     }
 
@@ -414,13 +578,13 @@ characterTraitsClasses.push(class extends CharacterTrait
                 // Delfite: Not sure why, but if we don't set the Medic's condition every few seconds, the crits will fade when they're not supposed to.
                 // I'm just gonna set the condition every tick. There isn't really a point in adding a timer here, and adding a RunWithDelay2 inside this
                 // tick function will cause a server crash within a few minutes, even IF the delay is super tiny (0.0001, etc.)
-                player.AddCondEx(TF_COND_CRITBOOSTED, -1, player)
+                player.AddCondEx(TF_COND_CRITBOOSTED, 0.2, player)
                 kritzChargeActive = true;
             }
             else if (kritzChargeActive && !chargeReleased)
             {
                 player.RemoveCondEx(TF_COND_CRITBOOSTED, true)
-                EmitSoundOn("DemoCharge.ChargeCritOff", player)
+                EmitSoundOn("TFPlayer.MegaHealOff", player)
                 kritzChargeActive = false;
             }
 
@@ -565,6 +729,9 @@ characterTraitsClasses.push(class extends CharacterTrait
     function OnDiscard()
     {
         StopSoundOn("WeaponMedigun.Charged", player)
+        StopSoundOn(")player/invulnerable_on.wav", player)
+        StopSoundOn(")weapons/weapon_crit_charged_on.wav", player)
+        StopSoundOn(")player/quickfix_invulnerable_on.wav", player)
         player.RemoveCond(TF_COND_CRITBOOSTED)
 
         if (weapon_primary && weapon_primary.IsValid())
@@ -581,6 +748,7 @@ characterTraitsClasses.push(class extends CharacterTrait
 
         if (weapon_melee && weapon_melee.IsValid())
         {
+            weapon_melee.RemoveAttribute("add uber charge on hit");
             weapon_melee.RemoveAttribute("mult_health_fromhealers_penalty_active");
         }
     }

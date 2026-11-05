@@ -55,10 +55,20 @@ if (!IsDedicatedServer())
 }
 seterrorhandler(ErrorHandler);
 
+::CTFPlayer.printplayer <- function(text)
+{
+    ClientPrint(this, HUD_PRINTTALK, text.tostring());
+}
+
 ::printdev <- function(text)
 {
     foreach(player in FindValidDevs())
-        ClientPrint(player, 3, text.tostring());
+        ClientPrint(player, HUD_PRINTTALK, text.tostring());
+}
+
+::printall <- function(text)
+{
+    ClientPrint(null, HUD_PRINTTALK, text.tostring());
 }
 
 ::PrintError <- function(player, title, e, printfunc = null)
