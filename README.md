@@ -4,14 +4,14 @@ These are changes that have been done on the Vs Saxton Hale (VScript) LOOS Commu
 * No contributor or the owner of the repository will guarantee support for VScript VSH versions below Summer 2025.
 
 -----------------------------------------------------------------------------
-Credits:
+### Credits
 
-Bradasparky, Horiuchi, Dice, Senni - Coding and Technical Assistance.
+Coding and Technical Assistance - [Bradasparky](https://github.com/Bradasparky), [Horiuchi](https://github.com/horiuchii), [Dice](https://github.com/JimmyPLightning), [Senni](https://github.com/Senni2127u)
 
-Delfite - Assistance with the majority of changes.
+Assistance with the majority of changes - [Delfite](https://github.com/Delfite)
 
-Pika - Top Damage Scoreboard script maker.
+Top Damage Scoreboard script maker - Pika
 
-Lizard of Oz - VSH main developer and some existing code.
+VSH main developer and some existing code - [Lizard of Oz](https://github.com/lizard-of-oz)
 
 -----------------------------------------------------------------------------
